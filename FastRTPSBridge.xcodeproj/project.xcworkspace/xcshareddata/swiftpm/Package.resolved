@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CDRCodable",
+        "repositoryURL": "git@github.com:DimaRU/CDRCodable.git",
+        "state": {
+          "branch": "master",
+          "revision": "d81670af498495ee920a30f1b1fcb35743e9f292",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
