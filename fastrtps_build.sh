@@ -3,6 +3,7 @@ set -e
 #git submodule update --init --recursive
 echo "$1" # Build type
 echo MACOSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET"
+if [ ! -f "Framework/libfastrtps.1.dylib" ]; then
 rm -rf $PROJECT_TEMP_DIR/memory
 mkdir -p $PROJECT_TEMP_DIR/memory || true
 cmake -Sfoonathan_memory_vendor -B$PROJECT_TEMP_DIR/memory -DCMAKE_INSTALL_PREFIX=build/osx -DCMAKE_BUILD_TYPE="$1"
@@ -14,3 +15,4 @@ cmake --build $PROJECT_TEMP_DIR/Fast-RTPS --target install
 mkdir Framework || true
 cp build/osx/lib/libfastrtps.1.dylib Framework/
 cp build/osx/lib/libfastcdr.1.dylib Framework/
+fi
