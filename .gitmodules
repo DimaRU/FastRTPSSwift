@@ -1,0 +1,6 @@
+[submodule "foonathan_memory_vendor"]
+	path = foonathan_memory_vendor
+	url = https://github.com/eProsima/foonathan_memory_vendor.git
+[submodule "Fast-RTPS"]
+	path = Fast-RTPS
+	url = https://github.com/DimaRU/Fast-RTPS.git
