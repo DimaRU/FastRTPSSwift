@@ -1,4 +1,6 @@
 Framework/
+memory/
+Fast-RTPS/
 
 # Mac OS X
 .DS_Store
