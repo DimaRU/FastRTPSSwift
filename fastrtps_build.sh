@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
-export MACOSX_DEPLOYMENT_TARGET=10.14
 #git submodule update --init --recursive
 echo "$1" # Build type
+echo MACOSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET"
 rm -rf $PROJECT_TEMP_DIR/memory
 mkdir -p $PROJECT_TEMP_DIR/memory || true
 cmake -Sfoonathan_memory_vendor -B$PROJECT_TEMP_DIR/memory -DCMAKE_INSTALL_PREFIX=build/osx -DCMAKE_BUILD_TYPE="$1"
