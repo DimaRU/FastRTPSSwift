@@ -487,6 +487,8 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FastRTPS_repo = "https://github.com/DimaRU/Fast-RTPS.git";
+				Foonathan_memory_repo = "https://github.com/DimaRU/memory.git";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -552,6 +554,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FastRTPS_repo = "https://github.com/DimaRU/Fast-RTPS.git";
+				Foonathan_memory_repo = "https://github.com/DimaRU/memory.git";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -596,10 +600,11 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Framework";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
 				PRODUCT_NAME = FastRTPSBridge;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VALID_ARCHS = x86_64;
@@ -629,10 +634,11 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/Framework";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
 				PRODUCT_NAME = FastRTPSBridge;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				VALID_ARCHS = x86_64;
 			};
@@ -691,7 +697,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/ios/lib",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
 				PRODUCT_NAME = FastRTPSBridge;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -728,7 +734,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/ios/lib",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
 				PRODUCT_NAME = FastRTPSBridge;
 				PROVISIONING_PROFILE_SPECIFIER = "";
