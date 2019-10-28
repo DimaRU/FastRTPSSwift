@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "0A7130742363503500817593"
                BuildableName = "FastRTPSBridge.framework"
-               BlueprintName = "FastRTPSBridge"
+               BlueprintName = "FastRTPSBridge macOS"
                ReferencedContainer = "container:FastRTPSBridge.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -52,7 +52,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "0A7130742363503500817593"
             BuildableName = "FastRTPSBridge.framework"
-            BlueprintName = "FastRTPSBridge"
+            BlueprintName = "FastRTPSBridge macOS"
             ReferencedContainer = "container:FastRTPSBridge.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
