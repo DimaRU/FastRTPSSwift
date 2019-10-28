@@ -13,13 +13,13 @@ if [ ! -f "build/ios/lib/libfastrtps.1.dylib" ]; then
 if [ ! -d memory ]; then
 git clone --quiet --recurse-submodules -b ios https://github.com/DimaRU/memory.git
 fi
-rm -rf $PROJECT_TEMP_DIR/memory
-mkdir -p $PROJECT_TEMP_DIR/memory || true
+rm -rf "$PROJECT_TEMP_DIR/memory"
+mkdir -p "$PROJECT_TEMP_DIR/memory" || true
 polly.py --toolchain ios-13-1-dep-12-1-x86-64-arm64 \
 --verbose --install --ios-combined --ios-multiarch \
 --config Release \
 --home memory \
---output $PROJECT_TEMP_DIR/memory \
+--output "$PROJECT_TEMP_DIR/memory" \
 --fwd CMAKE_CONFIGURATION_TYPES=Release \
 CMAKE_INSTALL_PREFIX=build/ios \
 FOONATHAN_MEMORY_BUILD_EXAMPLES=OFF \
@@ -30,12 +30,12 @@ rm -rf $PROJECT_TEMP_DIR/Fast-RTPS
 if [ ! -d Fast-RTPS ]; then
 git clone --quiet --recurse-submodules https://github.com/DimaRU/Fast-RTPS.git
 fi
-mkdir -p $PROJECT_TEMP_DIR/Fast-RTPS || true
+mkdir -p "$PROJECT_TEMP_DIR/Fast-RTPS" || true
 polly.py --toolchain ios-13-1-dep-12-1-x86-64-arm64 \
 --verbose --install --ios-combined --ios-multiarch \
 --config $1 \
 --home Fast-RTPS \
---output $PROJECT_TEMP_DIR/Fast-RTPS \
+--output "$PROJECT_TEMP_DIR/Fast-RTPS" \
 --fwd CMAKE_CONFIGURATION_TYPES=$1 \
 BUILD_SHARED_LIBS=YES \
 EXPORT_FILE=NO \
