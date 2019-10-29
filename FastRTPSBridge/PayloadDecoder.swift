@@ -12,7 +12,7 @@ import CDRCodable
 @objc public protocol PayloadDecoderInterface {
     func decode(sequence: Int,
                 payloadSize: Int,
-                payload: UnsafePointer<CUnsignedChar>)
+                payload: UnsafeMutableRawPointer)
 }
 
 public class PayloadDecoder<T: DDSType>:NSObject, PayloadDecoderInterface {
@@ -29,9 +29,9 @@ public class PayloadDecoder<T: DDSType>:NSObject, PayloadDecoderInterface {
 
     public func decode(sequence: Int,
                 payloadSize: Int,
-                payload: UnsafePointer<UInt8>) {
+                payload: UnsafeMutableRawPointer) {
         
-        let data = Data(bytes: payload + 4, count: payloadSize - 4)
+        let data = Data(bytesNoCopy: payload + 4, count: payloadSize - 4, deallocator: .none)
         do {
             let t = try decoder.decode(T.self, from: data)
             completion?(t)
