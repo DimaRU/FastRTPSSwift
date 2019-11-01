@@ -5,9 +5,9 @@
         "package": "CDRCodable",
         "repositoryURL": "git@github.com:DimaRU/CDRCodable.git",
         "state": {
-          "branch": "master",
-          "revision": "a5db2034e2db4f6a0a9a698c232578d790547ec3",
-          "version": null
+          "branch": null,
+          "revision": "3add6c2eaaaa0459a644cefacedcddecfb38841b",
+          "version": "0.0.1"
         }
       }
     ]
