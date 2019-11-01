@@ -102,7 +102,7 @@ bool RovParticipant::addReader(const char* name,
     //CREATE READERHISTORY
     HistoryAttributes hatt;
     hatt.payloadMaxSize = 10000;
-    hatt.memoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+    hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
     hatt.maximumReservedCaches = 0;
     auto history = new ReaderHistory(hatt);
     auto reader = RTPSDomain::createRTPSReader(mp_participant, readerAttributes, history, listener);
@@ -164,8 +164,8 @@ bool RovParticipant::addWriter(const char* name,
     auto listener = new RovWriterListener(name);
     //CREATE WRITERHISTORY
     HistoryAttributes hatt;
-    hatt.payloadMaxSize = 10000;
-    hatt.memoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+//    hatt.payloadMaxSize = 10000;
+    hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
     hatt.maximumReservedCaches = 0;
     auto history = new WriterHistory(hatt);
     auto writer = RTPSDomain::createRTPSWriter(mp_participant, watt, history, listener);
