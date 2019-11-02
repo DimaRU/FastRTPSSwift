@@ -219,9 +219,9 @@ bool RovParticipant::send(const char* name, const uint8_t* data, uint32_t length
         return false;
     }
     auto writerInfo = writerList[topicName];
-//    if (writerInfo->listener->n_matched == 0) {
-//        return false;
-//    }
+    if (writerInfo->listener->n_matched == 0) {
+        return false;
+    }
     auto writer = writerInfo->writer;
 
     CacheChange_t * change;
