@@ -3,7 +3,7 @@
     "pins": [
       {
         "package": "CDRCodable",
-        "repositoryURL": "git@github.com:DimaRU/CDRCodable.git",
+        "repositoryURL": "https://github.com/DimaRU/CDRCodable.git",
         "state": {
           "branch": null,
           "revision": "3add6c2eaaaa0459a644cefacedcddecfb38841b",
