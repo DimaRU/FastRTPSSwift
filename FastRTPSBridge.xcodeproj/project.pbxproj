@@ -94,7 +94,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0A5B3F252364E63400BE5707 /* fastrtps_build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build.sh; sourceTree = "<group>"; };
+		0A5B3F252364E63400BE5707 /* fastrtps_build_osx.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_osx.sh; sourceTree = "<group>"; };
 		0A7130752363503500817593 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A7130782363503500817593 /* FastRTPSBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastRTPSBridge.h; sourceTree = "<group>"; };
 		0A7130792363503500817593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -147,7 +147,7 @@
 		0A71306B2363503500817593 = {
 			isa = PBXGroup;
 			children = (
-				0A5B3F252364E63400BE5707 /* fastrtps_build.sh */,
+				0A5B3F252364E63400BE5707 /* fastrtps_build_osx.sh */,
 				0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */,
 				0A7130772363503500817593 /* FastRTPSBridge */,
 				0A7130762363503500817593 /* Products */,
@@ -234,7 +234,7 @@
 /* Begin PBXLegacyTarget section */
 		0A5B3F282364F62200BE5707 /* FastRTPS macOS */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "fastrtps_build.sh Release";
+			buildArgumentsString = "fastrtps_build_osx.sh Release";
 			buildConfigurationList = 0A5B3F292364F62200BE5707 /* Build configuration list for PBXLegacyTarget "FastRTPS macOS" */;
 			buildPhases = (
 			);

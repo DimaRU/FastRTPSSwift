@@ -2,7 +2,6 @@
 set -e
 set -x
 echo "$1" # Build type
-echo MACOSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET"
 if [ ! -f "Framework/libfastrtps.1.dylib" ]; then
 if [ ! -d memory ]; then
 git clone --quiet --recurse-submodules -b ios $Foonathan_memory_repo memory
@@ -21,8 +20,12 @@ if [ ! -d Fast-RTPS ]; then
 git clone --quiet --recurse-submodules $FastRTPS_repo Fast-RTPS
 fi
 mkdir -p "$PROJECT_TEMP_DIR/Fast-RTPS" || true
-cmake -SFast-RTPS -B"$PROJECT_TEMP_DIR/Fast-RTPS" -DCMAKE_INSTALL_PREFIX=build/osx \
--Dfoonathan_memory_DIR=build/osx/share/foonathan_memory/cmake -DTHIRDPARTY=ON -DCMAKE_BUILD_TYPE="$1"
+cmake -SFast-RTPS -B"$PROJECT_TEMP_DIR/Fast-RTPS" \
+-DCMAKE_INSTALL_PREFIX=build/osx \
+-Dfoonathan_memory_DIR=build/osx/share/foonathan_memory/cmake \
+-DTHIRDPARTY=ON \
+-DCMAKE_SKIP_RPATH=ON \
+-DCMAKE_BUILD_TYPE="$1"
 cmake --build "$PROJECT_TEMP_DIR/Fast-RTPS" --target install
 mkdir Framework || true
 cp build/osx/lib/libfastrtps.1.dylib Framework/
