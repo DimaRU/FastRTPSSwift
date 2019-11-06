@@ -21,6 +21,7 @@ class CustomParticipantListener: public eprosima::fastrtps::rtps::RTPSParticipan
     void onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo &&info) override;
     void onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info) override;
     void onWriterDiscovery(RTPSParticipant *participant, WriterDiscoveryInfo &&info) override;
+    void DumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators);
 };
 
 #endif /* CustomParticipantListener_h */
