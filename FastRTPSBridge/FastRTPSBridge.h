@@ -1,9 +1,6 @@
-//
-//  FastRTPSBridge.h
-//  FastRTPSBridge
-//
-//  Created by Dmitriy Borovikov on 25.10.2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  FastRTPSBridge.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

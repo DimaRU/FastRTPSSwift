@@ -1,9 +1,6 @@
-//
-//  RovTopicListener.h
-//  TestIntegration
-//
-//  Created by Dmitriy Borovikov on 21/08/2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  RovTopicListener.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #ifndef ORovTopicListener_h

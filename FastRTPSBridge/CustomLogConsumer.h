@@ -1,3 +1,8 @@
+/////
+////  CustomLogConsumer.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+//
+
 #ifndef CUSTOMLOG_CONSUMER_H
 #define CUSTOMLOG_CONSUMER_H
 

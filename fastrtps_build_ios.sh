@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# fastrtps_build_ios.sh
+# Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+#
 export PATH=$HOME/Developer/tools/polly/bin:$PATH
 set -e
 echo "$1" # Build type

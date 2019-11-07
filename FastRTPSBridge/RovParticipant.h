@@ -1,9 +1,6 @@
-//
-//  RovParticipant.h
-//  TridentVideoViewer
-//
-//  Created by Dmitriy Borovikov on 06/09/2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  RovParticipant.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #pragma once

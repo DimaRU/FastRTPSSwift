@@ -1,9 +1,6 @@
-//
-//  CustomParticipantListener.cpp
-//  TestFastRTPS
-//
-//  Created by Dmitriy Borovikov on 29/07/2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  CustomParticipantListener.cpp
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #include <fastrtps/log/Log.h>

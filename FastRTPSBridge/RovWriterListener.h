@@ -1,9 +1,6 @@
-//
-//  RovWriterListener.h
-//  TridentVideoViewer
-//
-//  Created by Dmitriy Borovikov on 13.09.2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  RovWriterListener.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #ifndef RovWriterListener_h

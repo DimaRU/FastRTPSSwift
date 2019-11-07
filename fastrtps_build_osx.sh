@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+# fastrtps_build_osx.sh
+# Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+#
 set -e
 set -x
 echo "$1" # Build type
