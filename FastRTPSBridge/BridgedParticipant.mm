@@ -1,12 +1,12 @@
 /////
-////  RovParticipant.mm
+////  BridgedParticipant.mm
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
-#include "RovParticipant.h"
-#include "RovTopicListener.h"
-#include "RovWriterListener.h"
-#include "CustomParticipantListener.h"
+#include "BridgedParticipant.h"
+#include "BridgedReaderTopicListener.h"
+#include "BridgedWriterListener.h"
+#include "BridgedParticipantListener.h"
 
 #include <fastrtps/rtps/RTPSDomain.h>
 #include <fastrtps/rtps/participant/RTPSParticipant.h>
@@ -24,13 +24,13 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-RovParticipant::RovParticipant():
+BridgedParticipant::BridgedParticipant():
 mp_participant(nullptr),
 mp_listener(nullptr)
 {
 }
 
-RovParticipant::~RovParticipant()
+BridgedParticipant::~BridgedParticipant()
 {
     mp_participant->stopRTPSParticipantAnnouncement();
     logInfo(ROV_PARTICIPANT, "Delete participant")
@@ -40,7 +40,7 @@ RovParticipant::~RovParticipant()
 //    RTPSDomain::stopAll();
 }
 
-void RovParticipant::resignAll() {
+void BridgedParticipant::resignAll() {
     for(auto it = readerList.begin(); it != readerList.end(); it++)
     {
         logInfo(ROV_PARTICIPANT, "Remove reader: " << it->first)
@@ -60,7 +60,7 @@ void RovParticipant::resignAll() {
     writerList.clear();
 }
 
-bool RovParticipant::startRTPS()
+bool BridgedParticipant::startRTPS()
 {
     //CREATE PARTICIPANT
     RTPSParticipantAttributes PParam;
@@ -73,7 +73,7 @@ bool RovParticipant::startRTPS()
     PParam.builtin.domainId = 0;
     PParam.setName("TridentVideoViewer");
     
-    mp_listener = new CustomParticipantListener();
+    mp_listener = new BridgedParticipantListener();
     mp_participant = RTPSDomain::createParticipant(PParam, mp_listener);
     if (mp_participant == nullptr)
         return false;
@@ -81,7 +81,7 @@ bool RovParticipant::startRTPS()
     return true;
 }
 
-bool RovParticipant::addReader(const char* name,
+bool BridgedParticipant::addReader(const char* name,
                                const char* dataType,
                                const bool keyed,
                                NSObject<PayloadDecoderInterface>* payloadDecoder)
@@ -95,7 +95,7 @@ bool RovParticipant::addReader(const char* name,
     //CREATE READER
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    auto listener = new RovTopicListener(name, payloadDecoder);
+    auto listener = new BridgedReaderTopicListener(name, payloadDecoder);
     //CREATE READERHISTORY
     HistoryAttributes hatt;
     hatt.payloadMaxSize = 10000;
@@ -129,7 +129,7 @@ bool RovParticipant::addReader(const char* name,
     return true;
 }
 
-bool RovParticipant::removeReader(const char* name)
+bool BridgedParticipant::removeReader(const char* name)
 {
     logInfo(ROV_PARTICIPANT, "Remove reader: " << name)
     auto topicName = std::string(name);
@@ -144,7 +144,7 @@ bool RovParticipant::removeReader(const char* name)
     return true;
 }
 
-bool RovParticipant::addWriter(const char* name,
+bool BridgedParticipant::addWriter(const char* name,
                                const char* dataType,
                                const bool keyed)
 {
@@ -158,7 +158,7 @@ bool RovParticipant::addWriter(const char* name,
     WriterAttributes watt;
     watt.endpoint.reliabilityKind = BEST_EFFORT;
     watt.endpoint.topicKind = tKind;
-    auto listener = new RovWriterListener(name);
+    auto listener = new BridgedWriterListener(name);
     //CREATE WRITERHISTORY
     HistoryAttributes hatt;
 //    hatt.payloadMaxSize = 10000;
@@ -193,7 +193,7 @@ bool RovParticipant::addWriter(const char* name,
     return true;
 }
 
-bool RovParticipant::removeWriter(const char* name)
+bool BridgedParticipant::removeWriter(const char* name)
 {
     logInfo(ROV_PARTICIPANT, "Remove writer: " << name)
     auto topicName = std::string(name);
@@ -208,7 +208,7 @@ bool RovParticipant::removeWriter(const char* name)
     return true;
 }
 
-bool RovParticipant::send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength)
+bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength)
 {
     static const octet header[] = {0, 1, 0, 0};
     auto topicName = std::string(name);

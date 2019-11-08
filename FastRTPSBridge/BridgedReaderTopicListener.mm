@@ -1,9 +1,9 @@
 /////
-////  RovTopicListener.cpp
+////  BridgedReaderTopicListener.cpp
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
-#include "RovTopicListener.h"
+#include "BridgedReaderTopicListener.h"
 
 #include <fastrtps/rtps/reader/RTPSReader.h>
 #include <fastrtps/rtps/history/ReaderHistory.h>
@@ -12,17 +12,17 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-RovTopicListener::RovTopicListener(const char* topicName, NSObject<PayloadDecoderInterface>* payloadDecoder): n_matched(0)
+BridgedReaderTopicListener::BridgedReaderTopicListener(const char* topicName, NSObject<PayloadDecoderInterface>* payloadDecoder): n_matched(0)
 {
-    RovTopicListener::topicName = std::string(topicName);
-    RovTopicListener::payloadDecoder = payloadDecoder;
+    BridgedReaderTopicListener::topicName = std::string(topicName);
+    BridgedReaderTopicListener::payloadDecoder = payloadDecoder;
 }
 
-RovTopicListener::~RovTopicListener()
+BridgedReaderTopicListener::~BridgedReaderTopicListener()
 {
 }
 
-void RovTopicListener::onNewCacheChangeAdded(RTPSReader* reader, const CacheChange_t * const change)
+void BridgedReaderTopicListener::onNewCacheChangeAdded(RTPSReader* reader, const CacheChange_t * const change)
 {
     [payloadDecoder decodeWithSequence:change->sequenceNumber.to64long()
                            payloadSize:change->serializedPayload.length
@@ -30,12 +30,12 @@ void RovTopicListener::onNewCacheChangeAdded(RTPSReader* reader, const CacheChan
     reader->getHistory()->remove_change((CacheChange_t*)change);
 }
 
-void RovTopicListener::on_liveliness_changed(RTPSReader *reader, const LivelinessChangedStatus &status)
+void BridgedReaderTopicListener::on_liveliness_changed(RTPSReader *reader, const LivelinessChangedStatus &status)
 {
     logWarning(READER_LISTENER, "Liveliness: " << status.alive_count_change)
 }
 
-void RovTopicListener::onReaderMatched(RTPSReader* reader, MatchingInfo& info)
+void BridgedReaderTopicListener::onReaderMatched(RTPSReader* reader, MatchingInfo& info)
 {
     switch (info.status)
     {

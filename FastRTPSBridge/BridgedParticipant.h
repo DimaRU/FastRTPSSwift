@@ -1,5 +1,5 @@
 /////
-////  RovParticipant.h
+////  BridgedParticipant.h
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
@@ -14,16 +14,16 @@
 #include "fastrtps/rtps/history/WriterHistory.h"
 #include <string>
 #include <map>
-#import "RovTopicListener.h"
-#import "RovWriterListener.h"
+#import "BridgedReaderTopicListener.h"
+#import "BridgedWriterListener.h"
 
-class CustomParticipantListener;
-class RovParticipant
+class BridgedParticipantListener;
+class BridgedParticipant
 {
     struct ReaderInfo {
         eprosima::fastrtps::rtps::RTPSReader* reader;
         eprosima::fastrtps::rtps::ReaderHistory* history;
-        RovTopicListener* listener;
+        BridgedReaderTopicListener* listener;
         ~ReaderInfo() {
             delete history;
             delete listener;
@@ -33,17 +33,17 @@ class RovParticipant
     struct WriterInfo {
         eprosima::fastrtps::rtps::RTPSWriter* writer;
         eprosima::fastrtps::rtps::WriterHistory* history;
-        RovWriterListener* listener;
+        BridgedWriterListener* listener;
         ~WriterInfo() {
             delete history;
             delete listener;
         }
     };
 public:
-    RovParticipant();
-    virtual ~RovParticipant();
+    BridgedParticipant();
+    virtual ~BridgedParticipant();
     eprosima::fastrtps::rtps::RTPSParticipant* mp_participant;
-    CustomParticipantListener* mp_listener;
+    BridgedParticipantListener* mp_listener;
     
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;

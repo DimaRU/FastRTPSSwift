@@ -1,17 +1,17 @@
 /////
-////  CustomParticipantListener.cpp
+////  BridgedParticipantListener.cpp
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #include <fastrtps/log/Log.h>
-#include "CustomParticipantListener.h"
+#include "BridgedParticipantListener.h"
 #include <arpa/inet.h>
 #include <fastrtps/rtps/common/Locator.h>
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-void CustomParticipantListener::onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info)
+void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info)
 {
     (void)participant;
     switch(info.status) {
@@ -27,7 +27,7 @@ void CustomParticipantListener::onReaderDiscovery(RTPSParticipant *participant, 
     }
 }
 
-void CustomParticipantListener::onWriterDiscovery(RTPSParticipant *participant, WriterDiscoveryInfo &&info)
+void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant, WriterDiscoveryInfo &&info)
 {
     (void)participant;
     switch(info.status) {
@@ -43,7 +43,7 @@ void CustomParticipantListener::onWriterDiscovery(RTPSParticipant *participant, 
     }
 }
 
-void CustomParticipantListener::DumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators)
+void BridgedParticipantListener::DumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators)
 {
     char addrString[INET6_ADDRSTRLEN+1];
 
@@ -61,7 +61,7 @@ void CustomParticipantListener::DumpLocators(ResourceLimitedVector<eprosima::fas
     }
 }
 
-void CustomParticipantListener::onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo &&info)
+void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo &&info)
 {
     (void)participant;
     auto properties = info.info.m_properties.properties;

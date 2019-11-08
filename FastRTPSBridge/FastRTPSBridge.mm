@@ -4,7 +4,7 @@
 //
 
 #import "FastRTPSBridge.h"
-#import "RovParticipant.h"
+#import "BridgedParticipant.h"
 #include <fastrtps/log/Log.h>
 #include "CustomLogConsumer.h"
 
@@ -15,7 +15,7 @@ using namespace std;
 
 @interface FastRTPSBridge()
 {
-    RovParticipant* participant;
+    BridgedParticipant* participant;
 }
 @end
 
@@ -41,7 +41,7 @@ using namespace std;
     }
     Log::ReportFilenames(false);
     
-    participant = new RovParticipant();
+    participant = new BridgedParticipant();
     return self;
 }
 

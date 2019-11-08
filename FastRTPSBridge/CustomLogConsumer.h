@@ -3,8 +3,7 @@
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
-#ifndef CUSTOMLOG_CONSUMER_H
-#define CUSTOMLOG_CONSUMER_H
+#pragma once
 
 #include <fastrtps/log/Log.h>
 
@@ -23,5 +22,3 @@ private:
 
 } // namespace fastrtps
 } // namespace eprosima
-
-#endif

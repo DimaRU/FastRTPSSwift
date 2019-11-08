@@ -1,30 +1,30 @@
 /////
-////  RovWriterListener.cpp
+////  BridgedWriterListener.cpp
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #include <fastrtps/log/Log.h>
-#include "RovWriterListener.h"
+#include "BridgedWriterListener.h"
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-RovWriterListener::RovWriterListener(const char* topicName)
+BridgedWriterListener::BridgedWriterListener(const char* topicName)
 {
-    RovWriterListener::n_matched = 0;
-    RovWriterListener::topicName = std::string(topicName);
+    BridgedWriterListener::n_matched = 0;
+    BridgedWriterListener::topicName = std::string(topicName);
 }
 
-RovWriterListener::~RovWriterListener()
+BridgedWriterListener::~BridgedWriterListener()
 {
 }
 
-void RovWriterListener::on_liveliness_lost(RTPSWriter* writer, const LivelinessLostStatus& status)
+void BridgedWriterListener::on_liveliness_lost(RTPSWriter* writer, const LivelinessLostStatus& status)
 {
     logWarning(WRITER_LISTENER, "Writer liveliness lost:" << status.total_count);
 }
 
-void RovWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& info)
+void BridgedWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& info)
 {
     switch (info.status)
     {
