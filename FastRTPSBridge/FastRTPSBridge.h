@@ -13,8 +13,8 @@ FOUNDATION_EXPORT const unsigned char FastRTPSBridgeVersionString[];
 
 NS_ASSUME_NONNULL_BEGIN
 
-NSString *const RTPSParticipantNotificationName = @"RTPSParticipantNotification";
-NSString *const RTPSReaderWriterNotificationName = @"RTPSReaderWriterNotification";
+FOUNDATION_EXPORT NSString *const RTPSParticipantNotificationName;
+FOUNDATION_EXPORT NSString *const RTPSReaderWriterNotificationName;
 
 @protocol PayloadDecoderInterface;
 @interface FastRTPSBridge : NSObject
