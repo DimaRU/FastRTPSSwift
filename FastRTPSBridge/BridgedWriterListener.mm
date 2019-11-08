@@ -24,7 +24,7 @@ void BridgedWriterListener::on_liveliness_lost(RTPSWriter* writer, const Livelin
 {
     NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
     notificationDictionary[@"topic"] = [[NSString alloc] initWithCString:topicName.c_str() encoding:NSUTF8StringEncoding];
-    notificationDictionary[@"type"] = @(RTPSReaderWriterNotificationTypeWriterLivelinessLost);
+    notificationDictionary[@"reason"] = @(RTPSReaderWriterNotificationReasonWriterLivelinessLost);
     [NSNotificationCenter.defaultCenter postNotificationName:RTPSReaderWriterNotificationName object:NULL userInfo:notificationDictionary];
     logWarning(WRITER_LISTENER, "Writer liveliness lost:" << status.total_count);
 }
@@ -37,12 +37,12 @@ void BridgedWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& in
     {
         case MATCHED_MATCHING:
             n_matched++;
-            notificationDictionary[@"type"] = @(RTPSReaderWriterNotificationTypeWriterMatchedMatching);
+            notificationDictionary[@"reason"] = @(RTPSReaderWriterNotificationReasonWriterMatchedMatching);
             logWarning(WRITER_LISTENER, "\tWriter matched:" << topicName << " count: " << n_matched)
             break;
         case REMOVED_MATCHING:
             n_matched--;
-            notificationDictionary[@"type"] = @(RTPSReaderWriterNotificationTypeWriterRemovedMatching);
+            notificationDictionary[@"reason"] = @(RTPSReaderWriterNotificationReasonWriterRemovedMatching);
             logWarning(WRITER_LISTENER, "\tWriter remove matched:" << topicName << " count: " << n_matched)
             break;
     }

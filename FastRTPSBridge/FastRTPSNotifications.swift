@@ -6,13 +6,13 @@
 
 import Foundation
 
-extension Notification.Name {
-    public static let RTPSParticipantNotification = Notification.Name(RTPSParticipantNotificationName)
-    public static let RTPSReaderWriterNotification = Notification.Name(RTPSReaderWriterNotificationName)
+public extension Notification.Name {
+    static let RTPSParticipantNotification = Notification.Name(RTPSParticipantNotificationName)
+    static let RTPSReaderWriterNotification = Notification.Name(RTPSReaderWriterNotificationName)
 }
 
 @objc
-public enum RTPSParticipantNotificationType: Int {
+public enum RTPSParticipantNotificationReason: Int {
     case discoveredReader
     case changedQosReader
     case removedReader
@@ -26,7 +26,7 @@ public enum RTPSParticipantNotificationType: Int {
 }
 
 @objc
-public enum RTPSReaderWriterNotificationType: Int {
+public enum RTPSReaderWriterNotificationReason: Int {
     case readerMatchedMatching
     case readerRemovedMatching
     case readerLivelinessLost
@@ -34,3 +34,4 @@ public enum RTPSReaderWriterNotificationType: Int {
     case writerRemovedMatching
     case writerLivelinessLost
 }
+
