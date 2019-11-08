@@ -4,7 +4,7 @@
 //
 
 #include "BridgedParticipant.h"
-#include "BridgedReaderTopicListener.h"
+#include "BridgedReaderListener.h"
 #include "BridgedWriterListener.h"
 #include "BridgedParticipantListener.h"
 
@@ -60,7 +60,7 @@ void BridgedParticipant::resignAll() {
     writerList.clear();
 }
 
-bool BridgedParticipant::startRTPS()
+bool BridgedParticipant::startRTPS(const char* name)
 {
     //CREATE PARTICIPANT
     RTPSParticipantAttributes PParam;
@@ -95,7 +95,7 @@ bool BridgedParticipant::addReader(const char* name,
     //CREATE READER
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    auto listener = new BridgedReaderTopicListener(name, payloadDecoder);
+    auto listener = new BridgedReaderListener(name, payloadDecoder);
     //CREATE READERHISTORY
     HistoryAttributes hatt;
     hatt.payloadMaxSize = 10000;

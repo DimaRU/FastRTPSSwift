@@ -8,6 +8,7 @@
 #include <fastrtps/rtps/writer/RTPSWriter.h>
 #include <fastrtps/rtps/writer/WriterListener.h>
 #include <fastrtps/rtps/history/WriterHistory.h>
+#import "FastRTPSBridge/FastRTPSBridge-Swift.h"
 
 class BridgedWriterListener :public eprosima::fastrtps::rtps::WriterListener
 {

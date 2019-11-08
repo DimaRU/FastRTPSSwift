@@ -1,5 +1,5 @@
 /////
-////  BridgedReaderTopicListener.h
+////  BridgedReaderListener.h
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
@@ -10,12 +10,11 @@
 #include "fastrtps/rtps/reader/ReaderListener.h"
 #import "FastRTPSBridge/FastRTPSBridge-Swift.h"
 
-
-class BridgedReaderTopicListener:public eprosima::fastrtps::rtps::ReaderListener
+class BridgedReaderListener:public eprosima::fastrtps::rtps::ReaderListener
 {
 public:
-    BridgedReaderTopicListener(const char* topicName, NSObject<PayloadDecoderInterface>* payloadDecoder);
-    ~BridgedReaderTopicListener();
+    BridgedReaderListener(const char* topicName, NSObject<PayloadDecoderInterface>* payloadDecoder);
+    ~BridgedReaderListener();
     void onNewCacheChangeAdded(eprosima::fastrtps::rtps::RTPSReader* reader,
                                const eprosima::fastrtps::rtps::CacheChange_t* const change) override;
     void onReaderMatched(eprosima::fastrtps::rtps::RTPSReader*,

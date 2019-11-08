@@ -13,6 +13,9 @@ FOUNDATION_EXPORT const unsigned char FastRTPSBridgeVersionString[];
 
 NS_ASSUME_NONNULL_BEGIN
 
+NSString *const RTPSParticipantNotificationName = @"RTPSParticipantNotification";
+NSString *const RTPSReaderWriterNotificationName = @"RTPSReaderWriterNotification";
+
 @protocol PayloadDecoderInterface;
 @interface FastRTPSBridge : NSObject
 typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
@@ -26,7 +29,7 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
 - (bool)removeWriterWithTopicName:(NSString *)topicName;
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data key: (NSData*) key;
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data;
-- (bool)startRTPS;
+- (bool)createRTPSParticipantWithName:(NSString *)name;
 - (void)stopRTPS;
 - (void)resignAll;
 

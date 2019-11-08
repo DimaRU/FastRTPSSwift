@@ -82,8 +82,8 @@ using namespace std;
                              static_cast<uint32_t>(key.length));
 }
 
-- (bool)startRTPS {
-    return participant->startRTPS();
+- (bool)createRTPSParticipantWithName:(NSString *)name {
+    return participant->startRTPS([name cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)stopRTPS {

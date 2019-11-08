@@ -9,12 +9,12 @@
 #include <fastrtps/rtps/common/Types.h>
 #include <fastrtps/rtps/attributes/WriterAttributes.h>
 #include <fastrtps/rtps/reader/RTPSReader.h>
-#include "fastrtps/rtps/writer/RTPSWriter.h"
+#include <fastrtps/rtps/writer/RTPSWriter.h>
 #include <fastrtps/rtps/history/ReaderHistory.h>
-#include "fastrtps/rtps/history/WriterHistory.h"
+#include <fastrtps/rtps/history/WriterHistory.h>
 #include <string>
 #include <map>
-#import "BridgedReaderTopicListener.h"
+#import "BridgedReaderListener.h"
 #import "BridgedWriterListener.h"
 
 class BridgedParticipantListener;
@@ -23,7 +23,7 @@ class BridgedParticipant
     struct ReaderInfo {
         eprosima::fastrtps::rtps::RTPSReader* reader;
         eprosima::fastrtps::rtps::ReaderHistory* history;
-        BridgedReaderTopicListener* listener;
+        BridgedReaderListener* listener;
         ~ReaderInfo() {
             delete history;
             delete listener;
@@ -48,7 +48,7 @@ public:
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;
 
-    bool startRTPS(); //Initialization
+    bool startRTPS(const char* name);
     bool addReader(const char* name,
                    const char* dataType,
                    const bool keyed,
