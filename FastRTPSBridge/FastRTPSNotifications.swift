@@ -35,3 +35,12 @@ public enum RTPSReaderWriterNotificationReason: Int {
     case writerLivelinessLost
 }
 
+@objc
+public enum RTPSNotificationUserInfo: Int {
+    case participant
+    case reason
+    case topic
+    case locators
+    case properties
+    case typeName
+}

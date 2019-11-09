@@ -228,14 +228,14 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
         memcpy(instanceHandle.value, key, len);
         change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE, instanceHandle);
         if (!change) {    // In the case history is full, remove some old changes
-            logWarning(ROV_PARTICIPANT, "cleaning history...")
+            logInfo(ROV_PARTICIPANT, "cleaning history...")
             writer->remove_older_changes(2);
             change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE, instanceHandle);
         }
     } else {
         change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE);
         if (!change) {    // In the case history is full, remove some old changes
-            logWarning(ROV_PARTICIPANT, "cleaning history...")
+            logInfo(ROV_PARTICIPANT, "cleaning history...")
             writer->remove_older_changes(2);
             change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE);
         }

@@ -16,21 +16,21 @@ void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant,
 {
     (void)participant;
     NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-    notificationDictionary[@"topic"] = [[NSString alloc] initWithCString:info.info.topicName() encoding:NSUTF8StringEncoding];
-    notificationDictionary[@"typeName"] = [[NSString alloc] initWithCString:info.info.typeName() encoding:NSUTF8StringEncoding];
+    notificationDictionary[@(RTPSNotificationUserInfoTopic)] = [[NSString alloc] initWithCString:info.info.topicName() encoding:NSUTF8StringEncoding];
+    notificationDictionary[@(RTPSNotificationUserInfoTypeName)] = [[NSString alloc] initWithCString:info.info.typeName() encoding:NSUTF8StringEncoding];
 
     switch(info.status) {
         case ReaderDiscoveryInfo::DISCOVERED_READER:
             logInfo(PARTICIPANT_LISTENER, "Reader for topic '" << info.info.topicName() << "' type '" << info.info.typeName() << "' discovered");
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonDiscoveredReader);
-            notificationDictionary[@"locators"] = DumpLocators(info.info.remote_locators().unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDiscoveredReader);
+            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = DumpLocators(info.info.remote_locators().unicast);
             break;
         case ReaderDiscoveryInfo::CHANGED_QOS_READER:
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonChangedQosReader);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonChangedQosReader);
             break;
         case ReaderDiscoveryInfo::REMOVED_READER:
             logInfo(PARTICIPANT_LISTENER, "Reader for topic '" << info.info.topicName() << "' type '" << info.info.typeName() << "' left the domain.")
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonRemovedReader);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonRemovedReader);
             break;
     }
     
@@ -41,21 +41,21 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
 {
     (void)participant;
     NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-    notificationDictionary[@"topic"] = [[NSString alloc] initWithCString:info.info.topicName() encoding:NSUTF8StringEncoding];
-    notificationDictionary[@"typeName"] = [[NSString alloc] initWithCString:info.info.typeName() encoding:NSUTF8StringEncoding];
+    notificationDictionary[@(RTPSNotificationUserInfoTopic)] = [[NSString alloc] initWithCString:info.info.topicName() encoding:NSUTF8StringEncoding];
+    notificationDictionary[@(RTPSNotificationUserInfoTypeName)] = [[NSString alloc] initWithCString:info.info.typeName() encoding:NSUTF8StringEncoding];
 
     switch(info.status) {
         case WriterDiscoveryInfo::DISCOVERED_WRITER:
             logInfo(PARTICIPANT_LISTENER, "Writer for topic '" << info.info.topicName() << "' type '" << info.info.typeName() << "' discovered");
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonDiscoveredWriter);
-            notificationDictionary[@"locators"] = DumpLocators(info.info.remote_locators().unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDiscoveredWriter);
+            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = DumpLocators(info.info.remote_locators().unicast);
             break;
         case WriterDiscoveryInfo::CHANGED_QOS_WRITER:
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonChangedQosWriter);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonChangedQosWriter);
             break;
         case WriterDiscoveryInfo::REMOVED_WRITER:
             logInfo(PARTICIPANT_LISTENER, "Writer for topic '" << info.info.topicName() << "' type '" << info.info.typeName() << "' left the domain.")
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonRemovedWriter);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonRemovedWriter);
             break;
     }
     
@@ -92,7 +92,7 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
     (void)participant;
     auto properties = info.info.m_properties.properties;
     NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-    notificationDictionary[@"participant"] = [[NSString alloc] initWithCString:info.info.m_participantName encoding:NSUTF8StringEncoding];
+    notificationDictionary[@(RTPSNotificationUserInfoParticipant)] = [[NSString alloc] initWithCString:info.info.m_participantName encoding:NSUTF8StringEncoding];
     NSString* key;
     NSString* value;
     NSMutableDictionary *propDict;
@@ -107,20 +107,20 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
                 propDict[key] = value;
                 logInfo(PARTICIPANT_LISTENER, prop->first << ":" << prop->second);
             }
-            notificationDictionary[@"properties"] = propDict;
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonDiscoveredParticipant);
-            notificationDictionary[@"locators"] = DumpLocators(info.info.default_locators.unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoProperties)] = propDict;
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDiscoveredParticipant);
+            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = DumpLocators(info.info.default_locators.unicast);
             break;
         case ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
             logInfo(PARTICIPANT_LISTENER, "Participant '" << info.info.m_participantName << "' dropped")
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonDroppedParticipant);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDroppedParticipant);
             break;
         case ParticipantDiscoveryInfo::REMOVED_PARTICIPANT:
             logInfo(PARTICIPANT_LISTENER, "Participant '" << info.info.m_participantName << "' removed")
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonRemovedParticipant);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonRemovedParticipant);
             break;
         case ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT:
-            notificationDictionary[@"reason"] = @(RTPSParticipantNotificationReasonChangedQosParticipant);
+            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonChangedQosParticipant);
             break;
     }
     
