@@ -82,8 +82,13 @@ using namespace std;
                              static_cast<uint32_t>(key.length));
 }
 
-- (bool)createRTPSParticipantWithName:(NSString *)name {
-    return participant->startRTPS([name cStringUsingEncoding:NSUTF8StringEncoding]);
+- (bool)createRTPSParticipantWithName:(NSString *)name ipv4: (NSString *) ipv4 {
+    return participant->createParticipant([name cStringUsingEncoding:NSUTF8StringEncoding],
+                                          [ipv4 cStringUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (void)setPartition:(NSString *) name {
+    participant->setPartition([name cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)stopRTPS {

@@ -26,14 +26,15 @@ using namespace eprosima::fastrtps::rtps;
 
 BridgedParticipant::BridgedParticipant():
 mp_participant(nullptr),
-mp_listener(nullptr)
+mp_listener(nullptr),
+partitionName("*")
 {
 }
 
 BridgedParticipant::~BridgedParticipant()
 {
-    mp_participant->stopRTPSParticipantAnnouncement();
     logInfo(ROV_PARTICIPANT, "Delete participant")
+    mp_participant->stopRTPSParticipantAnnouncement();
     resignAll();
     RTPSDomain::removeRTPSParticipant(mp_participant);
     delete mp_listener;
@@ -60,9 +61,8 @@ void BridgedParticipant::resignAll() {
     writerList.clear();
 }
 
-bool BridgedParticipant::startRTPS(const char* name)
+bool BridgedParticipant::createParticipant(const char* name, const char *ipv4)
 {
-    //CREATE PARTICIPANT
     RTPSParticipantAttributes PParam;
     PParam.builtin.use_WriterLivelinessProtocol = true;
     PParam.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
@@ -71,8 +71,14 @@ bool BridgedParticipant::startRTPS(const char* name)
     PParam.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
     PParam.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
     PParam.builtin.domainId = 0;
-    PParam.setName("TridentVideoViewer");
-    
+    PParam.setName(name);
+
+    if (ipv4 != nullptr) {
+        Locator_t locator;
+        IPLocator::setIPv4(locator, ipv4);
+        PParam.builtin.initialPeersList.push_back(locator);
+    }
+
     mp_listener = new BridgedParticipantListener();
     mp_participant = RTPSDomain::createParticipant(PParam, mp_listener);
     if (mp_participant == nullptr)
@@ -92,14 +98,14 @@ bool BridgedParticipant::addReader(const char* name,
         // aready registered
         return false;
     }
-    //CREATE READER
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
     auto listener = new BridgedReaderListener(name, payloadDecoder);
-    //CREATE READERHISTORY
+
     HistoryAttributes hatt;
-    hatt.payloadMaxSize = 10000;
     hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    hatt.payloadMaxSize = 1000;
+    hatt.initialReservedCaches = 5;
     hatt.maximumReservedCaches = 0;
     auto history = new ReaderHistory(hatt);
     auto reader = RTPSDomain::createRTPSReader(mp_participant, readerAttributes, history, listener);
@@ -117,7 +123,7 @@ bool BridgedParticipant::addReader(const char* name,
   
     TopicAttributes Tatt(name, dataType, tKind);
     ReaderQos Rqos;
-    Rqos.m_partition.push_back("*");
+    Rqos.m_partition.push_back(partitionName.c_str());
     auto rezult = mp_participant->registerReader(reader, Tatt, Rqos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
@@ -159,10 +165,10 @@ bool BridgedParticipant::addWriter(const char* name,
     watt.endpoint.reliabilityKind = BEST_EFFORT;
     watt.endpoint.topicKind = tKind;
     auto listener = new BridgedWriterListener(name);
-    //CREATE WRITERHISTORY
     HistoryAttributes hatt;
-//    hatt.payloadMaxSize = 10000;
     hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    hatt.payloadMaxSize = 1000;
+    hatt.initialReservedCaches = 5;
     hatt.maximumReservedCaches = 0;
     auto history = new WriterHistory(hatt);
     auto writer = RTPSDomain::createRTPSWriter(mp_participant, watt, history, listener);
@@ -180,7 +186,7 @@ bool BridgedParticipant::addWriter(const char* name,
 
     TopicAttributes Tatt(name, dataType, tKind);
     WriterQos Wqos;
-    Wqos.m_partition.push_back("*");
+    Wqos.m_partition.push_back(partitionName.c_str());
     Wqos.m_disablePositiveACKs.enabled = true;
     auto rezult = mp_participant->registerWriter(writer, Tatt, Wqos);
     if (!rezult) {

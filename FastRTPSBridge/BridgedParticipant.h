@@ -44,11 +44,13 @@ public:
     virtual ~BridgedParticipant();
     eprosima::fastrtps::rtps::RTPSParticipant* mp_participant;
     BridgedParticipantListener* mp_listener;
+    std::string partitionName;
     
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;
 
-    bool startRTPS(const char* name);
+    bool createParticipant(const char* name, const char *ipv4);
+    void setPartition(const char* name) { partitionName = std::string(name); }
     bool addReader(const char* name,
                    const char* dataType,
                    const bool keyed,

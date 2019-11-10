@@ -29,7 +29,8 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
 - (bool)removeWriterWithTopicName:(NSString *)topicName;
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data key: (NSData*) key;
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data;
-- (bool)createRTPSParticipantWithName:(NSString *)name;
+- (bool)createRTPSParticipantWithName:(NSString *)name ipv4:(NSString *) ipv4;
+- (void)setPartition:(NSString *)name;
 - (void)stopRTPS;
 - (void)resignAll;
 
