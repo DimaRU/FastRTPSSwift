@@ -27,6 +27,9 @@
 		0A71309B2363516700817593 /* BridgedReaderListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.mm */; };
 		0A71309C2363516700817593 /* FastRTPSBridge-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */; };
 		0A71309D2363516700817593 /* BridgedParticipant.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.mm */; };
+		0A84F9D2237B3D40009BBAD4 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A84F9CF237B3D20009BBAD4 /* libfastcdr.a */; };
+		0A84F9D3237B3D4E009BBAD4 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A84F9D0237B3D20009BBAD4 /* libfastrtps.a */; };
+		0A84F9D4237B3D4E009BBAD4 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A84F9D1237B3D20009BBAD4 /* libfoonathan_memory-0.6.2.a */; };
 		0A8A37E32366DC51008E8DC1 /* DDSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130862363514900817593 /* DDSType.swift */; };
 		0A8A37E42366DC51008E8DC1 /* PayloadDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoder.swift */; };
 		0A8A37E52366DC51008E8DC1 /* FastRTPSBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130852363514900817593 /* FastRTPSBridge.mm */; };
@@ -46,10 +49,6 @@
 		0A969817236EEF0B00FF958F /* CDRCodable in Frameworks */ = {isa = PBXBuildFile; productRef = 0A969816236EEF0B00FF958F /* CDRCodable */; };
 		0AC08A802375F61900A80C2E /* FastRTPSNotifications.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */; };
 		0AC08A812375F61900A80C2E /* FastRTPSNotifications.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */; };
-		0AD993862366F76300D037A3 /* libfastcdr.1.0.10.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD993842366F76300D037A3 /* libfastcdr.1.0.10.dylib */; };
-		0AD993872366F76300D037A3 /* libfastcdr.1.0.10.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 0AD993842366F76300D037A3 /* libfastcdr.1.0.10.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		0AD993882366F76300D037A3 /* libfastrtps.1.9.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AD993852366F76300D037A3 /* libfastrtps.1.9.1.dylib */; };
-		0AD993892366F76300D037A3 /* libfastrtps.1.9.1.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = 0AD993852366F76300D037A3 /* libfastrtps.1.9.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,21 +67,6 @@
 			remoteInfo = "FastRTPS iOS";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		0AD9938A2366F76300D037A3 /* Embed Libraries */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				0AD993892366F76300D037A3 /* libfastrtps.1.9.1.dylib in Embed Libraries */,
-				0AD993872366F76300D037A3 /* libfastcdr.1.0.10.dylib in Embed Libraries */,
-			);
-			name = "Embed Libraries";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0A2735AB2373385E00A877B0 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = build/osx/lib/libfastrtps.a; sourceTree = "<group>"; };
@@ -107,11 +91,12 @@
 		0A7130932363516700817593 /* BridgedReaderListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedReaderListener.mm; sourceTree = "<group>"; };
 		0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FastRTPSBridge-Bridging-Header.h"; sourceTree = "<group>"; };
 		0A7130952363516700817593 /* BridgedParticipant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedParticipant.mm; sourceTree = "<group>"; };
+		0A84F9CF237B3D20009BBAD4 /* libfastcdr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastcdr.a; path = build/ios/lib/libfastcdr.a; sourceTree = "<group>"; };
+		0A84F9D0237B3D20009BBAD4 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = build/ios/lib/libfastrtps.a; sourceTree = "<group>"; };
+		0A84F9D1237B3D20009BBAD4 /* libfoonathan_memory-0.6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfoonathan_memory-0.6.2.a"; path = "build/ios/lib/libfoonathan_memory-0.6.2.a"; sourceTree = "<group>"; };
 		0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_ios.sh; sourceTree = "<group>"; };
 		0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FastRTPSNotifications.mm; sourceTree = "<group>"; };
-		0AD993842366F76300D037A3 /* libfastcdr.1.0.10.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfastcdr.1.0.10.dylib; path = build/ios/lib/libfastcdr.1.0.10.dylib; sourceTree = "<group>"; };
-		0AD993852366F76300D037A3 /* libfastrtps.1.9.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfastrtps.1.9.1.dylib; path = build/ios/lib/libfastrtps.1.9.1.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,9 +115,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AD993882366F76300D037A3 /* libfastrtps.1.9.1.dylib in Frameworks */,
-				0AD993862366F76300D037A3 /* libfastcdr.1.0.10.dylib in Frameworks */,
+				0A84F9D4237B3D4E009BBAD4 /* libfoonathan_memory-0.6.2.a in Frameworks */,
 				0A969817236EEF0B00FF958F /* CDRCodable in Frameworks */,
+				0A84F9D3237B3D4E009BBAD4 /* libfastrtps.a in Frameworks */,
+				0A84F9D2237B3D40009BBAD4 /* libfastcdr.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,8 +176,9 @@
 				0A2735AF237338BD00A877B0 /* libfoonathan_memory-0.6.2.a */,
 				0A2735AD237338A900A877B0 /* libfastcdr.a */,
 				0A2735AB2373385E00A877B0 /* libfastrtps.a */,
-				0AD993842366F76300D037A3 /* libfastcdr.1.0.10.dylib */,
-				0AD993852366F76300D037A3 /* libfastrtps.1.9.1.dylib */,
+				0A84F9CF237B3D20009BBAD4 /* libfastcdr.a */,
+				0A84F9D0237B3D20009BBAD4 /* libfastrtps.a */,
+				0A84F9D1237B3D20009BBAD4 /* libfoonathan_memory-0.6.2.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -291,7 +278,6 @@
 				0A8A37D72366DB1B008E8DC1 /* Sources */,
 				0A8A37D82366DB1B008E8DC1 /* Frameworks */,
 				0A8A37D92366DB1B008E8DC1 /* Resources */,
-				0AD9938A2366F76300D037A3 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
