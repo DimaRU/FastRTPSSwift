@@ -61,7 +61,7 @@ void BridgedParticipant::resignAll() {
     writerList.clear();
 }
 
-bool BridgedParticipant::createParticipant(const char* name, const char *ipv4)
+bool BridgedParticipant::createParticipant(const char* name, const char *peerIPv4)
 {
     RTPSParticipantAttributes PParam;
     PParam.builtin.use_WriterLivelinessProtocol = true;
@@ -73,9 +73,9 @@ bool BridgedParticipant::createParticipant(const char* name, const char *ipv4)
     PParam.builtin.domainId = 0;
     PParam.setName(name);
 
-    if (ipv4 != nullptr) {
+    if (peerIPv4 != nullptr) {
         Locator_t locator;
-        IPLocator::setIPv4(locator, ipv4);
+        IPLocator::setIPv4(locator, peerIPv4);
         PParam.builtin.initialPeersList.push_back(locator);
     }
 
