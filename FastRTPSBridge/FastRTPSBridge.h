@@ -22,16 +22,58 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
     error, warning, info
 };
 
+/// Create instance, set FastRTPS log level
+/// @param logLevel FastRTPS log level:
+// * error
+// * warning
+// * info
 - (id)initWithLogLevel:(LogLevel)logLevel;
-- (bool)registerReaderWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed payloadDecoder: (NSObject<PayloadDecoderInterface>*) payloadDecoder;
-- (bool)removeReaderWithTopicName:(NSString *)topicName;
-- (bool)registerWriterWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed;
-- (bool)removeWriterWithTopicName:(NSString *)topicName;
-- (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data key: (NSData*) key;
-- (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data;
+
+/// Create RTPS paticipant and start listening
+/// @param name Participant name
+/// @param peerIPv4 peer IPv4 address (initially multicast)
 - (bool)createRTPSParticipantWithName:(NSString *)name peerIPv4:(NSString* _Nullable) peerIPv4;
+
+/// Set partition name for readers and writers
+/// @param name partition name (initially "*")
 - (void)setPartition:(NSString *)name;
+
+/// Rerister RTPS reader
+/// @param topicName topic name
+/// @param typeName DDS type name
+/// @param keyed true if keyed
+/// @param payloadDecoder called when sample arrived
+- (bool)registerReaderWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed payloadDecoder: (NSObject<PayloadDecoderInterface>*) payloadDecoder;
+
+/// Remote registered RTPS reader
+/// @param topicName topic name
+- (bool)removeReaderWithTopicName:(NSString *)topicName;
+
+/// Register RTPS writer
+/// @param topicName topic name
+/// @param typeName DDS type name
+/// @param keyed true if keyed
+- (bool)registerWriterWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed;
+
+/// Remote registered RTPS writer
+/// @param topicName topic name
+- (bool)removeWriterWithTopicName:(NSString *)topicName;
+
+/// Send unkeyed change with RTPS writer
+/// @param topicName writer topic name
+/// @param data change data
+- (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data key: (NSData*) key;
+
+/// Send keyed change with RTPS writer
+/// @param topicName writer topic name
+/// @param data change data
+/// @param key sample key
+- (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data;
+
+/// Remove all RTPS readers and writers, stop and delete participant
 - (void)stopRTPS;
+
+/// Remove all RTPS readers and writers
 - (void)resignAll;
 
 @end
