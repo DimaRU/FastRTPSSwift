@@ -15,7 +15,7 @@ fi
 
 if [ ! -f "build/ios/lib/libfastrtps.a" ]; then
 if [ ! -d memory ]; then
-git clone --quiet --recurse-submodules -b ios $Foonathan_memory_repo memory
+git clone --quiet --recurse-submodules --depth 1 -b ios $Foonathan_memory_repo memory
 fi
 rm -rf "$PROJECT_TEMP_DIR/memory"
 mkdir -p "$PROJECT_TEMP_DIR/memory" || true
@@ -33,7 +33,7 @@ FOONATHAN_MEMORY_BUILD_TOOLS=OFF
 
 rm -rf $PROJECT_TEMP_DIR/Fast-RTPS
 if [ ! -d Fast-RTPS ]; then
-git clone --quiet --recurse-submodules $FastRTPS_repo Fast-RTPS
+git clone --quiet --recurse-submodules --depth 1 $FastRTPS_repo Fast-RTPS
 fi
 mkdir -p "$PROJECT_TEMP_DIR/Fast-RTPS" || true
 polly.py --toolchain ios \

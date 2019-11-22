@@ -8,7 +8,7 @@ set -x
 echo "$1" # Build type
 if [ ! -f "build/osx/lib/libfastrtps.a" ]; then
 if [ ! -d memory ]; then
-git clone --quiet --recurse-submodules -b ios $Foonathan_memory_repo memory
+git clone --quiet --recurse-submodules --depth 1 -b ios $Foonathan_memory_repo memory
 fi
 rm -rf "$PROJECT_TEMP_DIR/memory"
 mkdir -p "$PROJECT_TEMP_DIR/memory" || true
@@ -21,7 +21,7 @@ cmake --build "$PROJECT_TEMP_DIR/memory" --target install
 
 rm -rf "$PROJECT_TEMP_DIR/Fast-RTPS"
 if [ ! -d Fast-RTPS ]; then
-git clone --quiet --recurse-submodules $FastRTPS_repo Fast-RTPS
+git clone --quiet --recurse-submodules --depth 1 $FastRTPS_repo Fast-RTPS
 fi
 mkdir -p "$PROJECT_TEMP_DIR/Fast-RTPS" || true
 cmake -SFast-RTPS -B"$PROJECT_TEMP_DIR/Fast-RTPS" \
