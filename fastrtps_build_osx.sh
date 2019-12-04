@@ -29,6 +29,6 @@ cmake -SFast-RTPS -B"$PROJECT_TEMP_DIR/Fast-RTPS" \
 -Dfoonathan_memory_DIR=build/osx/share/foonathan_memory/cmake \
 -DTHIRDPARTY=ON \
 -DBUILD_SHARED_LIBS=OFF \
--DCMAKE_BUILD_TYPE="$1"
+-DCMAKE_BUILD_TYPE=Debug
 cmake --build "$PROJECT_TEMP_DIR/Fast-RTPS" --target install
 fi

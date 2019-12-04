@@ -76,6 +76,9 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
 /// Remove all RTPS readers and writers
 - (void)resignAll;
 
+/// Return all interfaces IPv4 addresses
+- (NSSet*)getIP4Address;
+
 @end
 
 NS_ASSUME_NONNULL_END

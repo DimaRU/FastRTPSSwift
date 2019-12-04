@@ -20,6 +20,9 @@
 #include <fastrtps/qos/ReaderQos.h>
 #include <fastrtps/qos/WriterQos.h>
 #include <fastrtps/log/Log.h>
+#include <fastrtps/transport/UDPv4TransportDescriptor.h>
+#include <memory>
+#include <arpa/inet.h>
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
@@ -63,24 +66,25 @@ void BridgedParticipant::resignAll() {
 
 bool BridgedParticipant::createParticipant(const char* name, const char *peerIPv4)
 {
-    RTPSParticipantAttributes PParam;
-    PParam.builtin.use_WriterLivelinessProtocol = true;
-    PParam.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
-    PParam.builtin.discovery_config.leaseDuration_announcementperiod.seconds = 1;
-    PParam.builtin.discovery_config.leaseDuration.seconds = 20;
-    PParam.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    PParam.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    PParam.builtin.domainId = 0;
-    PParam.setName(name);
+    RTPSParticipantAttributes pattr;
+    pattr.builtin.use_WriterLivelinessProtocol = true;
+    pattr.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
+    pattr.builtin.discovery_config.leaseDuration_announcementperiod.seconds = 1;
+    pattr.builtin.discovery_config.leaseDuration.seconds = 10;
+    pattr.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
+    pattr.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+    pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+    pattr.builtin.domainId = 0;
+    pattr.setName(name);
 
     if (peerIPv4 != nullptr) {
         Locator_t locator;
         IPLocator::setIPv4(locator, peerIPv4);
-        PParam.builtin.initialPeersList.push_back(locator);
+        pattr.builtin.initialPeersList.push_back(locator);
     }
 
     mp_listener = new BridgedParticipantListener();
-    mp_participant = RTPSDomain::createParticipant(PParam, mp_listener);
+    mp_participant = RTPSDomain::createParticipant(pattr, mp_listener);
     if (mp_participant == nullptr)
         return false;
 
@@ -114,13 +118,13 @@ bool BridgedParticipant::addReader(const char* name,
         delete history;
         return false;
     }
-    
+
     auto readerInfo = new ReaderInfo;
     readerInfo->reader = reader;
     readerInfo->history = history;
     readerInfo->listener = listener;
     readerList[topicName] = readerInfo;
-  
+
     TopicAttributes Tatt(name, dataType, tKind);
     ReaderQos Rqos;
     Rqos.m_partition.push_back(partitionName.c_str());
@@ -252,4 +256,27 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
     writerInfo->history->add_change(change);
 
     return true;
+}
+
+NSSet* BridgedParticipant::DumpLocators(LocatorList_t locators)
+{
+    char addrString[INET6_ADDRSTRLEN+1];
+    NSMutableSet *set = [[NSMutableSet alloc] init];
+    NSString *locatorString;
+
+    for (auto locator = locators.begin(); locator != locators.end(); locator++) {
+        switch (locator->kind) {
+            case LOCATOR_KIND_UDPv4:
+                locatorString = [NSString stringWithFormat:@"%s:%d", inet_ntop(AF_INET, locator->address+12, addrString, sizeof(addrString)), locator->port];
+                [set addObject:locatorString];
+                break;
+            case LOCATOR_KIND_UDPv6:
+                locatorString = [NSString stringWithFormat:@"%s:%d", inet_ntop(AF_INET, locator->address+12, addrString, sizeof(addrString)), locator->port];
+                [set addObject:locatorString];
+                break;
+            default:
+                break;
+        }
+    }
+    return set;
 }

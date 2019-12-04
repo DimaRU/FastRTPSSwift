@@ -102,6 +102,7 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
             notificationDictionary[@(RTPSNotificationUserInfoProperties)] = propDict;
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDiscoveredParticipant);
             notificationDictionary[@(RTPSNotificationUserInfoLocators)] = DumpLocators(info.info.default_locators.unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoMetaLocators)] = DumpLocators(info.info.metatraffic_locators.unicast);
             break;
         case ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDroppedParticipant);

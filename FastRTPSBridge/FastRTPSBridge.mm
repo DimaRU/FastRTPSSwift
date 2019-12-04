@@ -7,6 +7,7 @@
 #import "BridgedParticipant.h"
 #include <fastrtps/log/Log.h>
 #include "CustomLogConsumer.h"
+#include <fastrtps/utils/IPFinder.h>
 
 using namespace eprosima;
 using namespace fastrtps;
@@ -44,7 +45,7 @@ using namespace std;
             Log::SetVerbosity(Log::Kind::Info);
             break;
     }
-    Log::ReportFilenames(false);
+    Log::ReportFilenames(true);
     
     participant = new BridgedParticipant();
     return self;
@@ -105,4 +106,9 @@ using namespace std;
     participant->resignAll();
 }
 
+- (NSSet*)getIP4Address {
+    eprosima::fastrtps::rtps::LocatorList_t locators;
+    eprosima::fastrtps::rtps::IPFinder::getIP4Address(&locators);
+    return BridgedParticipant::DumpLocators(locators);
+}
 @end

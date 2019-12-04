@@ -41,6 +41,7 @@ public enum RTPSNotificationUserInfo: Int {
     case reason
     case topic
     case locators
+    case metaLocators
     case properties
     case typeName
 }
