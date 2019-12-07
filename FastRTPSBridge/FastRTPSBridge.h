@@ -32,7 +32,9 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
 /// Create RTPS paticipant and start listening
 /// @param name Participant name
 /// @param peerIPv4 peer IPv4 address (initially multicast)
-- (bool)createRTPSParticipantWithName:(NSString *)name peerIPv4:(NSString* _Nullable) peerIPv4;
+- (bool)createRTPSParticipantWithName:(NSString *)name
+                        interfaceIPv4:(NSString* _Nullable) interfaceIPv4
+                       networkAddress:(NSString* _Nullable) networkAddress;
 
 /// Set partition name for readers and writers
 /// @param name partition name (initially "*")

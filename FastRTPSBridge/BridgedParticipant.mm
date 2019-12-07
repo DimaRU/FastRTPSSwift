@@ -64,7 +64,7 @@ void BridgedParticipant::resignAll() {
     writerList.clear();
 }
 
-bool BridgedParticipant::createParticipant(const char* name, const char *peerIPv4)
+bool BridgedParticipant::createParticipant(const char* name, const char *interfaceIPv4, const char* networkAddress)
 {
     RTPSParticipantAttributes pattr;
     pattr.builtin.use_WriterLivelinessProtocol = true;
@@ -76,12 +76,18 @@ bool BridgedParticipant::createParticipant(const char* name, const char *peerIPv
     pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
     pattr.builtin.domainId = 0;
     pattr.setName(name);
-
-    if (peerIPv4 != nullptr) {
-        Locator_t locator;
-        IPLocator::setIPv4(locator, peerIPv4);
-        pattr.builtin.initialPeersList.push_back(locator);
+    
+    auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
+    customTransport->sendBufferSize = 65536;
+    customTransport->receiveBufferSize = 65536;
+    if (interfaceIPv4 != nullptr) {
+        customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
     }
+    if (networkAddress != nullptr) {
+        customTransport->remoteWhiteList.emplace_back(networkAddress);
+    }
+    pattr.userTransports.push_back(customTransport);
+    pattr.useBuiltinTransports = false;
 
     mp_listener = new BridgedParticipantListener();
     mp_participant = RTPSDomain::createParticipant(pattr, mp_listener);

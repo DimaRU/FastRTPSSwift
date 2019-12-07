@@ -51,9 +51,12 @@ using namespace std;
     return self;
 }
 
-- (bool)createRTPSParticipantWithName:(NSString *)name peerIPv4: (NSString *)peerIPv4 {
+- (bool)createRTPSParticipantWithName:(NSString *)name
+                        interfaceIPv4:(NSString* _Nullable) interfaceIPv4
+                       networkAddress:(NSString* _Nullable) networkAddress {
     return participant->createParticipant([name cStringUsingEncoding:NSUTF8StringEncoding],
-                                          [peerIPv4 cStringUsingEncoding:NSUTF8StringEncoding]);
+                                          [interfaceIPv4 cStringUsingEncoding:NSUTF8StringEncoding],
+                                          [networkAddress cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)setPartition:(NSString *) name {
@@ -111,7 +114,7 @@ using namespace std;
     eprosima::fastrtps::rtps::IPFinder::getIP4Address(&locators);
     NSMutableSet *set = [[NSMutableSet alloc] init];
     for (auto locator = locators.begin(); locator != locators.end(); locator++) {
-        [set addObject:[NSString stringWithFormat:@"%s:%d", IPLocator::ip_to_string(*locator).c_str(), locator->port]];
+        [set addObject:[NSString stringWithUTF8String:IPLocator::ip_to_string(*locator).c_str()]];
     }
     return set;
 }
