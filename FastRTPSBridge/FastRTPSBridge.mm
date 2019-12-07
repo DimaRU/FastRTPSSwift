@@ -1,15 +1,13 @@
-//
-//  FastRTPSBridge.mm
-//  TridentVideoViewer
-//
-//  Created by Dmitriy Borovikov on 04/09/2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  FastRTPSBridge.mm
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #import "FastRTPSBridge.h"
-#import "RovParticipant.h"
+#import "BridgedParticipant.h"
 #include <fastrtps/log/Log.h>
 #include "CustomLogConsumer.h"
+#include <fastrtps/utils/IPFinder.h>
 
 using namespace eprosima;
 using namespace fastrtps;
@@ -18,12 +16,17 @@ using namespace std;
 
 @interface FastRTPSBridge()
 {
-    RovParticipant* participant;
+    BridgedParticipant* participant;
 }
 @end
 
 @implementation FastRTPSBridge
 
+/// Create instance, set FastRTPS log level
+/// @param logLevel FastRTPS log level:
+// * error
+// * warning
+// * info
 - (id)initWithLogLevel:(LogLevel)logLevel {
     if (!(self = [super init])) {
         return nil;
@@ -42,10 +45,22 @@ using namespace std;
             Log::SetVerbosity(Log::Kind::Info);
             break;
     }
-    Log::ReportFilenames(false);
+    Log::ReportFilenames(true);
     
-    participant = new RovParticipant();
+    participant = new BridgedParticipant();
     return self;
+}
+
+- (bool)createRTPSParticipantWithName:(NSString *)name
+                        interfaceIPv4:(NSString* _Nullable) interfaceIPv4
+                       networkAddress:(NSString* _Nullable) networkAddress {
+    return participant->createParticipant([name cStringUsingEncoding:NSUTF8StringEncoding],
+                                          [interfaceIPv4 cStringUsingEncoding:NSUTF8StringEncoding],
+                                          [networkAddress cStringUsingEncoding:NSUTF8StringEncoding]);
+}
+
+- (void)setPartition:(NSString *) name {
+    participant->setPartition([name cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (bool)registerReaderWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed payloadDecoder: (NSObject<PayloadDecoderInterface>*) payloadDecoder {
@@ -85,10 +100,6 @@ using namespace std;
                              static_cast<uint32_t>(key.length));
 }
 
-- (bool)startRTPS {
-    return participant->startRTPS();
-}
-
 - (void)stopRTPS {
     participant->resignAll();
     delete participant;
@@ -98,4 +109,13 @@ using namespace std;
     participant->resignAll();
 }
 
+- (NSSet*)getIP4Address {
+    eprosima::fastrtps::rtps::LocatorList_t locators;
+    eprosima::fastrtps::rtps::IPFinder::getIP4Address(&locators);
+    NSMutableSet *set = [[NSMutableSet alloc] init];
+    for (auto locator = locators.begin(); locator != locators.end(); locator++) {
+        [set addObject:[NSString stringWithUTF8String:IPLocator::ip_to_string(*locator).c_str()]];
+    }
+    return set;
+}
 @end

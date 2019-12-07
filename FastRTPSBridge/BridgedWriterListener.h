@@ -1,27 +1,22 @@
-//
-//  RovWriterListener.h
-//  TridentVideoViewer
-//
-//  Created by Dmitriy Borovikov on 13.09.2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  BridgedWriterListener.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
-#ifndef RovWriterListener_h
-#define RovWriterListener_h
+#pragma once
 
 #include <fastrtps/rtps/writer/RTPSWriter.h>
 #include <fastrtps/rtps/writer/WriterListener.h>
 #include <fastrtps/rtps/history/WriterHistory.h>
+#import "FastRTPSBridge/FastRTPSBridge-Swift.h"
 
-class RovWriterListener :public eprosima::fastrtps::rtps::WriterListener
+class BridgedWriterListener :public eprosima::fastrtps::rtps::WriterListener
 {
 public:
-    RovWriterListener(const char* topicName);
-    ~RovWriterListener();
+    BridgedWriterListener(const char* topicName);
+    ~BridgedWriterListener();
     void onWriterMatched(eprosima::fastrtps::rtps::RTPSWriter*, eprosima::fastrtps::rtps::MatchingInfo& info);
     void on_liveliness_lost(eprosima::fastrtps::rtps::RTPSWriter* writer, const eprosima::fastrtps::LivelinessLostStatus& status);
     int n_matched;
     std::string topicName;
 };
-
-#endif /* RovWriterListener_h */

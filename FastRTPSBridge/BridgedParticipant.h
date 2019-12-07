@@ -1,9 +1,6 @@
-//
-//  RovParticipant.h
-//  TridentVideoViewer
-//
-//  Created by Dmitriy Borovikov on 06/09/2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  BridgedParticipant.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
 #pragma once
@@ -12,21 +9,21 @@
 #include <fastrtps/rtps/common/Types.h>
 #include <fastrtps/rtps/attributes/WriterAttributes.h>
 #include <fastrtps/rtps/reader/RTPSReader.h>
-#include "fastrtps/rtps/writer/RTPSWriter.h"
+#include <fastrtps/rtps/writer/RTPSWriter.h>
 #include <fastrtps/rtps/history/ReaderHistory.h>
-#include "fastrtps/rtps/history/WriterHistory.h"
+#include <fastrtps/rtps/history/WriterHistory.h>
 #include <string>
 #include <map>
-#import "RovTopicListener.h"
-#import "RovWriterListener.h"
+#import "BridgedReaderListener.h"
+#import "BridgedWriterListener.h"
 
-class CustomParticipantListener;
-class RovParticipant
+class BridgedParticipantListener;
+class BridgedParticipant
 {
     struct ReaderInfo {
         eprosima::fastrtps::rtps::RTPSReader* reader;
         eprosima::fastrtps::rtps::ReaderHistory* history;
-        RovTopicListener* listener;
+        BridgedReaderListener* listener;
         ~ReaderInfo() {
             delete history;
             delete listener;
@@ -36,22 +33,24 @@ class RovParticipant
     struct WriterInfo {
         eprosima::fastrtps::rtps::RTPSWriter* writer;
         eprosima::fastrtps::rtps::WriterHistory* history;
-        RovWriterListener* listener;
+        BridgedWriterListener* listener;
         ~WriterInfo() {
             delete history;
             delete listener;
         }
     };
 public:
-    RovParticipant();
-    virtual ~RovParticipant();
+    BridgedParticipant();
+    virtual ~BridgedParticipant();
     eprosima::fastrtps::rtps::RTPSParticipant* mp_participant;
-    CustomParticipantListener* mp_listener;
+    BridgedParticipantListener* mp_listener;
+    std::string partitionName;
     
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;
 
-    bool startRTPS(); //Initialization
+    bool createParticipant(const char* name, const char *interfaceIPv4, const char* networkAddress);
+    void setPartition(const char* name) { partitionName = std::string(name); }
     bool addReader(const char* name,
                    const char* dataType,
                    const bool keyed,

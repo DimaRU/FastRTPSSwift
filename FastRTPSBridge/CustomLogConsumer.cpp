@@ -1,3 +1,8 @@
+/////
+////  CustomLogConsumer.cpp
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+//
+
 #include "CustomLogConsumer.h"
 #include <iostream>
 #include <iomanip>

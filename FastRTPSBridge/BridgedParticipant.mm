@@ -1,15 +1,12 @@
-//
-//  RovParticipant.mm
-//  TridentVideoViewer
-//
-//  Created by Dmitriy Borovikov on 06/09/2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  BridgedParticipant.mm
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
-#include "RovParticipant.h"
-#include "RovTopicListener.h"
-#include "RovWriterListener.h"
-#include "CustomParticipantListener.h"
+#include "BridgedParticipant.h"
+#include "BridgedReaderListener.h"
+#include "BridgedWriterListener.h"
+#include "BridgedParticipantListener.h"
 
 #include <fastrtps/rtps/RTPSDomain.h>
 #include <fastrtps/rtps/participant/RTPSParticipant.h>
@@ -23,27 +20,31 @@
 #include <fastrtps/qos/ReaderQos.h>
 #include <fastrtps/qos/WriterQos.h>
 #include <fastrtps/log/Log.h>
+#include <fastrtps/transport/UDPv4TransportDescriptor.h>
+#include <memory>
+#include <arpa/inet.h>
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-RovParticipant::RovParticipant():
+BridgedParticipant::BridgedParticipant():
 mp_participant(nullptr),
-mp_listener(nullptr)
+mp_listener(nullptr),
+partitionName("*")
 {
 }
 
-RovParticipant::~RovParticipant()
+BridgedParticipant::~BridgedParticipant()
 {
-    mp_participant->stopRTPSParticipantAnnouncement();
     logInfo(ROV_PARTICIPANT, "Delete participant")
+    mp_participant->stopRTPSParticipantAnnouncement();
     resignAll();
     RTPSDomain::removeRTPSParticipant(mp_participant);
     delete mp_listener;
 //    RTPSDomain::stopAll();
 }
 
-void RovParticipant::resignAll() {
+void BridgedParticipant::resignAll() {
     for(auto it = readerList.begin(); it != readerList.end(); it++)
     {
         logInfo(ROV_PARTICIPANT, "Remove reader: " << it->first)
@@ -63,28 +64,40 @@ void RovParticipant::resignAll() {
     writerList.clear();
 }
 
-bool RovParticipant::startRTPS()
+bool BridgedParticipant::createParticipant(const char* name, const char *interfaceIPv4, const char* networkAddress)
 {
-    //CREATE PARTICIPANT
-    RTPSParticipantAttributes PParam;
-    PParam.builtin.use_WriterLivelinessProtocol = true;
-    PParam.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
-    PParam.builtin.discovery_config.leaseDuration_announcementperiod.seconds = 1;
-    PParam.builtin.discovery_config.leaseDuration.seconds = 20;
-    PParam.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    PParam.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    PParam.builtin.domainId = 0;
-    PParam.setName("TridentVideoViewer");
+    RTPSParticipantAttributes pattr;
+    pattr.builtin.use_WriterLivelinessProtocol = true;
+    pattr.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
+    pattr.builtin.discovery_config.leaseDuration_announcementperiod.seconds = 1;
+    pattr.builtin.discovery_config.leaseDuration.seconds = 10;
+    pattr.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
+    pattr.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+    pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+    pattr.builtin.domainId = 0;
+    pattr.setName(name);
     
-    mp_listener = new CustomParticipantListener();
-    mp_participant = RTPSDomain::createParticipant(PParam, mp_listener);
+    auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
+    customTransport->sendBufferSize = 65536;
+    customTransport->receiveBufferSize = 65536;
+    if (interfaceIPv4 != nullptr) {
+        customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
+    }
+    if (networkAddress != nullptr) {
+        customTransport->remoteWhiteList.emplace_back(networkAddress);
+    }
+    pattr.userTransports.push_back(customTransport);
+    pattr.useBuiltinTransports = false;
+
+    mp_listener = new BridgedParticipantListener();
+    mp_participant = RTPSDomain::createParticipant(pattr, mp_listener);
     if (mp_participant == nullptr)
         return false;
 
     return true;
 }
 
-bool RovParticipant::addReader(const char* name,
+bool BridgedParticipant::addReader(const char* name,
                                const char* dataType,
                                const bool keyed,
                                NSObject<PayloadDecoderInterface>* payloadDecoder)
@@ -95,14 +108,14 @@ bool RovParticipant::addReader(const char* name,
         // aready registered
         return false;
     }
-    //CREATE READER
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    auto listener = new RovTopicListener(name, payloadDecoder);
-    //CREATE READERHISTORY
+    auto listener = new BridgedReaderListener(name, payloadDecoder);
+
     HistoryAttributes hatt;
-    hatt.payloadMaxSize = 10000;
     hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    hatt.payloadMaxSize = 1000;
+    hatt.initialReservedCaches = 5;
     hatt.maximumReservedCaches = 0;
     auto history = new ReaderHistory(hatt);
     auto reader = RTPSDomain::createRTPSReader(mp_participant, readerAttributes, history, listener);
@@ -111,16 +124,16 @@ bool RovParticipant::addReader(const char* name,
         delete history;
         return false;
     }
-    
+
     auto readerInfo = new ReaderInfo;
     readerInfo->reader = reader;
     readerInfo->history = history;
     readerInfo->listener = listener;
     readerList[topicName] = readerInfo;
-  
+
     TopicAttributes Tatt(name, dataType, tKind);
     ReaderQos Rqos;
-    Rqos.m_partition.push_back("*");
+    Rqos.m_partition.push_back(partitionName.c_str());
     auto rezult = mp_participant->registerReader(reader, Tatt, Rqos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
@@ -132,7 +145,7 @@ bool RovParticipant::addReader(const char* name,
     return true;
 }
 
-bool RovParticipant::removeReader(const char* name)
+bool BridgedParticipant::removeReader(const char* name)
 {
     logInfo(ROV_PARTICIPANT, "Remove reader: " << name)
     auto topicName = std::string(name);
@@ -147,7 +160,7 @@ bool RovParticipant::removeReader(const char* name)
     return true;
 }
 
-bool RovParticipant::addWriter(const char* name,
+bool BridgedParticipant::addWriter(const char* name,
                                const char* dataType,
                                const bool keyed)
 {
@@ -161,11 +174,11 @@ bool RovParticipant::addWriter(const char* name,
     WriterAttributes watt;
     watt.endpoint.reliabilityKind = BEST_EFFORT;
     watt.endpoint.topicKind = tKind;
-    auto listener = new RovWriterListener(name);
-    //CREATE WRITERHISTORY
+    auto listener = new BridgedWriterListener(name);
     HistoryAttributes hatt;
-//    hatt.payloadMaxSize = 10000;
     hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    hatt.payloadMaxSize = 1000;
+    hatt.initialReservedCaches = 5;
     hatt.maximumReservedCaches = 0;
     auto history = new WriterHistory(hatt);
     auto writer = RTPSDomain::createRTPSWriter(mp_participant, watt, history, listener);
@@ -183,7 +196,7 @@ bool RovParticipant::addWriter(const char* name,
 
     TopicAttributes Tatt(name, dataType, tKind);
     WriterQos Wqos;
-    Wqos.m_partition.push_back("*");
+    Wqos.m_partition.push_back(partitionName.c_str());
     Wqos.m_disablePositiveACKs.enabled = true;
     auto rezult = mp_participant->registerWriter(writer, Tatt, Wqos);
     if (!rezult) {
@@ -196,7 +209,7 @@ bool RovParticipant::addWriter(const char* name,
     return true;
 }
 
-bool RovParticipant::removeWriter(const char* name)
+bool BridgedParticipant::removeWriter(const char* name)
 {
     logInfo(ROV_PARTICIPANT, "Remove writer: " << name)
     auto topicName = std::string(name);
@@ -211,7 +224,7 @@ bool RovParticipant::removeWriter(const char* name)
     return true;
 }
 
-bool RovParticipant::send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength)
+bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength)
 {
     static const octet header[] = {0, 1, 0, 0};
     auto topicName = std::string(name);
@@ -231,14 +244,14 @@ bool RovParticipant::send(const char* name, const uint8_t* data, uint32_t length
         memcpy(instanceHandle.value, key, len);
         change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE, instanceHandle);
         if (!change) {    // In the case history is full, remove some old changes
-            logWarning(ROV_PARTICIPANT, "cleaning history...")
+            logInfo(ROV_PARTICIPANT, "cleaning history...")
             writer->remove_older_changes(2);
             change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE, instanceHandle);
         }
     } else {
         change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE);
         if (!change) {    // In the case history is full, remove some old changes
-            logWarning(ROV_PARTICIPANT, "cleaning history...")
+            logInfo(ROV_PARTICIPANT, "cleaning history...")
             writer->remove_older_changes(2);
             change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE);
         }

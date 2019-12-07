@@ -1,25 +1,20 @@
-//
-//  RovTopicListener.h
-//  TestIntegration
-//
-//  Created by Dmitriy Borovikov on 21/08/2019.
-//  Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+/////
+////  BridgedReaderListener.h
+///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
-#ifndef ORovTopicListener_h
-#define ORovTopicListener_h
+#pragma once
 
 #include <stdio.h>
 #include "fastrtps/rtps/rtps_fwd.h"
 #include "fastrtps/rtps/reader/ReaderListener.h"
 #import "FastRTPSBridge/FastRTPSBridge-Swift.h"
 
-
-class RovTopicListener:public eprosima::fastrtps::rtps::ReaderListener
+class BridgedReaderListener:public eprosima::fastrtps::rtps::ReaderListener
 {
 public:
-    RovTopicListener(const char* topicName, NSObject<PayloadDecoderInterface>* payloadDecoder);
-    ~RovTopicListener();
+    BridgedReaderListener(const char* topicName, NSObject<PayloadDecoderInterface>* payloadDecoder);
+    ~BridgedReaderListener();
     void onNewCacheChangeAdded(eprosima::fastrtps::rtps::RTPSReader* reader,
                                const eprosima::fastrtps::rtps::CacheChange_t* const change) override;
     void onReaderMatched(eprosima::fastrtps::rtps::RTPSReader*,
@@ -31,5 +26,3 @@ public:
     uint32_t n_matched;
     std::string topicName;
 };
-
-#endif /* ORovTopicListener_h */
