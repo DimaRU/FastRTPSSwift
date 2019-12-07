@@ -257,26 +257,3 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
 
     return true;
 }
-
-NSSet* BridgedParticipant::DumpLocators(LocatorList_t locators)
-{
-    char addrString[INET6_ADDRSTRLEN+1];
-    NSMutableSet *set = [[NSMutableSet alloc] init];
-    NSString *locatorString;
-
-    for (auto locator = locators.begin(); locator != locators.end(); locator++) {
-        switch (locator->kind) {
-            case LOCATOR_KIND_UDPv4:
-                locatorString = [NSString stringWithFormat:@"%s:%d", inet_ntop(AF_INET, locator->address+12, addrString, sizeof(addrString)), locator->port];
-                [set addObject:locatorString];
-                break;
-            case LOCATOR_KIND_UDPv6:
-                locatorString = [NSString stringWithFormat:@"%s:%d", inet_ntop(AF_INET, locator->address+12, addrString, sizeof(addrString)), locator->port];
-                [set addObject:locatorString];
-                break;
-            default:
-                break;
-        }
-    }
-    return set;
-}

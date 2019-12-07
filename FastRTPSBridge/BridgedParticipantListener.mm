@@ -7,6 +7,7 @@
 #include "BridgedParticipantListener.h"
 #include <arpa/inet.h>
 #include <fastrtps/rtps/common/Locator.h>
+#include <fastrtps/utils/IPLocator.h>
 #import "FastRTPSBridge/FastRTPSBridge-Swift.h"
 
 using namespace eprosima::fastrtps;
@@ -22,7 +23,7 @@ void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant,
     switch(info.status) {
         case ReaderDiscoveryInfo::DISCOVERED_READER:
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDiscoveredReader);
-            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = DumpLocators(info.info.remote_locators().unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = dumpLocators(info.info.remote_locators().unicast);
             break;
         case ReaderDiscoveryInfo::CHANGED_QOS_READER:
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonChangedQosReader);
@@ -45,7 +46,7 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
     switch(info.status) {
         case WriterDiscoveryInfo::DISCOVERED_WRITER:
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDiscoveredWriter);
-            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = DumpLocators(info.info.remote_locators().unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = dumpLocators(info.info.remote_locators().unicast);
             break;
         case WriterDiscoveryInfo::CHANGED_QOS_WRITER:
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonChangedQosWriter);
@@ -58,30 +59,7 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
     [NSNotificationCenter.defaultCenter postNotificationName:RTPSParticipantNotificationName object:NULL userInfo:notificationDictionary];
 }
 
-NSSet* BridgedParticipantListener::DumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators)
-{
-    char addrString[INET6_ADDRSTRLEN+1];
-    NSMutableSet *set = [[NSMutableSet alloc] init];
-    NSString *locatorString;
-    
-    for (auto locator = locators.cbegin(); locator != locators.cend(); locator++) {
-        switch (locator->kind) {
-            case LOCATOR_KIND_UDPv4:
-                locatorString = [NSString stringWithFormat:@"%s:%d", inet_ntop(AF_INET, locator->address+12, addrString, sizeof(addrString)), locator->port];
-                [set addObject:locatorString];
-                break;
-            case LOCATOR_KIND_UDPv6:
-                locatorString = [NSString stringWithFormat:@"%s:%d", inet_ntop(AF_INET, locator->address+12, addrString, sizeof(addrString)), locator->port];
-                [set addObject:locatorString];
-                break;
-            default:
-                break;
-        }
-    }
-    return set;
-}
-
-void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo &&info)
+void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo&& info)
 {
     (void)participant;
     auto properties = info.info.m_properties.properties;
@@ -101,8 +79,8 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
             }
             notificationDictionary[@(RTPSNotificationUserInfoProperties)] = propDict;
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDiscoveredParticipant);
-            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = DumpLocators(info.info.default_locators.unicast);
-            notificationDictionary[@(RTPSNotificationUserInfoMetaLocators)] = DumpLocators(info.info.metatraffic_locators.unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoLocators)] = dumpLocators(info.info.default_locators.unicast);
+            notificationDictionary[@(RTPSNotificationUserInfoMetaLocators)] = dumpLocators(info.info.metatraffic_locators.unicast);
             break;
         case ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonDroppedParticipant);
@@ -114,6 +92,15 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
             notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSParticipantNotificationReasonChangedQosParticipant);
             break;
     }
-    
+
     [NSNotificationCenter.defaultCenter postNotificationName:RTPSParticipantNotificationName object:NULL userInfo:notificationDictionary];
+}
+
+NSSet* BridgedParticipantListener::dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators)
+{
+    NSMutableSet *set = [[NSMutableSet alloc] init];
+    for (auto locator = locators.cbegin(); locator != locators.cend(); locator++) {
+        [set addObject:[NSString stringWithFormat:@"%s:%d", IPLocator::ip_to_string(*locator).c_str(), locator->port]];
+    }
+    return set;
 }

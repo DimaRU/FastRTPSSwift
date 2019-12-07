@@ -109,6 +109,10 @@ using namespace std;
 - (NSSet*)getIP4Address {
     eprosima::fastrtps::rtps::LocatorList_t locators;
     eprosima::fastrtps::rtps::IPFinder::getIP4Address(&locators);
-    return BridgedParticipant::DumpLocators(locators);
+    NSMutableSet *set = [[NSMutableSet alloc] init];
+    for (auto locator = locators.begin(); locator != locators.end(); locator++) {
+        [set addObject:[NSString stringWithFormat:@"%s:%d", IPLocator::ip_to_string(*locator).c_str(), locator->port]];
+    }
+    return set;
 }
 @end

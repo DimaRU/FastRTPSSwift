@@ -63,5 +63,4 @@ public:
     bool removeWriter(const char* name);
     bool send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength);
     void resignAll();
-    static NSSet* DumpLocators(eprosima::fastrtps::rtps::LocatorList_t locators);
 };
