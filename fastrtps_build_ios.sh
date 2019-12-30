@@ -12,7 +12,7 @@ exit 0
 fi
 
 export POLLY_IOS_DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM
-export CMAKE_BUILD_PARALLEL_LEVEL=2
+export CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl hw.ncpu | awk '{print $2}')
 
 export PATH=$HOME/Developer/tools/polly/bin:$PATH
 if ! which polly > /dev/null; then

@@ -11,7 +11,7 @@ echo Already build $BUILT_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a
 exit 0
 fi
 
-export CMAKE_BUILD_PARALLEL_LEVEL=2
+export CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl hw.ncpu | awk '{print $2}')
 
 if [ ! -d memory ]; then
 git clone --quiet --recurse-submodules --depth 1 -b ios $Foonathan_memory_repo memory
