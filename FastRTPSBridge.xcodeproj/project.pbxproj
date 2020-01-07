@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A2735AC2373389100A877B0 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A2735AB2373385E00A877B0 /* libfastrtps.a */; };
-		0A2735AE237338A900A877B0 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A2735AD237338A900A877B0 /* libfastcdr.a */; };
-		0A2735B0237338BD00A877B0 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A2735AF237338BD00A877B0 /* libfoonathan_memory-0.6.2.a */; };
+		0A35C9F023A52D2500CF48D6 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		0A35C9F223A52D4100CF48D6 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F123A52D4100CF48D6 /* libfastcdr.a */; };
+		0A35C9F423A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */; };
+		0A35C9F523A54A9800CF48D6 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */; };
+		0A35C9FC23A577DB00CF48D6 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F123A52D4100CF48D6 /* libfastcdr.a */; };
+		0A35C9FD23A577DB00CF48D6 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */; };
 		0A70B3212375A147007E05B6 /* FastRTPSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */; };
 		0A70B3222375A147007E05B6 /* FastRTPSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */; };
 		0A71307A2363503500817593 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130782363503500817593 /* FastRTPSBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -27,9 +30,6 @@
 		0A71309B2363516700817593 /* BridgedReaderListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.mm */; };
 		0A71309C2363516700817593 /* FastRTPSBridge-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */; };
 		0A71309D2363516700817593 /* BridgedParticipant.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.mm */; };
-		0A84F9D2237B3D40009BBAD4 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A84F9CF237B3D20009BBAD4 /* libfastcdr.a */; };
-		0A84F9D3237B3D4E009BBAD4 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A84F9D0237B3D20009BBAD4 /* libfastrtps.a */; };
-		0A84F9D4237B3D4E009BBAD4 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A84F9D1237B3D20009BBAD4 /* libfoonathan_memory-0.6.2.a */; };
 		0A8A37E32366DC51008E8DC1 /* DDSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130862363514900817593 /* DDSType.swift */; };
 		0A8A37E42366DC51008E8DC1 /* PayloadDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoder.swift */; };
 		0A8A37E52366DC51008E8DC1 /* FastRTPSBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130852363514900817593 /* FastRTPSBridge.mm */; };
@@ -69,9 +69,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0A2735AB2373385E00A877B0 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = build/osx/lib/libfastrtps.a; sourceTree = "<group>"; };
-		0A2735AD237338A900A877B0 /* libfastcdr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastcdr.a; path = build/osx/lib/libfastcdr.a; sourceTree = "<group>"; };
-		0A2735AF237338BD00A877B0 /* libfoonathan_memory-0.6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfoonathan_memory-0.6.2.a"; path = "build/osx/lib/libfoonathan_memory-0.6.2.a"; sourceTree = "<group>"; };
+		0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = fastrtps/lib/libfastrtps.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A35C9F123A52D4100CF48D6 /* libfastcdr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastcdr.a; path = fastrtps/lib/libfastcdr.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfoonathan_memory-0.6.2.a"; path = "fastrtps/lib/libfoonathan_memory-0.6.2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A5B3F252364E63400BE5707 /* fastrtps_build_osx.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_osx.sh; sourceTree = "<group>"; };
 		0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastRTPSNotifications.swift; sourceTree = "<group>"; };
 		0A7130752363503500817593 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,9 +91,6 @@
 		0A7130932363516700817593 /* BridgedReaderListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedReaderListener.mm; sourceTree = "<group>"; };
 		0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FastRTPSBridge-Bridging-Header.h"; sourceTree = "<group>"; };
 		0A7130952363516700817593 /* BridgedParticipant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedParticipant.mm; sourceTree = "<group>"; };
-		0A84F9CF237B3D20009BBAD4 /* libfastcdr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastcdr.a; path = build/ios/lib/libfastcdr.a; sourceTree = "<group>"; };
-		0A84F9D0237B3D20009BBAD4 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = build/ios/lib/libfastrtps.a; sourceTree = "<group>"; };
-		0A84F9D1237B3D20009BBAD4 /* libfoonathan_memory-0.6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfoonathan_memory-0.6.2.a"; path = "build/ios/lib/libfoonathan_memory-0.6.2.a"; sourceTree = "<group>"; };
 		0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_ios.sh; sourceTree = "<group>"; };
 		0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FastRTPSNotifications.mm; sourceTree = "<group>"; };
@@ -104,9 +101,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A2735B0237338BD00A877B0 /* libfoonathan_memory-0.6.2.a in Frameworks */,
-				0A2735AE237338A900A877B0 /* libfastcdr.a in Frameworks */,
-				0A2735AC2373389100A877B0 /* libfastrtps.a in Frameworks */,
+				0A35C9F423A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a in Frameworks */,
+				0A35C9F223A52D4100CF48D6 /* libfastcdr.a in Frameworks */,
+				0A35C9F023A52D2500CF48D6 /* libfastrtps.a in Frameworks */,
 				0A969815236EEF0100FF958F /* CDRCodable in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,10 +112,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A84F9D4237B3D4E009BBAD4 /* libfoonathan_memory-0.6.2.a in Frameworks */,
+				0A35C9F523A54A9800CF48D6 /* libfoonathan_memory-0.6.2.a in Frameworks */,
+				0A35C9FC23A577DB00CF48D6 /* libfastcdr.a in Frameworks */,
+				0A35C9FD23A577DB00CF48D6 /* libfastrtps.a in Frameworks */,
 				0A969817236EEF0B00FF958F /* CDRCodable in Frameworks */,
-				0A84F9D3237B3D4E009BBAD4 /* libfastrtps.a in Frameworks */,
-				0A84F9D2237B3D40009BBAD4 /* libfastcdr.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,12 +170,9 @@
 		0A7130A32363650B00817593 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0A2735AF237338BD00A877B0 /* libfoonathan_memory-0.6.2.a */,
-				0A2735AD237338A900A877B0 /* libfastcdr.a */,
-				0A2735AB2373385E00A877B0 /* libfastrtps.a */,
-				0A84F9CF237B3D20009BBAD4 /* libfastcdr.a */,
-				0A84F9D0237B3D20009BBAD4 /* libfastrtps.a */,
-				0A84F9D1237B3D20009BBAD4 /* libfoonathan_memory-0.6.2.a */,
+				0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */,
+				0A35C9F123A52D4100CF48D6 /* libfastcdr.a */,
+				0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -219,7 +213,7 @@
 /* Begin PBXLegacyTarget section */
 		0A5B3F282364F62200BE5707 /* FastRTPS macOS */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "fastrtps_build_osx.sh Release";
+			buildArgumentsString = fastrtps_build_osx.sh;
 			buildConfigurationList = 0A5B3F292364F62200BE5707 /* Build configuration list for PBXLegacyTarget "FastRTPS macOS" */;
 			buildPhases = (
 			);
@@ -233,7 +227,7 @@
 		};
 		0A8A37D22366D9AE008E8DC1 /* FastRTPS iOS */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "fastrtps_build_ios.sh Release";
+			buildArgumentsString = fastrtps_build_ios.sh;
 			buildConfigurationList = 0A8A37D32366D9AE008E8DC1 /* Build configuration list for PBXLegacyTarget "FastRTPS iOS" */;
 			buildPhases = (
 			);
@@ -298,7 +292,7 @@
 		0A71306C2363503500817593 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1120;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "Dmitriy Borovikov";
 				TargetAttributes = {
 					0A5B3F282364F62200BE5707 = {
@@ -441,7 +435,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -494,7 +487,7 @@
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -512,7 +505,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -559,7 +551,7 @@
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = "";
@@ -585,7 +577,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/build/osx/include";
+				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/include";
 				INFOPLIST_FILE = FastRTPSBridge/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -593,7 +585,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/build/osx/lib";
+				LIBRARY_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
@@ -602,6 +594,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VALID_ARCHS = x86_64;
@@ -621,7 +614,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/build/osx/include";
+				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/include";
 				INFOPLIST_FILE = FastRTPSBridge/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -629,7 +622,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/build/osx/lib";
+				LIBRARY_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/lib";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
@@ -638,6 +631,7 @@
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
 				SWIFT_VERSION = 5.0;
 				VALID_ARCHS = x86_64;
 			};
@@ -675,7 +669,6 @@
 		0A8A37E12366DB1B008E8DC1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -684,7 +677,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/build/ios/include";
+				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/include";
 				INFOPLIST_FILE = FastRTPSBridge/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
@@ -693,10 +686,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/build/ios/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/lib";
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
 				PRODUCT_NAME = FastRTPSBridge;
@@ -705,6 +695,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = arm64;
@@ -715,7 +706,6 @@
 		0A8A37E22366DB1B008E8DC1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -724,7 +714,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/build/ios/include";
+				HEADER_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/include";
 				INFOPLIST_FILE = FastRTPSBridge/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
@@ -733,10 +723,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/build/ios/lib",
-				);
+				LIBRARY_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps/lib";
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridge;
 				PRODUCT_NAME = FastRTPSBridge;
@@ -745,6 +732,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = NO;
+				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
