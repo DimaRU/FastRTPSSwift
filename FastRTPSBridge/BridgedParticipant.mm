@@ -37,6 +37,7 @@ partitionName("*")
 BridgedParticipant::~BridgedParticipant()
 {
     logInfo(ROV_PARTICIPANT, "Delete participant")
+    if (mp_participant == nullptr) return;
     mp_participant->stopRTPSParticipantAnnouncement();
     resignAll();
     RTPSDomain::removeRTPSParticipant(mp_participant);
