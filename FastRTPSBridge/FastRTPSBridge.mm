@@ -47,24 +47,28 @@ using namespace std;
     }
     Log::ReportFilenames(true);
     
-    participant = new BridgedParticipant();
     return self;
 }
 
 - (bool)createRTPSParticipantWithName:(NSString *)name
                         interfaceIPv4:(NSString* _Nullable) interfaceIPv4
                        networkAddress:(NSString* _Nullable) networkAddress {
+
+    if (participant != nil) return false;
+    participant = new BridgedParticipant();
     return participant->createParticipant([name cStringUsingEncoding:NSUTF8StringEncoding],
                                           [interfaceIPv4 cStringUsingEncoding:NSUTF8StringEncoding],
                                           [networkAddress cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (void)setPartition:(NSString *) name {
+    if (participant == nil) return;
     participant->setPartition([name cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (bool)registerReaderWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed payloadDecoder: (NSObject<PayloadDecoderInterface>*) payloadDecoder {
 
+    if (participant == nil) return false;
     return participant->addReader([topicName cStringUsingEncoding:NSUTF8StringEncoding],
                                    [typeName cStringUsingEncoding:NSUTF8StringEncoding],
                                    keyed,
@@ -72,20 +76,24 @@ using namespace std;
 }
 
 - (bool)removeReaderWithTopicName:(NSString *)topicName {
+    if (participant == nil) return false;
     return participant->removeReader([topicName cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (bool)registerWriterWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed {
+    if (participant == nil) return false;
     return participant->addWriter([topicName cStringUsingEncoding:NSUTF8StringEncoding],
                                    [typeName cStringUsingEncoding:NSUTF8StringEncoding],
                                    keyed);
 }
 
 - (bool)removeWriterWithTopicName:(NSString *)topicName {
+    if (participant == nil) return false;
     return participant->removeReader([topicName cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data {
+    if (participant == nil) return false;
     return participant->send([topicName cStringUsingEncoding:NSUTF8StringEncoding],
                              static_cast<const uint8_t *>(data.bytes),
                              static_cast<uint32_t>(data.length),
@@ -93,6 +101,7 @@ using namespace std;
 }
 
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data key: (NSData*) key {
+    if (participant == nil) return false;
     return participant->send([topicName cStringUsingEncoding:NSUTF8StringEncoding],
                              static_cast<const uint8_t *>(data.bytes),
                              static_cast<uint32_t>(data.length),
@@ -100,12 +109,15 @@ using namespace std;
                              static_cast<uint32_t>(key.length));
 }
 
-- (void)stopRTPS {
+- (void)deleteParticipant {
+    if (participant == nil) return;
     participant->resignAll();
     delete participant;
+    participant = nil;
 }
 
 - (void)resignAll {
+    if (participant == nil) return;
     participant->resignAll();
 }
 

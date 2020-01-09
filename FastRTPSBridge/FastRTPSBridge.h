@@ -73,7 +73,7 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data;
 
 /// Remove all RTPS readers and writers, stop and delete participant
-- (void)stopRTPS;
+- (void)deleteParticipant;
 
 /// Remove all RTPS readers and writers
 - (void)resignAll;
