@@ -59,6 +59,13 @@
 			remoteGlobalIDString = 0A5B3F282364F62200BE5707;
 			remoteInfo = FastRTPS;
 		};
+		0A5F6F7E23E1F182006A6D5A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A71306C2363503500817593 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A5F6F7A23E1F0B2006A6D5A;
+			remoteInfo = "FastRTPS catalyst";
+		};
 		0AD9938D2366F82F00D037A3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A71306C2363503500817593 /* Project object */;
@@ -73,6 +80,7 @@
 		0A35C9F123A52D4100CF48D6 /* libfastcdr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastcdr.a; path = fastrtps/lib/libfastcdr.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfoonathan_memory-0.6.2.a"; path = "fastrtps/lib/libfoonathan_memory-0.6.2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A5B3F252364E63400BE5707 /* fastrtps_build_osx.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_osx.sh; sourceTree = "<group>"; };
+		0A5F6F7823E1EFDE006A6D5A /* fastrtps_build_catalyst.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_catalyst.sh; sourceTree = "<group>"; };
 		0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastRTPSNotifications.swift; sourceTree = "<group>"; };
 		0A7130752363503500817593 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A7130782363503500817593 /* FastRTPSBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastRTPSBridge.h; sourceTree = "<group>"; };
@@ -94,6 +102,7 @@
 		0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_ios.sh; sourceTree = "<group>"; };
 		0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FastRTPSNotifications.mm; sourceTree = "<group>"; };
+		0ACE0ECA23E2390300C83C55 /* maccatalyst.toolchain.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maccatalyst.toolchain.cmake; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,7 +134,9 @@
 		0A71306B2363503500817593 = {
 			isa = PBXGroup;
 			children = (
+				0ACE0ECA23E2390300C83C55 /* maccatalyst.toolchain.cmake */,
 				0A5B3F252364E63400BE5707 /* fastrtps_build_osx.sh */,
+				0A5F6F7823E1EFDE006A6D5A /* fastrtps_build_catalyst.sh */,
 				0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */,
 				0A7130772363503500817593 /* FastRTPSBridge */,
 				0A7130762363503500817593 /* Products */,
@@ -225,6 +236,20 @@
 			passBuildSettingsInEnvironment = 1;
 			productName = FastRTPS;
 		};
+		0A5F6F7A23E1F0B2006A6D5A /* FastRTPS catalyst */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = fastrtps_build_catalyst.sh;
+			buildConfigurationList = 0A5F6F7B23E1F0B2006A6D5A /* Build configuration list for PBXLegacyTarget "FastRTPS catalyst" */;
+			buildPhases = (
+			);
+			buildToolPath = /bin/bash;
+			buildWorkingDirectory = $SRCROOT;
+			dependencies = (
+			);
+			name = "FastRTPS catalyst";
+			passBuildSettingsInEnvironment = 1;
+			productName = FastRTPS;
+		};
 		0A8A37D22366D9AE008E8DC1 /* FastRTPS iOS */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = fastrtps_build_ios.sh;
@@ -276,6 +301,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0A5F6F7F23E1F182006A6D5A /* PBXTargetDependency */,
 				0AD9938E2366F82F00D037A3 /* PBXTargetDependency */,
 			);
 			name = "FastRTPSBridge iOS";
@@ -330,6 +356,7 @@
 				0A8A37DA2366DB1B008E8DC1 /* FastRTPSBridge iOS */,
 				0A5B3F282364F62200BE5707 /* FastRTPS macOS */,
 				0A8A37D22366D9AE008E8DC1 /* FastRTPS iOS */,
+				0A5F6F7A23E1F0B2006A6D5A /* FastRTPS catalyst */,
 			);
 		};
 /* End PBXProject section */
@@ -394,8 +421,15 @@
 			target = 0A5B3F282364F62200BE5707 /* FastRTPS macOS */;
 			targetProxy = 0A5B3F2C236502D200BE5707 /* PBXContainerItemProxy */;
 		};
+		0A5F6F7F23E1F182006A6D5A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = maccatalyst;
+			target = 0A5F6F7A23E1F0B2006A6D5A /* FastRTPS catalyst */;
+			targetProxy = 0A5F6F7E23E1F182006A6D5A /* PBXContainerItemProxy */;
+		};
 		0AD9938E2366F82F00D037A3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 0A8A37D22366D9AE008E8DC1 /* FastRTPS iOS */;
 			targetProxy = 0AD9938D2366F82F00D037A3 /* PBXContainerItemProxy */;
 		};
@@ -419,6 +453,35 @@
 			name = Debug;
 		};
 		0A5B3F2B2364F62200BE5707 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9BEQ8V4XH9;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		0A5F6F7C23E1F0B2006A6D5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9BEQ8V4XH9;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0A5F6F7D23E1F0B2006A6D5A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -741,6 +804,15 @@
 			buildConfigurations = (
 				0A5B3F2A2364F62200BE5707 /* Debug */,
 				0A5B3F2B2364F62200BE5707 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0A5F6F7B23E1F0B2006A6D5A /* Build configuration list for PBXLegacyTarget "FastRTPS catalyst" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A5F6F7C23E1F0B2006A6D5A /* Debug */,
+				0A5F6F7D23E1F0B2006A6D5A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

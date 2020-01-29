@@ -1,13 +1,14 @@
 #!/bin/bash
 #
-# fastrtps_build_osx.sh
-# Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+# fastrtps_build_catalyst.sh
+# Copyright © 2020 Dmitriy Borovikov. All rights reserved.
 #
 set -e
 
 echo $CONFIGURATION # Build type
-if [ -f "$BUILT_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a" ]; then
-echo Already build $BUILT_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a
+CATALYST_PRODUCTS_DIR="${BUILT_PRODUCTS_DIR}-maccatalyst"
+if [ -f "$CATALYST_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a" ]; then
+echo Already build $CATALYST_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a
 exit 0
 fi
 
@@ -19,10 +20,11 @@ fi
 rm -rf "$PROJECT_TEMP_DIR/memory"
 mkdir -p "$PROJECT_TEMP_DIR/memory" || true
 cmake -Smemory -B"$PROJECT_TEMP_DIR/memory" \
--DCMAKE_INSTALL_PREFIX=$BUILT_PRODUCTS_DIR/fastrtps \
+-DCMAKE_INSTALL_PREFIX=$CATALYST_PRODUCTS_DIR/fastrtps \
+-DCMAKE_TOOLCHAIN_FILE=$SRCROOT/maccatalyst.toolchain.cmake \
 -DFOONATHAN_MEMORY_BUILD_EXAMPLES=OFF \
 -DFOONATHAN_MEMORY_BUILD_TESTS=OFF \
--DFOONATHAN_MEMORY_BUILD_TOOLS=ON \
+-DFOONATHAN_MEMORY_BUILD_TOOLS=OFF \
 -DCMAKE_BUILD_TYPE=Release
 cmake --build "$PROJECT_TEMP_DIR/memory" --target install
 
@@ -32,8 +34,9 @@ git clone --quiet --recurse-submodules --depth 1 $FastRTPS_repo Fast-RTPS
 fi
 mkdir -p "$PROJECT_TEMP_DIR/Fast-RTPS" || true
 cmake -SFast-RTPS -B"$PROJECT_TEMP_DIR/Fast-RTPS" \
--DCMAKE_INSTALL_PREFIX=$BUILT_PRODUCTS_DIR/fastrtps \
--Dfoonathan_memory_DIR=$BUILT_PRODUCTS_DIR/fastrtps/share/foonathan_memory/cmake \
+-DCMAKE_INSTALL_PREFIX=$CATALYST_PRODUCTS_DIR/fastrtps \
+-DCMAKE_TOOLCHAIN_FILE=$SRCROOT/maccatalyst.toolchain.cmake \
+-Dfoonathan_memory_DIR=$CATALYST_PRODUCTS_DIR/fastrtps/share/foonathan_memory/cmake \
 -DSQLITE3_SUPPORT=OFF \
 -DTHIRDPARTY=ON \
 -DBUILD_SHARED_LIBS=OFF \

@@ -1,0 +1,7 @@
+unset(CMAKE_XCODE_ATTRIBUTE_INSTALL_PATH)
+set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+set(CMAKE_XCODE_ATTRIBUTE_SUPPORTED_PLATFORMS "macosx")
+set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-maccatalyst")
+set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "10.15")
+set(CMAKE_C_FLAGS "-target x86_64-apple-ios13.0-macabi -Wno-overriding-t-option")
+set(CMAKE_CXX_FLAGS "-target x86_64-apple-ios13.0-macabi -Wno-overriding-t-option")
