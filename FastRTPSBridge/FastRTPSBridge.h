@@ -44,8 +44,15 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
 /// @param topicName topic name
 /// @param typeName DDS type name
 /// @param keyed true if keyed
+/// @param transientLocal transient_local_qos
+/// @param reliable reliable_qos
 /// @param payloadDecoder called when sample arrived
-- (bool)registerReaderWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed payloadDecoder: (NSObject<PayloadDecoderInterface>*) payloadDecoder;
+- (bool)registerReaderWithTopicName:(NSString *) topicName
+                           typeName:(NSString*) typeName
+                              keyed:(bool) keyed
+                     transientLocal:(bool) transientLocal
+                           reliable:(bool) reliable
+                     payloadDecoder:(NSObject<PayloadDecoderInterface>*) payloadDecoder;
 
 /// Remote registered RTPS reader
 /// @param topicName topic name
@@ -55,7 +62,11 @@ typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
 /// @param topicName topic name
 /// @param typeName DDS type name
 /// @param keyed true if keyed
-- (bool)registerWriterWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed;
+/// @param transientLocal transient_local_qos
+- (bool)registerWriterWithTopicName:(NSString *) topicName
+                           typeName:(NSString*) typeName
+                              keyed:(bool) keyed
+                     transientLocal:(bool) transientLocal;
 
 /// Remote registered RTPS writer
 /// @param topicName topic name

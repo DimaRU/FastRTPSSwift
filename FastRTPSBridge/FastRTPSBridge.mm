@@ -66,12 +66,19 @@ using namespace std;
     participant->setPartition([name cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
-- (bool)registerReaderWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed payloadDecoder: (NSObject<PayloadDecoderInterface>*) payloadDecoder {
-
+- (bool)registerReaderWithTopicName:(NSString *) topicName
+                           typeName:(NSString*) typeName
+                              keyed:(bool) keyed
+                     transientLocal:(bool) transientLocal
+                           reliable:(bool) reliable
+                     payloadDecoder:(NSObject<PayloadDecoderInterface>*) payloadDecoder
+{
     if (participant == nil) return false;
     return participant->addReader([topicName cStringUsingEncoding:NSUTF8StringEncoding],
                                    [typeName cStringUsingEncoding:NSUTF8StringEncoding],
                                    keyed,
+                                   transientLocal,
+                                   reliable,
                                    payloadDecoder);
 }
 
@@ -80,11 +87,16 @@ using namespace std;
     return participant->removeReader([topicName cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
-- (bool)registerWriterWithTopicName:(NSString *)topicName typeName:(NSString*)typeName keyed:(bool) keyed {
+- (bool)registerWriterWithTopicName:(NSString *) topicName
+                           typeName:(NSString*) typeName
+                              keyed:(bool) keyed
+                     transientLocal:(bool) transientLocal
+{
     if (participant == nil) return false;
     return participant->addWriter([topicName cStringUsingEncoding:NSUTF8StringEncoding],
                                    [typeName cStringUsingEncoding:NSUTF8StringEncoding],
-                                   keyed);
+                                   keyed,
+                                   transientLocal);
 }
 
 - (bool)removeWriterWithTopicName:(NSString *)topicName {

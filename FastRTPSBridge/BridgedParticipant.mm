@@ -101,6 +101,8 @@ bool BridgedParticipant::createParticipant(const char* name, const char *interfa
 bool BridgedParticipant::addReader(const char* name,
                                const char* dataType,
                                const bool keyed,
+                               const bool transientLocal,
+                               const bool reliable,
                                NSObject<PayloadDecoderInterface>* payloadDecoder)
 {
     auto topicName = std::string(name);
@@ -111,6 +113,12 @@ bool BridgedParticipant::addReader(const char* name,
     }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
+    if (transientLocal) {
+        readerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
+    }
+    if (reliable) {
+        readerAttributes.endpoint.reliabilityKind = RELIABLE;
+    }
     auto listener = new BridgedReaderListener(name, payloadDecoder);
 
     HistoryAttributes hatt;
@@ -133,9 +141,15 @@ bool BridgedParticipant::addReader(const char* name,
     readerList[topicName] = readerInfo;
 
     TopicAttributes Tatt(name, dataType, tKind);
-    ReaderQos Rqos;
-    Rqos.m_partition.push_back(partitionName.c_str());
-    auto rezult = mp_participant->registerReader(reader, Tatt, Rqos);
+    ReaderQos readerQos;
+    readerQos.m_partition.push_back(partitionName.c_str());
+    if (transientLocal == true) {
+        readerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+    }
+    if (reliable == true) {
+        readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
+    }
+    auto rezult = mp_participant->registerReader(reader, Tatt, readerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
         readerList.erase(topicName);
@@ -163,7 +177,8 @@ bool BridgedParticipant::removeReader(const char* name)
 
 bool BridgedParticipant::addWriter(const char* name,
                                const char* dataType,
-                               const bool keyed)
+                               const bool keyed,
+                               const bool transientLocal)
 {
     auto topicName = std::string(name);
     auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
@@ -172,17 +187,20 @@ bool BridgedParticipant::addWriter(const char* name,
         return false;
     }
 
-    WriterAttributes watt;
-    watt.endpoint.reliabilityKind = BEST_EFFORT;
-    watt.endpoint.topicKind = tKind;
+    WriterAttributes writerAttributes;
+    writerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
+    if (transientLocal) {
+        writerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
+    }
+    writerAttributes.endpoint.topicKind = tKind;
     auto listener = new BridgedWriterListener(name);
-    HistoryAttributes hatt;
-    hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
-    hatt.payloadMaxSize = 1000;
-    hatt.initialReservedCaches = 5;
-    hatt.maximumReservedCaches = 0;
-    auto history = new WriterHistory(hatt);
-    auto writer = RTPSDomain::createRTPSWriter(mp_participant, watt, history, listener);
+    HistoryAttributes historyAttributes;
+    historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    historyAttributes.payloadMaxSize = 1000;
+    historyAttributes.initialReservedCaches = 5;
+    historyAttributes.maximumReservedCaches = 0;
+    auto history = new WriterHistory(historyAttributes);
+    auto writer = RTPSDomain::createRTPSWriter(mp_participant, writerAttributes, history, listener);
     if (writer == nullptr) {
         delete listener;
         delete history;
@@ -196,10 +214,13 @@ bool BridgedParticipant::addWriter(const char* name,
     writerList[topicName] = writerInfo;
 
     TopicAttributes Tatt(name, dataType, tKind);
-    WriterQos Wqos;
-    Wqos.m_partition.push_back(partitionName.c_str());
-    Wqos.m_disablePositiveACKs.enabled = true;
-    auto rezult = mp_participant->registerWriter(writer, Tatt, Wqos);
+    WriterQos writerQos;
+    writerQos.m_partition.push_back(partitionName.c_str());
+    writerQos.m_disablePositiveACKs.enabled = true;
+    if (transientLocal) {
+        writerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+    }
+    auto rezult = mp_participant->registerWriter(writer, Tatt, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);
         writerList.erase(topicName);

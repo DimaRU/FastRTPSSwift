@@ -54,12 +54,15 @@ public:
     bool addReader(const char* name,
                    const char* dataType,
                    const bool keyed,
+                   const bool transientLocal,
+                   const bool reliable,
                    NSObject<PayloadDecoderInterface>* payloadDecoder);
     bool removeReader(const char* name);
     
     bool addWriter(const char* name,
                    const char* dataType,
-                   const bool keyed);
+                   const bool keyed,
+                   const bool transientLocal);
     bool removeWriter(const char* name);
     bool send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength);
     void resignAll();
