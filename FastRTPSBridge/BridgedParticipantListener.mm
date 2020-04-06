@@ -62,7 +62,7 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
 void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo&& info)
 {
     (void)participant;
-    auto properties = info.info.m_properties.properties;
+    auto properties = info.info.m_properties;
     NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
     notificationDictionary[@(RTPSNotificationUserInfoParticipant)] = [[NSString alloc] initWithCString:info.info.m_participantName encoding:NSUTF8StringEncoding];
     NSString* key;
@@ -72,9 +72,9 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
     switch(info.status) {
         case ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT:
             propDict = [[NSMutableDictionary alloc] init];
-            for (auto prop = properties.cbegin(); prop != properties.cend(); prop++) {
-                key = [[NSString alloc] initWithCString:prop->first.c_str() encoding:NSUTF8StringEncoding];
-                value = [[NSString alloc] initWithCString:prop->second.c_str() encoding:NSUTF8StringEncoding];
+            for (auto prop = properties.begin(); prop != properties.end(); prop++) {
+                key = [[NSString alloc] initWithCString:prop->first().c_str() encoding:NSUTF8StringEncoding];
+                value = [[NSString alloc] initWithCString:prop->second().c_str() encoding:NSUTF8StringEncoding];
                 propDict[key] = value;
             }
             notificationDictionary[@(RTPSNotificationUserInfoProperties)] = propDict;

@@ -5,20 +5,23 @@
 
 #pragma once
 
-#include <fastrtps/log/Log.h>
+#include <fastdds/dds/log/Log.hpp>
 
 namespace eprosima {
-namespace fastrtps {
+namespace fastdds {
+namespace dds {
 
-class CustomLogConsumer: public LogConsumer {
+class CustomLogConsumer : public LogConsumer
+{
 public:
-    virtual ~CustomLogConsumer() {};
+    virtual ~CustomLogConsumer() {}
     RTPS_DllAPI virtual void Consume(const Log::Entry&);
 
 private:
-    void PrintHeader(const Log::Entry&) const;
-    void PrintContext(const Log::Entry&) const;
+    void print_header(const Log::Entry&) const;
+    void print_context(const Log::Entry&) const;
 };
 
-} // namespace fastrtps
+} // namespace dds
+} // namespace fastdds
 } // namespace eprosima

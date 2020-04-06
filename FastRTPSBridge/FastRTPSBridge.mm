@@ -33,7 +33,7 @@ using namespace std;
     }
     
     Log::ClearConsumers();
-    Log::RegisterConsumer(std::unique_ptr<LogConsumer>(new CustomLogConsumer));
+    Log::RegisterConsumer(std::unique_ptr<LogConsumer>(new eprosima::fastdds::dds::CustomLogConsumer));
     switch (logLevel) {
         case error:
             Log::SetVerbosity(Log::Kind::Error);

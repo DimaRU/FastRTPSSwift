@@ -531,7 +531,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				FastRTPS_repo = "-b feature/remote-whitelist-1.9.4 https://github.com/DimaRU/Fast-RTPS.git";
+				FastRTPS_repo = "-b feature/remote-whitelist-1.10.0 https://github.com/DimaRU/Fast-RTPS.git";
 				Foonathan_memory_repo = "https://github.com/DimaRU/memory.git";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -601,7 +601,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FastRTPS_repo = "-b feature/remote-whitelist-1.9.4 https://github.com/DimaRU/Fast-RTPS.git";
+				FastRTPS_repo = "-b feature/remote-whitelist-1.10.0 https://github.com/DimaRU/Fast-RTPS.git";
 				Foonathan_memory_repo = "https://github.com/DimaRU/memory.git";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
