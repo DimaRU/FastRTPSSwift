@@ -14,7 +14,9 @@ fi
 export POLLY_IOS_DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM
 export CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl hw.ncpu | awk '{print $2}')
 
-export PATH=$HOME/Developer/tools/polly/bin:$PATH
+if ! which polly > /dev/null; then
+  export PATH=$HOME/Developer/tools/polly/bin:$PATH
+fi
 if ! which polly > /dev/null; then
   echo "error: polly is not installed. Vistit https://github.com/ruslo/polly to learn more."
   exit 1
