@@ -121,12 +121,12 @@ bool BridgedParticipant::addReader(const char* name,
     }
     auto listener = new BridgedReaderListener(name, payloadDecoder);
 
-    HistoryAttributes hatt;
-    hatt.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
-    hatt.payloadMaxSize = 1000;
-    hatt.initialReservedCaches = 5;
-    hatt.maximumReservedCaches = 0;
-    auto history = new ReaderHistory(hatt);
+    HistoryAttributes historyAttributes;
+    historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    historyAttributes.payloadMaxSize = 1000;
+    historyAttributes.initialReservedCaches = 5;
+    historyAttributes.maximumReservedCaches = 0;
+    auto history = new ReaderHistory(historyAttributes);
     auto reader = RTPSDomain::createRTPSReader(mp_participant, readerAttributes, history, listener);
     if (reader == nullptr) {
         delete listener;
@@ -140,7 +140,7 @@ bool BridgedParticipant::addReader(const char* name,
     readerInfo->listener = listener;
     readerList[topicName] = readerInfo;
 
-    TopicAttributes Tatt(name, dataType, tKind);
+    TopicAttributes topicAttributes(name, dataType, tKind);
     ReaderQos readerQos;
     readerQos.m_partition.push_back(partitionName.c_str());
     if (transientLocal == true) {
@@ -149,7 +149,7 @@ bool BridgedParticipant::addReader(const char* name,
     if (reliable == true) {
         readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
     }
-    auto rezult = mp_participant->registerReader(reader, Tatt, readerQos);
+    auto rezult = mp_participant->registerReader(reader, topicAttributes, readerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
         readerList.erase(topicName);
@@ -188,11 +188,13 @@ bool BridgedParticipant::addWriter(const char* name,
     }
 
     WriterAttributes writerAttributes;
+    writerAttributes.times.heartbeatPeriod.seconds = 0;
+    writerAttributes.times.heartbeatPeriod.nanosec = 100000000;     // 100 ms
+    writerAttributes.endpoint.topicKind = tKind;
     writerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
     if (transientLocal) {
         writerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
     }
-    writerAttributes.endpoint.topicKind = tKind;
     auto listener = new BridgedWriterListener(name);
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
@@ -213,14 +215,17 @@ bool BridgedParticipant::addWriter(const char* name,
     writerInfo->listener = listener;
     writerList[topicName] = writerInfo;
 
-    TopicAttributes Tatt(name, dataType, tKind);
+    TopicAttributes topicAttributes(name, dataType, tKind);
     WriterQos writerQos;
     writerQos.m_partition.push_back(partitionName.c_str());
     writerQos.m_disablePositiveACKs.enabled = true;
+    writerQos.m_disablePositiveACKs.duration.seconds = 0;
+    writerQos.m_disablePositiveACKs.duration.nanosec = 1000000; // 1 ms
+
     if (transientLocal) {
         writerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
     }
-    auto rezult = mp_participant->registerWriter(writer, Tatt, writerQos);
+    auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);
         writerList.erase(topicName);
@@ -258,7 +263,12 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
         return false;
     }
     auto writer = writerInfo->writer;
-
+    auto history = writerInfo->history;
+    
+    if (history->getHistorySize() > 0) {
+        // drop history
+        history->remove_all_changes();
+    }
     CacheChange_t * change;
     if (key) {
         InstanceHandle_t instanceHandle;
@@ -281,7 +291,7 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
     change->serializedPayload.length = length + sizeof(header);
     memcpy(change->serializedPayload.data, header, sizeof(header));
     memcpy(change->serializedPayload.data + sizeof(header), data, length);
-    writerInfo->history->add_change(change);
+    history->add_change(change);
 
     return true;
 }

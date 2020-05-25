@@ -101,7 +101,7 @@ using namespace std;
 
 - (bool)removeWriterWithTopicName:(NSString *)topicName {
     if (participant == nil) return false;
-    return participant->removeReader([topicName cStringUsingEncoding:NSUTF8StringEncoding]);
+    return participant->removeWriter([topicName cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 - (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data {
