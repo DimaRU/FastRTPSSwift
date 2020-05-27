@@ -5,15 +5,10 @@
 
 #pragma once
 
-#include <fastrtps/rtps/rtps_fwd.h>
-#include <fastrtps/rtps/common/Types.h>
-#include <fastrtps/rtps/attributes/WriterAttributes.h>
 #include <fastrtps/rtps/reader/RTPSReader.h>
 #include <fastrtps/rtps/writer/RTPSWriter.h>
 #include <fastrtps/rtps/history/ReaderHistory.h>
 #include <fastrtps/rtps/history/WriterHistory.h>
-#include <string>
-#include <map>
 #import "BridgedReaderListener.h"
 #import "BridgedWriterListener.h"
 

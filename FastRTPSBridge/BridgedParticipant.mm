@@ -21,8 +21,6 @@
 #include <fastrtps/qos/WriterQos.h>
 #include <fastrtps/log/Log.h>
 #include <fastrtps/transport/UDPv4TransportDescriptor.h>
-#include <memory>
-#include <arpa/inet.h>
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
@@ -70,8 +68,9 @@ bool BridgedParticipant::createParticipant(const char* name, const char *interfa
     RTPSParticipantAttributes pattr;
     pattr.builtin.use_WriterLivelinessProtocol = true;
     pattr.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
-    pattr.builtin.discovery_config.leaseDuration_announcementperiod.seconds = 1;
-    pattr.builtin.discovery_config.leaseDuration.seconds = 10;
+    pattr.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(3,0);
+    pattr.builtin.discovery_config.leaseDuration = Duration_t(10,0);
+    pattr.builtin.discovery_config.initial_announcements.count = 5;
     pattr.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
     pattr.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
     pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
@@ -188,13 +187,13 @@ bool BridgedParticipant::addWriter(const char* name,
     }
 
     WriterAttributes writerAttributes;
-    writerAttributes.times.heartbeatPeriod.seconds = 0;
-    writerAttributes.times.heartbeatPeriod.nanosec = 100000000;     // 100 ms
+    writerAttributes.times.heartbeatPeriod = Duration_t(0, 100000000);       // 100 ms
+    writerAttributes.times.nackResponseDelay = Duration_t(0.0);
+
     writerAttributes.endpoint.topicKind = tKind;
-    writerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
-    if (transientLocal) {
-        writerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
-    }
+    writerAttributes.endpoint.reliabilityKind = RELIABLE;
+    writerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
+
     auto listener = new BridgedWriterListener(name);
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
@@ -219,12 +218,8 @@ bool BridgedParticipant::addWriter(const char* name,
     WriterQos writerQos;
     writerQos.m_partition.push_back(partitionName.c_str());
     writerQos.m_disablePositiveACKs.enabled = true;
-    writerQos.m_disablePositiveACKs.duration.seconds = 0;
-    writerQos.m_disablePositiveACKs.duration.nanosec = 1000000; // 1 ms
-
-    if (transientLocal) {
-        writerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
-    }
+    writerQos.m_durability.kind = transientLocal ? TRANSIENT_LOCAL_DURABILITY_QOS: VOLATILE_DURABILITY_QOS;
+    
     auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);
