@@ -22,7 +22,7 @@
 #include <fastrtps/log/Log.h>
 #include <fastrtps/transport/UDPv4TransportDescriptor.h>
 
-using namespace eprosima::fastrtps;
+using namespace eprosima::fastdds;
 using namespace eprosima::fastrtps::rtps;
 
 BridgedParticipant::BridgedParticipant():
@@ -74,7 +74,6 @@ bool BridgedParticipant::createParticipant(const char* name, const char *interfa
     pattr.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
     pattr.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
     pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    pattr.builtin.domainId = 0;
     pattr.setName(name);
     
     auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
@@ -90,7 +89,7 @@ bool BridgedParticipant::createParticipant(const char* name, const char *interfa
     pattr.useBuiltinTransports = false;
 
     mp_listener = new BridgedParticipantListener();
-    mp_participant = RTPSDomain::createParticipant(pattr, mp_listener);
+    mp_participant = RTPSDomain::createParticipant(0, pattr, mp_listener);
     if (mp_participant == nullptr)
         return false;
 
