@@ -39,16 +39,16 @@ FOONATHAN_MEMORY_BUILD_EXAMPLES=OFF \
 FOONATHAN_MEMORY_BUILD_TESTS=OFF \
 FOONATHAN_MEMORY_BUILD_TOOLS=OFF
 
-rm -rf $PROJECT_TEMP_DIR/Fast-RTPS
-if [ ! -d Fast-RTPS ]; then
-git clone --quiet --recurse-submodules --depth 1 $FastRTPS_repo Fast-RTPS
+rm -rf $PROJECT_TEMP_DIR/Fast-DDS
+if [ ! -d Fast-DDS ]; then
+git clone --quiet --recurse-submodules --depth 1 $FastRTPS_repo Fast-DDS
 fi
-mkdir -p "$PROJECT_TEMP_DIR/Fast-RTPS" || true
+mkdir -p "$PROJECT_TEMP_DIR/Fast-DDS" || true
 polly.py --toolchain ios \
 --install --ios-combined --ios-multiarch \
 --config $CONFIGURATION \
---home Fast-RTPS \
---output "$PROJECT_TEMP_DIR/Fast-RTPS" \
+--home Fast-DDS \
+--output "$PROJECT_TEMP_DIR/Fast-DDS" \
 --fwd CMAKE_CONFIGURATION_TYPES=$CONFIGURATION \
 CMAKE_DEBUG_POSTFIX="" \
 IOS_DEPLOYMENT_SDK_VERSION=$IPHONEOS_DEPLOYMENT_TARGET \

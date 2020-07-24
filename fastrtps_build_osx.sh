@@ -26,16 +26,16 @@ cmake -Smemory -B"$PROJECT_TEMP_DIR/memory" \
 -DCMAKE_BUILD_TYPE=Release
 cmake --build "$PROJECT_TEMP_DIR/memory" --target install
 
-rm -rf "$PROJECT_TEMP_DIR/Fast-RTPS"
-if [ ! -d Fast-RTPS ]; then
-git clone --quiet --recurse-submodules --depth 1 $FastRTPS_repo Fast-RTPS
+rm -rf "$PROJECT_TEMP_DIR/Fast-DDS"
+if [ ! -d Fast-DDS ]; then
+git clone --quiet --recurse-submodules --depth 1 $FastRTPS_repo Fast-DDS
 fi
-mkdir -p "$PROJECT_TEMP_DIR/Fast-RTPS" || true
-cmake -SFast-RTPS -B"$PROJECT_TEMP_DIR/Fast-RTPS" \
+mkdir -p "$PROJECT_TEMP_DIR/Fast-DDS" || true
+cmake -SFast-DDS -B"$PROJECT_TEMP_DIR/Fast-DDS" \
 -DCMAKE_INSTALL_PREFIX=$BUILT_PRODUCTS_DIR/fastrtps \
 -Dfoonathan_memory_DIR=$BUILT_PRODUCTS_DIR/fastrtps/share/foonathan_memory/cmake \
 -DSQLITE3_SUPPORT=OFF \
 -DTHIRDPARTY=ON \
 -DBUILD_SHARED_LIBS=OFF \
 -DCMAKE_BUILD_TYPE=$CONFIGURATION
-cmake --build "$PROJECT_TEMP_DIR/Fast-RTPS" --target install
+cmake --build "$PROJECT_TEMP_DIR/Fast-DDS" --target install
