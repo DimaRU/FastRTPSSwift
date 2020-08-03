@@ -25,9 +25,11 @@ BridgedReaderListener::~BridgedReaderListener()
 
 void BridgedReaderListener::onNewCacheChangeAdded(RTPSReader* reader, const CacheChange_t * const change)
 {
-    [payloadDecoder decodeWithSequence:change->sequenceNumber.to64long()
-                           payloadSize:change->serializedPayload.length
-                               payload:change->serializedPayload.data];
+    if (change->serializedPayload.length > 4) {
+        [payloadDecoder decodeWithSequence:change->sequenceNumber.to64long()
+                               payloadSize:change->serializedPayload.length - 4
+                                   payload:change->serializedPayload.data + 4];
+    }
     reader->getHistory()->remove_change((CacheChange_t*)change);
 }
 

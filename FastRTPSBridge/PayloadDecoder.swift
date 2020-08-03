@@ -25,10 +25,10 @@ public class PayloadDecoder<T: DDSType>:NSObject, PayloadDecoderInterface {
     }
 
     public func decode(sequence: Int,
-                payloadSize: Int,
-                payload: UnsafeMutableRawPointer) {
+                       payloadSize: Int,
+                       payload: UnsafeMutableRawPointer) {
         
-        let data = Data(bytesNoCopy: payload + 4, count: payloadSize - 4, deallocator: .none)
+        let data = Data(bytesNoCopy: payload, count: payloadSize, deallocator: .none)
         do {
             let t = try decoder.decode(T.self, from: data)
             completion?(t)
