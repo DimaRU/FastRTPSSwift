@@ -865,7 +865,7 @@
 			repositoryURL = "https://github.com/DimaRU/CDRCodable.git";
 			requirement = {
 				kind = exactVersion;
-				version = 0.0.1;
+				version = 0.0.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
