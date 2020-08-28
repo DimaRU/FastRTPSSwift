@@ -9,8 +9,8 @@
 #include <fastrtps/rtps/writer/RTPSWriter.h>
 #include <fastrtps/rtps/history/ReaderHistory.h>
 #include <fastrtps/rtps/history/WriterHistory.h>
-#import "BridgedReaderListener.h"
-#import "BridgedWriterListener.h"
+#include "BridgedReaderListener.h"
+#include "BridgedWriterListener.h"
 
 class BridgedParticipantListener;
 class BridgedParticipant
@@ -51,8 +51,10 @@ public:
                    const bool keyed,
                    const bool transientLocal,
                    const bool reliable,
-                   NSObject<PayloadDecoderInterface>* payloadDecoder);
-    bool removeReader(const char* name);
+                   decoderCallback callback,
+                   const void * payloadDecoder);
+    
+    const void * removeReader(const char* name);
     
     bool addWriter(const char* name,
                    const char* dataType,

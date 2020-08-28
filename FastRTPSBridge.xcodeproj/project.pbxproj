@@ -7,48 +7,48 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A1FE2EC24F803F9002CBB56 /* FastRTPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */; };
+		0A1FE2ED24F803FA002CBB56 /* FastRTPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */; };
+		0A1FE2EF24F8FDD1002CBB56 /* DDSTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */; };
+		0A1FE2F024F8FDD1002CBB56 /* DDSTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */; };
 		0A35C9F023A52D2500CF48D6 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		0A35C9F223A52D4100CF48D6 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F123A52D4100CF48D6 /* libfastcdr.a */; };
 		0A35C9F423A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */; };
 		0A35C9F523A54A9800CF48D6 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */; };
 		0A35C9FC23A577DB00CF48D6 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F123A52D4100CF48D6 /* libfastcdr.a */; };
 		0A35C9FD23A577DB00CF48D6 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */; };
+		0A6E631024F6AC6B00887543 /* FastRTPSBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A6E630E24F6AC6B00887543 /* FastRTPSBridge.cpp */; };
+		0A6E631124F6AC6B00887543 /* FastRTPSBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A6E630E24F6AC6B00887543 /* FastRTPSBridge.cpp */; };
+		0A6E631224F6AC6B00887543 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A6E630F24F6AC6B00887543 /* FastRTPSBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0A6E631324F6AC6B00887543 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A6E630F24F6AC6B00887543 /* FastRTPSBridge.h */; };
+		0A6E631424F7B2F700887543 /* BridgedParticipantListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130812363514900817593 /* BridgedParticipantListener.cpp */; };
+		0A6E631524F7B2F800887543 /* BridgedParticipantListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130812363514900817593 /* BridgedParticipantListener.cpp */; };
 		0A70B3212375A147007E05B6 /* FastRTPSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */; };
 		0A70B3222375A147007E05B6 /* FastRTPSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */; };
-		0A71307A2363503500817593 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130782363503500817593 /* FastRTPSBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0A7130882363514900817593 /* BridgedParticipantListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130812363514900817593 /* BridgedParticipantListener.mm */; };
 		0A7130892363514900817593 /* CustomLogConsumer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130822363514900817593 /* CustomLogConsumer.cpp */; };
 		0A71308A2363514900817593 /* CustomLogConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130832363514900817593 /* CustomLogConsumer.h */; };
-		0A71308B2363514900817593 /* BridgedParticipantListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130842363514900817593 /* BridgedParticipantListener.h */; };
-		0A71308C2363514900817593 /* FastRTPSBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130852363514900817593 /* FastRTPSBridge.mm */; };
 		0A71308D2363514900817593 /* DDSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130862363514900817593 /* DDSType.swift */; };
-		0A7130962363516700817593 /* BridgedWriterListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A71308E2363516700817593 /* BridgedWriterListener.mm */; };
+		0A7130962363516700817593 /* BridgedWriterListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A71308E2363516700817593 /* BridgedWriterListener.cpp */; };
 		0A7130972363516700817593 /* BridgedWriterListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A71308F2363516700817593 /* BridgedWriterListener.h */; };
 		0A7130982363516700817593 /* BridgedReaderListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130902363516700817593 /* BridgedReaderListener.h */; };
 		0A7130992363516700817593 /* PayloadDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoder.swift */; };
 		0A71309A2363516700817593 /* BridgedParticipant.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130922363516700817593 /* BridgedParticipant.h */; };
-		0A71309B2363516700817593 /* BridgedReaderListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.mm */; };
+		0A71309B2363516700817593 /* BridgedReaderListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.cpp */; };
 		0A71309C2363516700817593 /* FastRTPSBridge-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */; };
-		0A71309D2363516700817593 /* BridgedParticipant.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.mm */; };
+		0A71309D2363516700817593 /* BridgedParticipant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.cpp */; };
 		0A8A37E32366DC51008E8DC1 /* DDSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130862363514900817593 /* DDSType.swift */; };
 		0A8A37E42366DC51008E8DC1 /* PayloadDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoder.swift */; };
-		0A8A37E52366DC51008E8DC1 /* FastRTPSBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130852363514900817593 /* FastRTPSBridge.mm */; };
-		0A8A37E62366DC51008E8DC1 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130782363503500817593 /* FastRTPSBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0A8A37E72366DC51008E8DC1 /* BridgedParticipant.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130922363516700817593 /* BridgedParticipant.h */; };
-		0A8A37E82366DC51008E8DC1 /* BridgedParticipant.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.mm */; };
+		0A8A37E82366DC51008E8DC1 /* BridgedParticipant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.cpp */; };
 		0A8A37E92366DC51008E8DC1 /* BridgedReaderListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130902363516700817593 /* BridgedReaderListener.h */; };
-		0A8A37EA2366DC51008E8DC1 /* BridgedReaderListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.mm */; };
-		0A8A37EB2366DC51008E8DC1 /* BridgedWriterListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A71308E2363516700817593 /* BridgedWriterListener.mm */; };
+		0A8A37EA2366DC51008E8DC1 /* BridgedReaderListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.cpp */; };
+		0A8A37EB2366DC51008E8DC1 /* BridgedWriterListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A71308E2363516700817593 /* BridgedWriterListener.cpp */; };
 		0A8A37EC2366DC51008E8DC1 /* BridgedWriterListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A71308F2363516700817593 /* BridgedWriterListener.h */; };
 		0A8A37ED2366DC51008E8DC1 /* FastRTPSBridge-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */; };
 		0A8A37EE2366DC51008E8DC1 /* CustomLogConsumer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130822363514900817593 /* CustomLogConsumer.cpp */; };
 		0A8A37EF2366DC51008E8DC1 /* CustomLogConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130832363514900817593 /* CustomLogConsumer.h */; };
-		0A8A37F02366DC51008E8DC1 /* BridgedParticipantListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130812363514900817593 /* BridgedParticipantListener.mm */; };
-		0A8A37F12366DC51008E8DC1 /* BridgedParticipantListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130842363514900817593 /* BridgedParticipantListener.h */; };
 		0A969815236EEF0100FF958F /* CDRCodable in Frameworks */ = {isa = PBXBuildFile; productRef = 0A969814236EEF0100FF958F /* CDRCodable */; };
 		0A969817236EEF0B00FF958F /* CDRCodable in Frameworks */ = {isa = PBXBuildFile; productRef = 0A969816236EEF0B00FF958F /* CDRCodable */; };
-		0AC08A802375F61900A80C2E /* FastRTPSNotifications.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */; };
-		0AC08A812375F61900A80C2E /* FastRTPSNotifications.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,32 +76,33 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDSTopic.swift; sourceTree = "<group>"; };
 		0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = fastrtps/lib/libfastrtps.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A35C9F123A52D4100CF48D6 /* libfastcdr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastcdr.a; path = fastrtps/lib/libfastcdr.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfoonathan_memory-0.6.2.a"; path = "fastrtps/lib/libfoonathan_memory-0.6.2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A5B3F252364E63400BE5707 /* fastrtps_build_osx.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_osx.sh; sourceTree = "<group>"; };
 		0A5F6F7823E1EFDE006A6D5A /* fastrtps_build_catalyst.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_catalyst.sh; sourceTree = "<group>"; };
+		0A6E630E24F6AC6B00887543 /* FastRTPSBridge.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FastRTPSBridge.cpp; sourceTree = "<group>"; };
+		0A6E630F24F6AC6B00887543 /* FastRTPSBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastRTPSBridge.h; sourceTree = "<group>"; };
 		0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastRTPSNotifications.swift; sourceTree = "<group>"; };
 		0A7130752363503500817593 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		0A7130782363503500817593 /* FastRTPSBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastRTPSBridge.h; sourceTree = "<group>"; };
 		0A7130792363503500817593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0A7130812363514900817593 /* BridgedParticipantListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedParticipantListener.mm; sourceTree = "<group>"; };
+		0A7130812363514900817593 /* BridgedParticipantListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedParticipantListener.cpp; sourceTree = "<group>"; };
 		0A7130822363514900817593 /* CustomLogConsumer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CustomLogConsumer.cpp; sourceTree = "<group>"; };
 		0A7130832363514900817593 /* CustomLogConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomLogConsumer.h; sourceTree = "<group>"; };
 		0A7130842363514900817593 /* BridgedParticipantListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedParticipantListener.h; sourceTree = "<group>"; };
-		0A7130852363514900817593 /* FastRTPSBridge.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FastRTPSBridge.mm; sourceTree = "<group>"; };
 		0A7130862363514900817593 /* DDSType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DDSType.swift; sourceTree = "<group>"; };
-		0A71308E2363516700817593 /* BridgedWriterListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedWriterListener.mm; sourceTree = "<group>"; };
+		0A71308E2363516700817593 /* BridgedWriterListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedWriterListener.cpp; sourceTree = "<group>"; };
 		0A71308F2363516700817593 /* BridgedWriterListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedWriterListener.h; sourceTree = "<group>"; };
 		0A7130902363516700817593 /* BridgedReaderListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedReaderListener.h; sourceTree = "<group>"; };
 		0A7130912363516700817593 /* PayloadDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayloadDecoder.swift; sourceTree = "<group>"; };
 		0A7130922363516700817593 /* BridgedParticipant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedParticipant.h; sourceTree = "<group>"; };
-		0A7130932363516700817593 /* BridgedReaderListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedReaderListener.mm; sourceTree = "<group>"; };
+		0A7130932363516700817593 /* BridgedReaderListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedReaderListener.cpp; sourceTree = "<group>"; };
 		0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FastRTPSBridge-Bridging-Header.h"; sourceTree = "<group>"; };
-		0A7130952363516700817593 /* BridgedParticipant.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BridgedParticipant.mm; sourceTree = "<group>"; };
+		0A7130952363516700817593 /* BridgedParticipant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedParticipant.cpp; sourceTree = "<group>"; };
 		0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_ios.sh; sourceTree = "<group>"; };
 		0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FastRTPSNotifications.mm; sourceTree = "<group>"; };
+		0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastRTPS.swift; sourceTree = "<group>"; };
 		0ACE0ECA23E2390300C83C55 /* maccatalyst.toolchain.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maccatalyst.toolchain.cmake; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -156,22 +157,23 @@
 		0A7130772363503500817593 /* FastRTPSBridge */ = {
 			isa = PBXGroup;
 			children = (
-				0A7130862363514900817593 /* DDSType.swift */,
-				0A7130912363516700817593 /* PayloadDecoder.swift */,
-				0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */,
-				0AC08A7F2375F61900A80C2E /* FastRTPSNotifications.mm */,
-				0A7130852363514900817593 /* FastRTPSBridge.mm */,
-				0A7130782363503500817593 /* FastRTPSBridge.h */,
-				0A7130952363516700817593 /* BridgedParticipant.mm */,
+				0A6E630E24F6AC6B00887543 /* FastRTPSBridge.cpp */,
+				0A6E630F24F6AC6B00887543 /* FastRTPSBridge.h */,
+				0A7130952363516700817593 /* BridgedParticipant.cpp */,
 				0A7130922363516700817593 /* BridgedParticipant.h */,
-				0A7130932363516700817593 /* BridgedReaderListener.mm */,
+				0A7130932363516700817593 /* BridgedReaderListener.cpp */,
 				0A7130902363516700817593 /* BridgedReaderListener.h */,
-				0A71308E2363516700817593 /* BridgedWriterListener.mm */,
+				0A71308E2363516700817593 /* BridgedWriterListener.cpp */,
 				0A71308F2363516700817593 /* BridgedWriterListener.h */,
-				0A7130812363514900817593 /* BridgedParticipantListener.mm */,
+				0A7130812363514900817593 /* BridgedParticipantListener.cpp */,
 				0A7130842363514900817593 /* BridgedParticipantListener.h */,
 				0A7130822363514900817593 /* CustomLogConsumer.cpp */,
 				0A7130832363514900817593 /* CustomLogConsumer.h */,
+				0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */,
+				0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */,
+				0A7130862363514900817593 /* DDSType.swift */,
+				0A7130912363516700817593 /* PayloadDecoder.swift */,
+				0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */,
 				0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */,
 				0A7130792363503500817593 /* Info.plist */,
 			);
@@ -195,11 +197,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A6E631224F6AC6B00887543 /* FastRTPSBridge.h in Headers */,
 				0A71309C2363516700817593 /* FastRTPSBridge-Bridging-Header.h in Headers */,
 				0A71309A2363516700817593 /* BridgedParticipant.h in Headers */,
 				0A71308A2363514900817593 /* CustomLogConsumer.h in Headers */,
-				0A71308B2363514900817593 /* BridgedParticipantListener.h in Headers */,
-				0A71307A2363503500817593 /* FastRTPSBridge.h in Headers */,
 				0A7130972363516700817593 /* BridgedWriterListener.h in Headers */,
 				0A7130982363516700817593 /* BridgedReaderListener.h in Headers */,
 			);
@@ -209,9 +210,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A8A37E62366DC51008E8DC1 /* FastRTPSBridge.h in Headers */,
+				0A6E631324F6AC6B00887543 /* FastRTPSBridge.h in Headers */,
 				0A8A37ED2366DC51008E8DC1 /* FastRTPSBridge-Bridging-Header.h in Headers */,
-				0A8A37F12366DC51008E8DC1 /* BridgedParticipantListener.h in Headers */,
 				0A8A37E92366DC51008E8DC1 /* BridgedReaderListener.h in Headers */,
 				0A8A37E72366DC51008E8DC1 /* BridgedParticipant.h in Headers */,
 				0A8A37EC2366DC51008E8DC1 /* BridgedWriterListener.h in Headers */,
@@ -383,15 +383,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A7130882363514900817593 /* BridgedParticipantListener.mm in Sources */,
-				0AC08A802375F61900A80C2E /* FastRTPSNotifications.mm in Sources */,
+				0A6E631024F6AC6B00887543 /* FastRTPSBridge.cpp in Sources */,
 				0A71308D2363514900817593 /* DDSType.swift in Sources */,
-				0A7130962363516700817593 /* BridgedWriterListener.mm in Sources */,
-				0A71308C2363514900817593 /* FastRTPSBridge.mm in Sources */,
+				0A7130962363516700817593 /* BridgedWriterListener.cpp in Sources */,
+				0A6E631524F7B2F800887543 /* BridgedParticipantListener.cpp in Sources */,
+				0A1FE2EF24F8FDD1002CBB56 /* DDSTopic.swift in Sources */,
 				0A7130992363516700817593 /* PayloadDecoder.swift in Sources */,
 				0A7130892363514900817593 /* CustomLogConsumer.cpp in Sources */,
-				0A71309B2363516700817593 /* BridgedReaderListener.mm in Sources */,
-				0A71309D2363516700817593 /* BridgedParticipant.mm in Sources */,
+				0A71309B2363516700817593 /* BridgedReaderListener.cpp in Sources */,
+				0A71309D2363516700817593 /* BridgedParticipant.cpp in Sources */,
+				0A1FE2EC24F803F9002CBB56 /* FastRTPS.swift in Sources */,
 				0A70B3212375A147007E05B6 /* FastRTPSNotifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -400,15 +401,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A8A37EA2366DC51008E8DC1 /* BridgedReaderListener.mm in Sources */,
-				0AC08A812375F61900A80C2E /* FastRTPSNotifications.mm in Sources */,
-				0A8A37E52366DC51008E8DC1 /* FastRTPSBridge.mm in Sources */,
-				0A8A37EB2366DC51008E8DC1 /* BridgedWriterListener.mm in Sources */,
+				0A8A37EA2366DC51008E8DC1 /* BridgedReaderListener.cpp in Sources */,
+				0A6E631124F6AC6B00887543 /* FastRTPSBridge.cpp in Sources */,
+				0A8A37EB2366DC51008E8DC1 /* BridgedWriterListener.cpp in Sources */,
+				0A6E631424F7B2F700887543 /* BridgedParticipantListener.cpp in Sources */,
+				0A1FE2F024F8FDD1002CBB56 /* DDSTopic.swift in Sources */,
 				0A8A37EE2366DC51008E8DC1 /* CustomLogConsumer.cpp in Sources */,
 				0A8A37E32366DC51008E8DC1 /* DDSType.swift in Sources */,
 				0A8A37E42366DC51008E8DC1 /* PayloadDecoder.swift in Sources */,
-				0A8A37F02366DC51008E8DC1 /* BridgedParticipantListener.mm in Sources */,
-				0A8A37E82366DC51008E8DC1 /* BridgedParticipant.mm in Sources */,
+				0A8A37E82366DC51008E8DC1 /* BridgedParticipant.cpp in Sources */,
+				0A1FE2ED24F803FA002CBB56 /* FastRTPS.swift in Sources */,
 				0A70B3222375A147007E05B6 /* FastRTPSNotifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -659,6 +661,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -696,6 +699,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -759,6 +763,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -794,6 +799,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

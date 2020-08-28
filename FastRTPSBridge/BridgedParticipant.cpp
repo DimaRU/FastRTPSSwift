@@ -1,5 +1,5 @@
 /////
-////  BridgedParticipant.mm
+////  BridgedParticipant.cpp
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
@@ -97,11 +97,12 @@ bool BridgedParticipant::createParticipant(const char* name, const char *interfa
 }
 
 bool BridgedParticipant::addReader(const char* name,
-                               const char* dataType,
-                               const bool keyed,
-                               const bool transientLocal,
-                               const bool reliable,
-                               NSObject<PayloadDecoderInterface>* payloadDecoder)
+                                   const char* dataType,
+                                   const bool keyed,
+                                   const bool transientLocal,
+                                   const bool reliable,
+                                   decoderCallback callback,
+                                   const void * payloadDecoder)
 {
     auto topicName = std::string(name);
     auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
@@ -117,7 +118,7 @@ bool BridgedParticipant::addReader(const char* name,
     if (reliable) {
         readerAttributes.endpoint.reliabilityKind = RELIABLE;
     }
-    auto listener = new BridgedReaderListener(name, payloadDecoder);
+    auto listener = new BridgedReaderListener(name, callback, payloadDecoder);
 
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
@@ -158,19 +159,20 @@ bool BridgedParticipant::addReader(const char* name,
     return true;
 }
 
-bool BridgedParticipant::removeReader(const char* name)
+const void * BridgedParticipant::removeReader(const char* name)
 {
     logInfo(ROV_PARTICIPANT, "Remove reader: " << name)
     auto topicName = std::string(name);
     if (readerList.find(topicName) == readerList.end()) {
-        return false;
+        return nullptr;
     }
     auto readerInfo = readerList[topicName];
+    auto payloadDecoder = readerInfo->listener->payloadDecoder;
     if (!RTPSDomain::removeRTPSReader(readerInfo->reader))
-        return false;
+        return nullptr;
     readerList.erase(topicName);
     delete readerInfo;
-    return true;
+    return payloadDecoder;
 }
 
 bool BridgedParticipant::addWriter(const char* name,

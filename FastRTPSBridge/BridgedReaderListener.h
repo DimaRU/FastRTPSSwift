@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include "fastrtps/rtps/rtps_fwd.h"
 #include "fastrtps/rtps/reader/ReaderListener.h"
-#import "FastRTPSBridge/FastRTPSBridge-Swift.h"
+#include "FastRTPSBridge.h"
 
 class BridgedReaderListener:public eprosima::fastrtps::rtps::ReaderListener
 {
 public:
-    BridgedReaderListener(const char* topicName, NSObject<PayloadDecoderInterface>* payloadDecoder);
+    BridgedReaderListener(const char* topicName, decoderCallback callback, const void * payloadDecoder);
     ~BridgedReaderListener();
     void onNewCacheChangeAdded(eprosima::fastrtps::rtps::RTPSReader* reader,
                                const eprosima::fastrtps::rtps::CacheChange_t* const change) override;
@@ -22,7 +22,8 @@ public:
     void on_liveliness_changed(eprosima::fastrtps::rtps::RTPSReader *reader,
                                const eprosima::fastrtps::LivelinessChangedStatus &status) override;
     
-    NSObject<PayloadDecoderInterface>* payloadDecoder;
+    const void * payloadDecoder;
+    decoderCallback callback;
     uint32_t n_matched;
     std::string topicName;
 };

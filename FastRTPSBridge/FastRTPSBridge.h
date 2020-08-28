@@ -1,94 +1,73 @@
 /////
 ////  FastRTPSBridge.h
-///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
+///   Copyright © 2020 Dmitriy Borovikov. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 
-//! Project version number for FastRTPSBridge.
-FOUNDATION_EXPORT double FastRTPSBridgeVersionNumber;
+#ifndef FastRTPSBridge_h
+#define FastRTPSBridge_h
 
-//! Project version string for FastRTPSBridge.
-FOUNDATION_EXPORT const unsigned char FastRTPSBridgeVersionString[];
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
-FOUNDATION_EXPORT NSString *const RTPSParticipantNotificationName;
-FOUNDATION_EXPORT NSString *const RTPSReaderWriterNotificationName;
-
-@protocol PayloadDecoderInterface;
-@interface FastRTPSBridge : NSObject
-typedef NS_CLOSED_ENUM(NSInteger, LogLevel) {
+enum LogLevel {
     error, warning, info
 };
 
-/// Create instance, set FastRTPS log level
-/// @param logLevel FastRTPS log level:
-// * error
-// * warning
-// * info
-- (id)initWithLogLevel:(LogLevel)logLevel;
+typedef void (*decoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
 
-/// Create RTPS paticipant and start listening
-/// @param name Participant name
-/// @param peerIPv4 peer IPv4 address (initially multicast)
-- (bool)createRTPSParticipantWithName:(NSString *)name
-                        interfaceIPv4:(NSString* _Nullable) interfaceIPv4
-                       networkAddress:(NSString* _Nullable) networkAddress;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/// Set partition name for readers and writers
-/// @param name partition name (initially "*")
-- (void)setPartition:(NSString *)name;
+const void * _Nonnull createRTPSParticipantFilered(const char* _Nonnull name, const char* _Nullable localAddress, const char* _Nullable filterAddress);
+const void * _Nonnull createRTPSParticipant(const char* _Nonnull name, const char* _Nullable localAddress);
 
-/// Rerister RTPS reader
-/// @param topicName topic name
-/// @param typeName DDS type name
-/// @param keyed true if keyed
-/// @param transientLocal transient_local_qos
-/// @param reliable reliable_qos
-/// @param payloadDecoder called when sample arrived
-- (bool)registerReaderWithTopicName:(NSString *) topicName
-                           typeName:(NSString*) typeName
-                              keyed:(bool) keyed
-                     transientLocal:(bool) transientLocal
-                           reliable:(bool) reliable
-                     payloadDecoder:(NSObject<PayloadDecoderInterface>*) payloadDecoder;
+#pragma clang assume_nonnull begin
+void setRTPSLoglevel(enum LogLevel logLevel);
+void setRTPSPartition(const void * participant, const char * partition);
+void registerRTPSReader(const void * participant,
+                        const char * topicName,
+                        const char * typeName,
+                        bool keyed,
+                        bool transientLocal,
+                        bool reliable,
+                        const void * payloadDecoder,
+                        decoderCallback callback);
 
-/// Remote registered RTPS reader
-/// @param topicName topic name
-- (bool)removeReaderWithTopicName:(NSString *)topicName;
+const void * _Nullable removeRTPSReader(const void * participant,
+                                    const char * topicName);
 
-/// Register RTPS writer
-/// @param topicName topic name
-/// @param typeName DDS type name
-/// @param keyed true if keyed
-/// @param transientLocal transient_local_qos
-- (bool)registerWriterWithTopicName:(NSString *) topicName
-                           typeName:(NSString*) typeName
-                              keyed:(bool) keyed
-                     transientLocal:(bool) transientLocal;
+void registerRTPSWriter(const void * participant,
+                    const char * topicName,
+                    const char * typeName,
+                    bool keyed,
+                    bool transientLocal,
+                    bool reliable);
 
-/// Remote registered RTPS writer
-/// @param topicName topic name
-- (bool)removeWriterWithTopicName:(NSString *)topicName;
+void removeRTPSWriter(const void * participant,
+                      const char * topicName);
 
-/// Send unkeyed change with RTPS writer
-/// @param topicName writer topic name
-/// @param data change data
-- (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data key: (NSData*) key;
+void sendDataWithKey(const void * participant,
+                     const char * topicName,
+                     const void * data,
+                     uint32_t length,
+                     const void * key,
+                     uint32_t keyLength);
 
-/// Send keyed change with RTPS writer
-/// @param topicName writer topic name
-/// @param data change data
-/// @param key sample key
-- (bool)sendWithTopicName:(NSString *)topicName data:(NSData*) data;
+void sendData(const void * participant,
+              const char * topicName,
+              const void * data,
+              uint32_t length);
 
-/// Remove all RTPS readers and writers, stop and delete participant
-- (void)deleteParticipant;
+void resignRTPSAll(const void * participant);
 
-/// Remove all RTPS readers and writers
-- (void)resignAll;
+void removeRTPSParticipant(const void * participant);
 
-@end
+#pragma clang assume_nonnull end
+#ifdef __cplusplus
+}
+#endif
 
-NS_ASSUME_NONNULL_END
+#endif /* FastRTPSBridge_h */
