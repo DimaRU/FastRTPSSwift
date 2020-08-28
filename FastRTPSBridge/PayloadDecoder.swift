@@ -29,7 +29,13 @@ public class PayloadDecoder<D: DDSType, T: DDSReaderTopic>: PayloadDecoderInterf
         self.topic = topic
         self.completion = completion
     }
-
+    
+    #if DEBUG
+    deinit {
+        print(#file, #function)
+    }
+    #endif
+    
     public func decode(sequence: UInt64,
                        payloadSize: Int,
                        payload: UnsafeMutableRawPointer) {

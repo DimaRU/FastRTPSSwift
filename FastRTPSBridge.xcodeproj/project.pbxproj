@@ -11,6 +11,10 @@
 		0A1FE2ED24F803FA002CBB56 /* FastRTPS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */; };
 		0A1FE2EF24F8FDD1002CBB56 /* DDSTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */; };
 		0A1FE2F024F8FDD1002CBB56 /* DDSTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */; };
+		0A1FE2F824F91977002CBB56 /* FastRTPSBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FE2F724F91977002CBB56 /* FastRTPSBridgeTests.swift */; };
+		0A1FE2FA24F91977002CBB56 /* FastRTPSBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A7130752363503500817593 /* FastRTPSBridge.framework */; };
+		0A1FE30124F91D51002CBB56 /* RovDepth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FE30024F91D51002CBB56 /* RovDepth.swift */; };
+		0A1FE30724F929A4002CBB56 /* RovTopic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1FE30624F929A4002CBB56 /* RovTopic.swift */; };
 		0A35C9F023A52D2500CF48D6 /* libfastrtps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		0A35C9F223A52D4100CF48D6 /* libfastcdr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F123A52D4100CF48D6 /* libfastcdr.a */; };
 		0A35C9F423A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */; };
@@ -52,6 +56,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0A1FE2FB24F91977002CBB56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A71306C2363503500817593 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A7130742363503500817593;
+			remoteInfo = "FastRTPSBridge macOS";
+		};
 		0A5B3F2C236502D200BE5707 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A71306C2363503500817593 /* Project object */;
@@ -77,6 +88,11 @@
 
 /* Begin PBXFileReference section */
 		0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDSTopic.swift; sourceTree = "<group>"; };
+		0A1FE2F524F91977002CBB56 /* FastRTPSBridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FastRTPSBridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A1FE2F724F91977002CBB56 /* FastRTPSBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastRTPSBridgeTests.swift; sourceTree = "<group>"; };
+		0A1FE2F924F91977002CBB56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0A1FE30024F91D51002CBB56 /* RovDepth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RovDepth.swift; sourceTree = "<group>"; };
+		0A1FE30624F929A4002CBB56 /* RovTopic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RovTopic.swift; sourceTree = "<group>"; };
 		0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = fastrtps/lib/libfastrtps.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A35C9F123A52D4100CF48D6 /* libfastcdr.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastcdr.a; path = fastrtps/lib/libfastcdr.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A35C9F323A52D5700CF48D6 /* libfoonathan_memory-0.6.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfoonathan_memory-0.6.2.a"; path = "fastrtps/lib/libfoonathan_memory-0.6.2.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,6 +123,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		0A1FE2F224F91977002CBB56 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A1FE2FA24F91977002CBB56 /* FastRTPSBridge.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0A7130722363503500817593 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -132,6 +156,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A1FE2F624F91977002CBB56 /* FastRTPSBridgeTests */ = {
+			isa = PBXGroup;
+			children = (
+				0A1FE30024F91D51002CBB56 /* RovDepth.swift */,
+				0A1FE30624F929A4002CBB56 /* RovTopic.swift */,
+				0A1FE2F724F91977002CBB56 /* FastRTPSBridgeTests.swift */,
+				0A1FE2F924F91977002CBB56 /* Info.plist */,
+			);
+			path = FastRTPSBridgeTests;
+			sourceTree = "<group>";
+		};
 		0A71306B2363503500817593 = {
 			isa = PBXGroup;
 			children = (
@@ -140,6 +175,7 @@
 				0A5F6F7823E1EFDE006A6D5A /* fastrtps_build_catalyst.sh */,
 				0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */,
 				0A7130772363503500817593 /* FastRTPSBridge */,
+				0A1FE2F624F91977002CBB56 /* FastRTPSBridgeTests */,
 				0A7130762363503500817593 /* Products */,
 				0A7130A32363650B00817593 /* Frameworks */,
 			);
@@ -150,6 +186,7 @@
 			children = (
 				0A7130752363503500817593 /* FastRTPSBridge.framework */,
 				0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */,
+				0A1FE2F524F91977002CBB56 /* FastRTPSBridgeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -267,6 +304,24 @@
 /* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
+		0A1FE2F424F91977002CBB56 /* FastRTPSBridgeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0A1FE2FD24F91977002CBB56 /* Build configuration list for PBXNativeTarget "FastRTPSBridgeTests" */;
+			buildPhases = (
+				0A1FE2F124F91977002CBB56 /* Sources */,
+				0A1FE2F224F91977002CBB56 /* Frameworks */,
+				0A1FE2F324F91977002CBB56 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0A1FE2FC24F91977002CBB56 /* PBXTargetDependency */,
+			);
+			name = FastRTPSBridgeTests;
+			productName = FastRTPSBridgeTests;
+			productReference = 0A1FE2F524F91977002CBB56 /* FastRTPSBridgeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		0A7130742363503500817593 /* FastRTPSBridge macOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0A71307D2363503500817593 /* Build configuration list for PBXNativeTarget "FastRTPSBridge macOS" */;
@@ -318,9 +373,13 @@
 		0A71306C2363503500817593 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1160;
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "Dmitriy Borovikov";
 				TargetAttributes = {
+					0A1FE2F424F91977002CBB56 = {
+						CreatedOnToolsVersion = 11.6;
+					};
 					0A5B3F282364F62200BE5707 = {
 						CreatedOnToolsVersion = 11.1;
 					};
@@ -357,11 +416,19 @@
 				0A5B3F282364F62200BE5707 /* FastRTPS macOS */,
 				0A8A37D22366D9AE008E8DC1 /* FastRTPS iOS */,
 				0A5F6F7A23E1F0B2006A6D5A /* FastRTPS catalyst */,
+				0A1FE2F424F91977002CBB56 /* FastRTPSBridgeTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0A1FE2F324F91977002CBB56 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0A7130732363503500817593 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -379,6 +446,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		0A1FE2F124F91977002CBB56 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0A1FE2F824F91977002CBB56 /* FastRTPSBridgeTests.swift in Sources */,
+				0A1FE30724F929A4002CBB56 /* RovTopic.swift in Sources */,
+				0A1FE30124F91D51002CBB56 /* RovDepth.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		0A7130712363503500817593 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -418,6 +495,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0A1FE2FC24F91977002CBB56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0A7130742363503500817593 /* FastRTPSBridge macOS */;
+			targetProxy = 0A1FE2FB24F91977002CBB56 /* PBXContainerItemProxy */;
+		};
 		0A5B3F2D236502D200BE5707 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0A5B3F282364F62200BE5707 /* FastRTPS macOS */;
@@ -438,6 +520,48 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0A1FE2FE24F91977002CBB56 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 9BEQ8V4XH9;
+				INFOPLIST_FILE = FastRTPSBridgeTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridgeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		0A1FE2FF24F91977002CBB56 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 9BEQ8V4XH9;
+				INFOPLIST_FILE = FastRTPSBridgeTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = in.ioshack.FastRTPSBridgeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		0A5B3F2A2364F62200BE5707 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -809,6 +933,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0A1FE2FD24F91977002CBB56 /* Build configuration list for PBXNativeTarget "FastRTPSBridgeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0A1FE2FE24F91977002CBB56 /* Debug */,
+				0A1FE2FF24F91977002CBB56 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0A5B3F292364F62200BE5707 /* Build configuration list for PBXLegacyTarget "FastRTPS macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

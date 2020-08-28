@@ -7,7 +7,7 @@ import Foundation
 import CDRCodable
 
 public class FastRTPS {
-    var participant: UnsafeRawPointer!
+    private var participant: UnsafeRawPointer!
     
     func setlogLevel(_ level: LogLevel) {
         setRTPSLoglevel(level)
@@ -44,11 +44,11 @@ public class FastRTPS {
         }
     }
 
-    func removeReader<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type) {
+    func removeReader<T: DDSReaderTopic>(topic: T) {
         guard
             let payloadDecoderRaw = removeRTPSReader(participant, topic.rawValue) else { return
         }
-        let _ = Unmanaged<PayloadDecoder<D,T>>.fromOpaque(payloadDecoderRaw).takeRetainedValue()
+        let _ = Unmanaged<NSObject>.fromOpaque(payloadDecoderRaw).takeRetainedValue()
     }
     
     func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
