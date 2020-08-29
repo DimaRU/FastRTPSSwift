@@ -13,7 +13,7 @@ class FastRTPSBridgeTests: XCTestCase {
     
     override func setUpWithError() throws {
         fastRTPSBridge = FastRTPS()
-        fastRTPSBridge?.setlogLevel(LogLevel(1))
+        fastRTPSBridge?.setlogLevel(.warning)
     }
 
     override func tearDownWithError() throws {
@@ -22,8 +22,8 @@ class FastRTPSBridgeTests: XCTestCase {
 
     func testCreateReader() {
         fastRTPSBridge?.createParticipant(name: "TestParticipant")
-        fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (rovDepth: RovDepth) in
-            print(rovDepth)
+        fastRTPSBridge?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self) { (sequence, data) in
+            print(sequence, data.count)
         }
         print("Reader created")
         fastRTPSBridge?.removeReader(topic: ReaderTopic.rovDepth)

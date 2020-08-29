@@ -31,7 +31,7 @@ const void * _Nonnull createRTPSParticipant(const char* _Nonnull name, const cha
     return participant;
 }
 
-void setRTPSLoglevel(enum LogLevel logLevel)
+void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
 {
     Log::ClearConsumers();
     Log::RegisterConsumer(std::unique_ptr<LogConsumer>(new eprosima::fastdds::dds::CustomLogConsumer));

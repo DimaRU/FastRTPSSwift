@@ -35,13 +35,13 @@
 		0A7130962363516700817593 /* BridgedWriterListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A71308E2363516700817593 /* BridgedWriterListener.cpp */; };
 		0A7130972363516700817593 /* BridgedWriterListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A71308F2363516700817593 /* BridgedWriterListener.h */; };
 		0A7130982363516700817593 /* BridgedReaderListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130902363516700817593 /* BridgedReaderListener.h */; };
-		0A7130992363516700817593 /* PayloadDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoder.swift */; };
+		0A7130992363516700817593 /* PayloadDecoderProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoderProxy.swift */; };
 		0A71309A2363516700817593 /* BridgedParticipant.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130922363516700817593 /* BridgedParticipant.h */; };
 		0A71309B2363516700817593 /* BridgedReaderListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.cpp */; };
 		0A71309C2363516700817593 /* FastRTPSBridge-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */; };
 		0A71309D2363516700817593 /* BridgedParticipant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.cpp */; };
 		0A8A37E32366DC51008E8DC1 /* DDSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130862363514900817593 /* DDSType.swift */; };
-		0A8A37E42366DC51008E8DC1 /* PayloadDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoder.swift */; };
+		0A8A37E42366DC51008E8DC1 /* PayloadDecoderProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoderProxy.swift */; };
 		0A8A37E72366DC51008E8DC1 /* BridgedParticipant.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130922363516700817593 /* BridgedParticipant.h */; };
 		0A8A37E82366DC51008E8DC1 /* BridgedParticipant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.cpp */; };
 		0A8A37E92366DC51008E8DC1 /* BridgedReaderListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130902363516700817593 /* BridgedReaderListener.h */; };
@@ -111,7 +111,7 @@
 		0A71308E2363516700817593 /* BridgedWriterListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedWriterListener.cpp; sourceTree = "<group>"; };
 		0A71308F2363516700817593 /* BridgedWriterListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedWriterListener.h; sourceTree = "<group>"; };
 		0A7130902363516700817593 /* BridgedReaderListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedReaderListener.h; sourceTree = "<group>"; };
-		0A7130912363516700817593 /* PayloadDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayloadDecoder.swift; sourceTree = "<group>"; };
+		0A7130912363516700817593 /* PayloadDecoderProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PayloadDecoderProxy.swift; sourceTree = "<group>"; };
 		0A7130922363516700817593 /* BridgedParticipant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedParticipant.h; sourceTree = "<group>"; };
 		0A7130932363516700817593 /* BridgedReaderListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedReaderListener.cpp; sourceTree = "<group>"; };
 		0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FastRTPSBridge-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -209,7 +209,7 @@
 				0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */,
 				0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */,
 				0A7130862363514900817593 /* DDSType.swift */,
-				0A7130912363516700817593 /* PayloadDecoder.swift */,
+				0A7130912363516700817593 /* PayloadDecoderProxy.swift */,
 				0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */,
 				0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */,
 				0A7130792363503500817593 /* Info.plist */,
@@ -465,7 +465,7 @@
 				0A7130962363516700817593 /* BridgedWriterListener.cpp in Sources */,
 				0A6E631524F7B2F800887543 /* BridgedParticipantListener.cpp in Sources */,
 				0A1FE2EF24F8FDD1002CBB56 /* DDSTopic.swift in Sources */,
-				0A7130992363516700817593 /* PayloadDecoder.swift in Sources */,
+				0A7130992363516700817593 /* PayloadDecoderProxy.swift in Sources */,
 				0A7130892363514900817593 /* CustomLogConsumer.cpp in Sources */,
 				0A71309B2363516700817593 /* BridgedReaderListener.cpp in Sources */,
 				0A71309D2363516700817593 /* BridgedParticipant.cpp in Sources */,
@@ -485,7 +485,7 @@
 				0A1FE2F024F8FDD1002CBB56 /* DDSTopic.swift in Sources */,
 				0A8A37EE2366DC51008E8DC1 /* CustomLogConsumer.cpp in Sources */,
 				0A8A37E32366DC51008E8DC1 /* DDSType.swift in Sources */,
-				0A8A37E42366DC51008E8DC1 /* PayloadDecoder.swift in Sources */,
+				0A8A37E42366DC51008E8DC1 /* PayloadDecoderProxy.swift in Sources */,
 				0A8A37E82366DC51008E8DC1 /* BridgedParticipant.cpp in Sources */,
 				0A1FE2ED24F803FA002CBB56 /* FastRTPS.swift in Sources */,
 				0A70B3222375A147007E05B6 /* FastRTPSNotifications.swift in Sources */,

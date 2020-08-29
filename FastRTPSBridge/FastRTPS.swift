@@ -7,11 +7,10 @@ import Foundation
 import CDRCodable
 
 public class FastRTPS {
-    private var participant: UnsafeRawPointer!
-    
-    func setlogLevel(_ level: LogLevel) {
-        setRTPSLoglevel(level)
+    public enum LogLevel: UInt32 {
+        case error=0, warning, info
     }
+    private var participant: UnsafeRawPointer!
     
     func createParticipant(name: String, localAddress: String? = nil, filerAddress: String? = nil) {
         participant = createRTPSParticipantFilered(name.cString(using: .utf8)!,
@@ -27,15 +26,35 @@ public class FastRTPS {
         removeRTPSParticipant(participant)
     }
 
+    func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) {
+        registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
+            let decoder = CDRDecoder()
+            let result = Result.init { try decoder.decode(D.self, from: data) }
+            completion(result)
+        }
+    }
+    
     func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void) {
-        let payloadDecoder = Unmanaged.passRetained(PayloadDecoder(topic: topic, completion: completion)).toOpaque()
+        registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
+            let decoder = CDRDecoder()
+            do {
+                let t = try decoder.decode(D.self, from: data)
+                completion(t)
+            } catch {
+                print(topic.rawValue, error)
+            }
+        }
+    }
+    
+    func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
+        let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
         registerRTPSReader(participant,
                            topic.rawValue.cString(using: .utf8)!,
                            D.ddsTypeName.cString(using: .utf8)!,
                            D.isKeyed,
                            topic.transientLocal,
                            topic.reliable,
-                           payloadDecoder) {
+                           payloadDecoderProxy) {
                                 (payloadDecoder, sequence, payloadSize, payload) in
                                 let payloadDecoder = payloadDecoder as! PayloadDecoderInterface
                                 payloadDecoder.decode(sequence: sequence,
@@ -48,7 +67,7 @@ public class FastRTPS {
         guard
             let payloadDecoderRaw = removeRTPSReader(participant, topic.rawValue) else { return
         }
-        let _ = Unmanaged<NSObject>.fromOpaque(payloadDecoderRaw).takeRetainedValue()
+        Unmanaged<NSObject>.fromOpaque(payloadDecoderRaw).release()
     }
     
     func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
@@ -105,7 +124,10 @@ public class FastRTPS {
         removeRTPSParticipant(participant)
     }
 
-
+    func setlogLevel(_ level: LogLevel) {
+        setRTPSLoglevel(.init(level.rawValue))
+    }
+    
     class func getIP4Address() -> [String: String] {
         var localIP: [String: String] = [:]
 

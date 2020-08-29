@@ -11,8 +11,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-enum LogLevel {
-    error, warning, info
+enum FastRTPSLogLevel {
+    error=0, warning, info
 };
 
 typedef void (*decoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
@@ -25,7 +25,7 @@ const void * _Nonnull createRTPSParticipantFilered(const char* _Nonnull name, co
 const void * _Nonnull createRTPSParticipant(const char* _Nonnull name, const char* _Nullable localAddress);
 
 #pragma clang assume_nonnull begin
-void setRTPSLoglevel(enum LogLevel logLevel);
+void setRTPSLoglevel(enum FastRTPSLogLevel logLevel);
 void setRTPSPartition(const void * participant, const char * partition);
 void registerRTPSReader(const void * participant,
                         const char * topicName,
