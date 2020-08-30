@@ -89,22 +89,16 @@ public class FastRTPS {
         do {
             var data = try encoder.encode(ddsData)
             if ddsData is DDSKeyed {
-                if var key = (ddsData as? DDSKeyed)?.key, !key.isEmpty {
-                        sendDataWithKey(participant,
-                                        topic.rawValue.cString(using: .utf8)!,
-                                        &data,
-                                        UInt32(data.count),
-                                        &key,
-                                        UInt32(key.count))
-                } else {
-                    var key = "default".data(using: .utf8)!
-                    sendDataWithKey(participant,
-                                    topic.rawValue.cString(using: .utf8)!,
-                                    &data,
-                                    UInt32(data.count),
-                                    &key,
-                                    UInt32(key.count))
+                var key = (ddsData as! DDSKeyed).key
+                if key.isEmpty {
+                    key = Data([0])
                 }
+                sendDataWithKey(participant,
+                                topic.rawValue.cString(using: .utf8)!,
+                                &data,
+                                UInt32(data.count),
+                                &key,
+                                UInt32(key.count))
             } else {
                 sendData(participant,
                          topic.rawValue.cString(using: .utf8)!,
