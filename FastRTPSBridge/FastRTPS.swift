@@ -6,14 +6,32 @@
 import Foundation
 import CDRCodable
 
-public class FastRTPS {
+open class FastRTPS {
     public enum LogLevel: UInt32 {
         case error=0, warning, info
     }
-    private var participant: UnsafeRawPointer!
+    private var participant: UnsafeRawPointer
+    
+    init() {
+        participant = makeBridgedParticipant({
+            (payloadDecoder, sequence, payloadSize, payload) in
+            let payloadDecoder = payloadDecoder as! PayloadDecoderInterface
+            payloadDecoder.decode(sequence: sequence,
+                                  payloadSize: Int(payloadSize),
+                                  payload: payload)
+        })
+    }
+    
+     private func decoderCallback(_ payloadDecoder: UnsafeMutableRawPointer, _ sequence: UInt64, _ payloadSize: Int32, _ payload: UnsafeMutablePointer<UInt8>) {
+        let payloadDecoder = payloadDecoder as! PayloadDecoderInterface
+        payloadDecoder.decode(sequence: sequence,
+                              payloadSize: Int(payloadSize),
+                              payload: payload)
+    }
     
     func createParticipant(name: String, localAddress: String? = nil, filerAddress: String? = nil) {
-        participant = createRTPSParticipantFilered(name.cString(using: .utf8)!,
+        createRTPSParticipantFilered(participant,
+                                     name.cString(using: .utf8)!,
                                      localAddress?.cString(using: .utf8),
                                      filerAddress?.cString(using: .utf8))
     }
@@ -54,13 +72,7 @@ public class FastRTPS {
                            D.isKeyed,
                            topic.transientLocal,
                            topic.reliable,
-                           payloadDecoderProxy) {
-                                (payloadDecoder, sequence, payloadSize, payload) in
-                                let payloadDecoder = payloadDecoder as! PayloadDecoderInterface
-                                payloadDecoder.decode(sequence: sequence,
-                                                      payloadSize: Int(payloadSize),
-                                                      payload: payload)
-        }
+                           payloadDecoderProxy)
     }
 
     func removeReader<T: DDSReaderTopic>(topic: T) {

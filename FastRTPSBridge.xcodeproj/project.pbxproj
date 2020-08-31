@@ -53,6 +53,7 @@
 		0A8A37EF2366DC51008E8DC1 /* CustomLogConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130832363514900817593 /* CustomLogConsumer.h */; };
 		0A969815236EEF0100FF958F /* CDRCodable in Frameworks */ = {isa = PBXBuildFile; productRef = 0A969814236EEF0100FF958F /* CDRCodable */; };
 		0A969817236EEF0B00FF958F /* CDRCodable in Frameworks */ = {isa = PBXBuildFile; productRef = 0A969816236EEF0B00FF958F /* CDRCodable */; };
+		0AE71CE924FD598400316A76 /* RovBarometer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE71CE824FD598400316A76 /* RovBarometer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,6 +121,7 @@
 		0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastRTPS.swift; sourceTree = "<group>"; };
 		0ACE0ECA23E2390300C83C55 /* maccatalyst.toolchain.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maccatalyst.toolchain.cmake; sourceTree = "<group>"; };
+		0AE71CE824FD598400316A76 /* RovBarometer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RovBarometer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +161,7 @@
 		0A1FE2F624F91977002CBB56 /* FastRTPSBridgeTests */ = {
 			isa = PBXGroup;
 			children = (
+				0AE71CE824FD598400316A76 /* RovBarometer.swift */,
 				0A1FE30024F91D51002CBB56 /* RovDepth.swift */,
 				0A1FE30624F929A4002CBB56 /* RovTopic.swift */,
 				0A1FE2F724F91977002CBB56 /* FastRTPSBridgeTests.swift */,
@@ -451,6 +454,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0A1FE2F824F91977002CBB56 /* FastRTPSBridgeTests.swift in Sources */,
+				0AE71CE924FD598400316A76 /* RovBarometer.swift in Sources */,
 				0A1FE30724F929A4002CBB56 /* RovTopic.swift in Sources */,
 				0A1FE30124F91D51002CBB56 /* RovDepth.swift in Sources */,
 			);
@@ -785,7 +789,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "FastRTPSBridge-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -823,7 +827,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "FastRTPSBridge-Swift.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -887,7 +891,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "FastRTPSBridge-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -923,7 +927,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_INCLUDE_PATHS = "$(BUILT_PRODUCTS_DIR)/fastrtps";
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "";
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "FastRTPSBridge-Swift.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

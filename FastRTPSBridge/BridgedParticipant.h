@@ -35,12 +35,13 @@ class BridgedParticipant
         }
     };
 public:
-    BridgedParticipant();
+    BridgedParticipant(DecoderCallback decoderCallback);
     virtual ~BridgedParticipant();
     eprosima::fastrtps::rtps::RTPSParticipant* mp_participant;
     BridgedParticipantListener* mp_listener;
     std::string partitionName;
-    
+    DecoderCallback decoderCallback;
+
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;
 
@@ -51,7 +52,6 @@ public:
                    const bool keyed,
                    const bool transientLocal,
                    const bool reliable,
-                   decoderCallback callback,
                    const void * payloadDecoder);
     
     const void * removeReader(const char* name);

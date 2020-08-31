@@ -15,20 +15,25 @@ using namespace fastrtps;
 using namespace rtps;
 using namespace std;
 
-const void * _Nonnull createRTPSParticipantFilered(const char* _Nonnull name,
-                                                   const char* _Nullable localAddress,
-                                                   const char* _Nullable filterAddress)
+const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback)
 {
-    auto participant = new BridgedParticipant();
-    participant->createParticipant(name, filterAddress, localAddress);
+    auto participant = new BridgedParticipant(decoderCallback);
     return participant;
 }
 
-const void * _Nonnull createRTPSParticipant(const char* _Nonnull name, const char* _Nullable localAddress)
+void createRTPSParticipantFilered(const void * participant,
+                                  const char* name,
+                                  const char* _Nullable localAddress,
+                                  const char* _Nullable filterAddress)
 {
-    auto participant = new BridgedParticipant();
-    participant->createParticipant(name, nullptr, localAddress);
-    return participant;
+    auto p = (BridgedParticipant *)participant;
+    p->createParticipant(name, filterAddress, localAddress);
+}
+
+void createRTPSParticipant(const void * participant, const char* name, const char* _Nullable localAddress)
+{
+    auto p = (BridgedParticipant *)participant;
+    p->createParticipant(name, nullptr, localAddress);
 }
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
@@ -61,11 +66,10 @@ void registerRTPSReader(const void * participant,
                         bool keyed,
                         bool transientLocal,
                         bool reliable,
-                        const void * payloadDecoder,
-                        decoderCallback callback)
+                        const void * payloadDecoder)
 {
     auto p = (BridgedParticipant *)participant;
-    p->addReader(topicName, typeName, keyed, transientLocal, reliable, callback, payloadDecoder);
+    p->addReader(topicName, typeName, keyed, transientLocal, reliable, payloadDecoder);
 }
 
 const void * _Nullable removeRTPSReader(const void * participant,

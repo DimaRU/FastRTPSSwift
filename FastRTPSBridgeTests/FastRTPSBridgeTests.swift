@@ -29,4 +29,19 @@ class FastRTPSBridgeTests: XCTestCase {
         fastRTPSBridge?.removeReader(topic: ReaderTopic.rovDepth)
         fastRTPSBridge?.removeParticipant()
     }
+    
+    func testCreateMultipleReaders() {
+        fastRTPSBridge?.createParticipant(name: "TestParticipant")
+        fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (depth: RovDepth) in
+            print(depth)
+        }
+        
+        fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (baro: RovBarometer) in
+            print(baro)
+        }
+        
+        print("Readers created")
+        fastRTPSBridge?.resignAll()
+        fastRTPSBridge?.removeParticipant()
+    }
 }

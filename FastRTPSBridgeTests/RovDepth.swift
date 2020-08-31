@@ -16,13 +16,6 @@ struct RovHeader: Codable {
     let frameId: String
 }
 
-struct FluidPressure: Codable {
-    let header: RovHeader
-
-    let fluidPressure: Double
-    let variance: Double
-}
-
 struct RovDepth: DDSKeyed {
     let pressure: FluidPressure
     let id: String      // @key

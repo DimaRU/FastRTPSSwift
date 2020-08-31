@@ -25,11 +25,12 @@
 using namespace eprosima::fastdds;
 using namespace eprosima::fastrtps::rtps;
 
-BridgedParticipant::BridgedParticipant():
+BridgedParticipant::BridgedParticipant(DecoderCallback decoderCallback):
 mp_participant(nullptr),
 mp_listener(nullptr),
 partitionName("*")
 {
+    BridgedParticipant::decoderCallback = decoderCallback;
 }
 
 BridgedParticipant::~BridgedParticipant()
@@ -101,7 +102,6 @@ bool BridgedParticipant::addReader(const char* name,
                                    const bool keyed,
                                    const bool transientLocal,
                                    const bool reliable,
-                                   decoderCallback callback,
                                    const void * payloadDecoder)
 {
     auto topicName = std::string(name);
@@ -118,7 +118,7 @@ bool BridgedParticipant::addReader(const char* name,
     if (reliable) {
         readerAttributes.endpoint.reliabilityKind = RELIABLE;
     }
-    auto listener = new BridgedReaderListener(name, callback, payloadDecoder);
+    auto listener = new BridgedReaderListener(name, decoderCallback, payloadDecoder);
 
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
