@@ -16,6 +16,7 @@ enum FastRTPSLogLevel {
 };
 
 typedef void (*DecoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
+typedef void (*ReleaseCallback)(void * _Nonnull payloadDecoder);
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,7 +24,7 @@ extern "C" {
 
 
 #pragma clang assume_nonnull begin
-const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback);
+const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback);
 void createRTPSParticipantFilered(const void * participant, const char* name, const char* _Nullable localAddress, const char* _Nullable filterAddress);
 void createRTPSParticipant(const void * participant, const char* name, const char* _Nullable localAddress);
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel);
@@ -36,8 +37,8 @@ void registerRTPSReader(const void * participant,
                         bool reliable,
                         const void * payloadDecoder);
 
-const void * _Nullable removeRTPSReader(const void * participant,
-                                    const char * topicName);
+void removeRTPSReader(const void * participant,
+                      const char * topicName);
 
 void registerRTPSWriter(const void * participant,
                     const char * topicName,

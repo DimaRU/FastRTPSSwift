@@ -19,6 +19,9 @@ open class FastRTPS {
             payloadDecoder.decode(sequence: sequence,
                                   payloadSize: Int(payloadSize),
                                   payload: payload)
+        }, {
+            (payloadDecoder) in
+            Unmanaged<NSObject>.fromOpaque(payloadDecoder).release()
         })
     }
     
@@ -76,10 +79,7 @@ open class FastRTPS {
     }
 
     func removeReader<T: DDSReaderTopic>(topic: T) {
-        guard
-            let payloadDecoderRaw = removeRTPSReader(participant, topic.rawValue) else { return
-        }
-        Unmanaged<NSObject>.fromOpaque(payloadDecoderRaw).release()
+        removeRTPSReader(participant, topic.rawValue.cString(using: .utf8)!)
     }
     
     func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
@@ -92,8 +92,7 @@ open class FastRTPS {
     }
     
     func removeWriter<T: DDSReaderTopic>(topic: T) {
-        removeRTPSWriter(participant,
-                          topic.rawValue.cString(using: .utf8)!)
+        removeRTPSWriter(participant, topic.rawValue.cString(using: .utf8)!)
     }
 
     func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) {

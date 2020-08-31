@@ -36,12 +36,13 @@ class FastRTPSBridgeTests: XCTestCase {
             print(depth)
         }
         
-        fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (baro: RovBarometer) in
+        fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal) { (baro: RovBarometer) in
             print(baro)
         }
         
         print("Readers created")
         fastRTPSBridge?.resignAll()
+        print("Readers removed")
         fastRTPSBridge?.removeParticipant()
     }
 }

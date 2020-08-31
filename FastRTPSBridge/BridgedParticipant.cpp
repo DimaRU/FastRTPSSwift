@@ -25,12 +25,13 @@
 using namespace eprosima::fastdds;
 using namespace eprosima::fastrtps::rtps;
 
-BridgedParticipant::BridgedParticipant(DecoderCallback decoderCallback):
+BridgedParticipant::BridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback):
 mp_participant(nullptr),
 mp_listener(nullptr),
 partitionName("*")
 {
     BridgedParticipant::decoderCallback = decoderCallback;
+    BridgedParticipant::releaseCallback = releaseCallback;
 }
 
 BridgedParticipant::~BridgedParticipant()
@@ -49,6 +50,8 @@ void BridgedParticipant::resignAll() {
     {
         logInfo(ROV_PARTICIPANT, "Remove reader: " << it->first)
         auto readerInfo = it->second;
+        auto payloadDecoder = (void * _Nonnull)readerInfo->listener->payloadDecoder;
+        releaseCallback(payloadDecoder);
         RTPSDomain::removeRTPSReader(readerInfo->reader);
         delete readerInfo;
     }
@@ -159,20 +162,21 @@ bool BridgedParticipant::addReader(const char* name,
     return true;
 }
 
-const void * BridgedParticipant::removeReader(const char* name)
+bool BridgedParticipant::removeReader(const char* name)
 {
     logInfo(ROV_PARTICIPANT, "Remove reader: " << name)
     auto topicName = std::string(name);
     if (readerList.find(topicName) == readerList.end()) {
-        return nullptr;
+        return false;
     }
     auto readerInfo = readerList[topicName];
-    auto payloadDecoder = readerInfo->listener->payloadDecoder;
+    auto payloadDecoder = (void * _Nonnull)readerInfo->listener->payloadDecoder;
     if (!RTPSDomain::removeRTPSReader(readerInfo->reader))
-        return nullptr;
+        return false;
     readerList.erase(topicName);
     delete readerInfo;
-    return payloadDecoder;
+    releaseCallback(payloadDecoder);
+    return true;
 }
 
 bool BridgedParticipant::addWriter(const char* name,

@@ -15,9 +15,9 @@ using namespace fastrtps;
 using namespace rtps;
 using namespace std;
 
-const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback)
+const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback)
 {
-    auto participant = new BridgedParticipant(decoderCallback);
+    auto participant = new BridgedParticipant(decoderCallback, releaseCallback);
     return participant;
 }
 
@@ -72,11 +72,11 @@ void registerRTPSReader(const void * participant,
     p->addReader(topicName, typeName, keyed, transientLocal, reliable, payloadDecoder);
 }
 
-const void * _Nullable removeRTPSReader(const void * participant,
-                                        const char * topicName)
+void removeRTPSReader(const void * participant,
+                      const char * topicName)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->removeReader(topicName);
+    p->removeReader(topicName);
 }
 
 void registerRTPSWriter(const void * participant,
