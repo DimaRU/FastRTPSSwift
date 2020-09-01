@@ -46,7 +46,10 @@ public:
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;
 
-    bool createParticipant(const char* name, const char *interfaceIPv4, const char* networkAddress);
+    bool createParticipant(const char* name,
+                           const uint32_t domain,
+                           const char *interfaceIPv4,
+                           const char* networkAddress);
     void setPartition(const char* name) { partitionName = std::string(name); }
     bool addReader(const char* name,
                    const char* dataType,

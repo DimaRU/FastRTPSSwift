@@ -6,11 +6,20 @@
 import Foundation
 import CDRCodable
 
+public protocol RTPSListenerDelegate {
+    func RTPSNotification(reason: RTPSNotification, topic: String)
+}
+
+public protocol RTPSParticipantListenerDelegate {
+    func RTPSParticipantNotification(reason: RTPSParticipantNotification, topic: String)
+}
+
 open class FastRTPS {
     public enum LogLevel: UInt32 {
         case error=0, warning, info
     }
     private var participant: UnsafeRawPointer
+    private var listenerDelegate: RTPSListenerDelegate?
     
     init() {
         participant = makeBridgedParticipant({
@@ -21,19 +30,26 @@ open class FastRTPS {
                                   payload: payload)
         }, {
             (payloadDecoder) in
-            Unmanaged<NSObject>.fromOpaque(payloadDecoder).release()
+            Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
         })
     }
     
-     private func decoderCallback(_ payloadDecoder: UnsafeMutableRawPointer, _ sequence: UInt64, _ payloadSize: Int32, _ payload: UnsafeMutablePointer<UInt8>) {
-        let payloadDecoder = payloadDecoder as! PayloadDecoderInterface
-        payloadDecoder.decode(sequence: sequence,
-                              payloadSize: Int(payloadSize),
-                              payload: payload)
+    func setRTPSListener(delegate: RTPSListenerDelegate?) {
+        listenerDelegate = delegate
     }
     
-    func createParticipant(name: String, localAddress: String? = nil, filerAddress: String? = nil) {
+    // MARK: Public interface
+
+    
+    /// Create RTPS participant
+    /// - Parameters:
+    ///   - name: participant name
+    ///   - domainID: participant domain ID
+    ///   - localAddress: bind only to localAddress
+    ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
+    func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filerAddress: String? = nil) {
         createRTPSParticipantFilered(participant,
+                                     domainID,
                                      name.cString(using: .utf8)!,
                                      localAddress?.cString(using: .utf8),
                                      filerAddress?.cString(using: .utf8))
@@ -42,11 +58,23 @@ open class FastRTPS {
     func setPartition(name: String) {
         setRTPSPartition(participant, name.cString(using: .utf8)!)
     }
-
+    
+    /// Remove all readers/writers and then delete participant
     func deleteParticipant() {
         removeRTPSParticipant(participant)
     }
 
+    func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
+        let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
+        registerRTPSReader(participant,
+                           topic.rawValue.cString(using: .utf8)!,
+                           D.ddsTypeName.cString(using: .utf8)!,
+                           D.isKeyed,
+                           topic.transientLocal,
+                           topic.reliable,
+                           payloadDecoderProxy)
+    }
+    
     func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) {
         registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
@@ -67,17 +95,6 @@ open class FastRTPS {
         }
     }
     
-    func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
-        let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
-        registerRTPSReader(participant,
-                           topic.rawValue.cString(using: .utf8)!,
-                           D.ddsTypeName.cString(using: .utf8)!,
-                           D.isKeyed,
-                           topic.transientLocal,
-                           topic.reliable,
-                           payloadDecoderProxy)
-    }
-
     func removeReader<T: DDSReaderTopic>(topic: T) {
         removeRTPSReader(participant, topic.rawValue.cString(using: .utf8)!)
     }
@@ -180,5 +197,4 @@ open class FastRTPS {
 
         return localIP
     }
-
 }

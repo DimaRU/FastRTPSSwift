@@ -22,18 +22,22 @@ const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback, Re
 }
 
 void createRTPSParticipantFilered(const void * participant,
+                                  const uint32_t domain,
                                   const char* name,
                                   const char* _Nullable localAddress,
                                   const char* _Nullable filterAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    p->createParticipant(name, filterAddress, localAddress);
+    p->createParticipant(name, domain, filterAddress, localAddress);
 }
 
-void createRTPSParticipant(const void * participant, const char* name, const char* _Nullable localAddress)
+void createRTPSParticipant(const void * participant,
+                           const uint32_t domain,
+                           const char* name,
+                           const char* _Nullable localAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    p->createParticipant(name, nullptr, localAddress);
+    p->createParticipant(name, domain, nullptr, localAddress);
 }
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
@@ -130,3 +134,7 @@ void removeRTPSParticipant(const void * participant)
     p->resignAll();
     delete p;
 }
+
+
+void participantListenerCallback(int reason, const char *topicName, const char* typeName, const char* remoteLocators, const char* properties[]) {}
+void readerWriterListenerCallback(int reason, const char *topicName) {}

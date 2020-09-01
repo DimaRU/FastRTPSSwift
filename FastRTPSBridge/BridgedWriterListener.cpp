@@ -9,6 +9,8 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
+void readerWriterListenerCallback(int reason, const char *topicName);
+
 BridgedWriterListener::BridgedWriterListener(const char* topicName)
 {
     BridgedWriterListener::n_matched = 0;
@@ -21,26 +23,20 @@ BridgedWriterListener::~BridgedWriterListener()
 
 void BridgedWriterListener::on_liveliness_lost(RTPSWriter* writer, const LivelinessLostStatus& status)
 {
-//    NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-//    notificationDictionary[@(RTPSNotificationUserInfoTopic)] = [[NSString alloc] initWithCString:topicName.c_str() encoding:NSUTF8StringEncoding];
-//    notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSReaderWriterNotificationReasonWriterLivelinessLost);
-//    [NSNotificationCenter.defaultCenter postNotificationName:RTPSReaderWriterNotificationName object:NULL userInfo:notificationDictionary];
+    readerWriterListenerCallback(RTPSNotificationWriterLivelinessLost, topicName.c_str());
 }
 
 void BridgedWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& info)
 {
-//    NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-//    notificationDictionary[@(RTPSNotificationUserInfoTopic)] = [[NSString alloc] initWithCString:topicName.c_str() encoding:NSUTF8StringEncoding];
     switch (info.status)
     {
         case MATCHED_MATCHING:
             n_matched++;
-//            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSReaderWriterNotificationReasonWriterMatchedMatching);
+            readerWriterListenerCallback(RTPSNotificationWriterMatchedMatching, topicName.c_str());
             break;
         case REMOVED_MATCHING:
             n_matched--;
-//            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSReaderWriterNotificationReasonWriterRemovedMatching);
+            readerWriterListenerCallback(RTPSNotificationWriterRemovedMatching, topicName.c_str());
             break;
     }
-//    [NSNotificationCenter.defaultCenter postNotificationName:RTPSReaderWriterNotificationName object:NULL userInfo:notificationDictionary];
 }

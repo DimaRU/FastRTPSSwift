@@ -15,6 +15,40 @@ enum FastRTPSLogLevel {
     error=0, warning, info
 };
 
+
+typedef enum {
+  RTPSNotificationReaderMatchedMatching = 0,
+  RTPSNotificationReaderRemovedMatching = 1,
+  RTPSNotificationReaderLivelinessLost = 2,
+  RTPSNotificationWriterMatchedMatching = 3,
+  RTPSNotificationWriterRemovedMatching = 4,
+  RTPSNotificationWriterLivelinessLost = 5,
+} RTPSNotification;
+
+typedef enum {
+  RTPSNotificationKeyParticipant = 0,
+  RTPSNotificationKeyReason = 1,
+  RTPSNotificationKeyTopic = 2,
+  RTPSNotificationKeyLocators = 3,
+  RTPSNotificationKeyMetaLocators = 4,
+  RTPSNotificationKeyProperties = 5,
+  RTPSNotificationKeyTypeName = 6,
+} RTPSNotificationKey;
+
+typedef enum {
+  RTPSParticipantNotificationDiscoveredReader = 0,
+  RTPSParticipantNotificationChangedQosReader = 1,
+  RTPSParticipantNotificationRemovedReader = 2,
+  RTPSParticipantNotificationDiscoveredWriter = 3,
+  RTPSParticipantNotificationChangedQosWriter = 4,
+  RTPSParticipantNotificationRemovedWriter = 5,
+  RTPSParticipantNotificationDiscoveredParticipant = 6,
+  RTPSParticipantNotificationChangedQosParticipant = 7,
+  RTPSParticipantNotificationRemovedParticipant = 8,
+  RTPSParticipantNotificationDroppedParticipant = 9,
+} RTPSParticipantNotification;
+
+
 typedef void (*DecoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
 typedef void (*ReleaseCallback)(void * _Nonnull payloadDecoder);
 
@@ -25,8 +59,15 @@ extern "C" {
 
 #pragma clang assume_nonnull begin
 const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback);
-void createRTPSParticipantFilered(const void * participant, const char* name, const char* _Nullable localAddress, const char* _Nullable filterAddress);
-void createRTPSParticipant(const void * participant, const char* name, const char* _Nullable localAddress);
+void createRTPSParticipantFilered(const void * participant,
+                                  const uint32_t domain,
+                                  const char* name,
+                                  const char* _Nullable localAddress,
+                                  const char* _Nullable filterAddress);
+void createRTPSParticipant(const void * participant,
+                           const uint32_t domain,
+                           const char* name,
+                           const char* _Nullable localAddress);
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel);
 void setRTPSPartition(const void * participant, const char * partition);
 void registerRTPSReader(const void * participant,

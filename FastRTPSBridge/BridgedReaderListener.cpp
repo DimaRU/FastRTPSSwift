@@ -12,6 +12,7 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
+void readerWriterListenerCallback(int reason, const char *topicName);
 BridgedReaderListener::BridgedReaderListener(const char* topicName, DecoderCallback callback, const void * payloadDecoder): n_matched(0)
 {
     BridgedReaderListener::topicName = std::string(topicName);
@@ -36,26 +37,20 @@ void BridgedReaderListener::onNewCacheChangeAdded(RTPSReader* reader, const Cach
 
 void BridgedReaderListener::on_liveliness_changed(RTPSReader *reader, const LivelinessChangedStatus &status)
 {
-//    NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-//    notificationDictionary[@(RTPSNotificationUserInfoTopic)] = [[NSString alloc] initWithCString:topicName.c_str() encoding:NSUTF8StringEncoding];
-//    notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSReaderWriterNotificationReasonReaderLivelinessLost);
-//    [NSNotificationCenter.defaultCenter postNotificationName:RTPSReaderWriterNotificationName object:NULL userInfo:notificationDictionary];
+    readerWriterListenerCallback(RTPSNotificationReaderLivelinessLost, topicName.c_str());
 }
 
 void BridgedReaderListener::onReaderMatched(RTPSReader* reader, MatchingInfo& info)
 {
-//    NSMutableDictionary *notificationDictionary = [[NSMutableDictionary alloc] init];
-//    notificationDictionary[@(RTPSNotificationUserInfoTopic)] = [[NSString alloc] initWithCString:topicName.c_str() encoding:NSUTF8StringEncoding];
     switch (info.status)
     {
         case MATCHED_MATCHING:
             n_matched++;
-//            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSReaderWriterNotificationReasonReaderMatchedMatching);
+            readerWriterListenerCallback(RTPSNotificationReaderMatchedMatching, topicName.c_str());
             break;
         case REMOVED_MATCHING:
             n_matched--;
-//            notificationDictionary[@(RTPSNotificationUserInfoReason)] = @(RTPSReaderWriterNotificationReasonReaderRemovedMatching);
+            readerWriterListenerCallback(RTPSNotificationReaderRemovedMatching, topicName.c_str());
             break;
     }
-//    [NSNotificationCenter.defaultCenter postNotificationName:RTPSReaderWriterNotificationName object:NULL userInfo:notificationDictionary];
 }

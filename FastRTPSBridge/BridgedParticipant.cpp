@@ -67,7 +67,10 @@ void BridgedParticipant::resignAll() {
     writerList.clear();
 }
 
-bool BridgedParticipant::createParticipant(const char* name, const char *interfaceIPv4, const char* networkAddress)
+bool BridgedParticipant::createParticipant(const char* name,
+                                           const uint32_t domain,
+                                           const char *interfaceIPv4,
+                                           const char* networkAddress)
 {
     RTPSParticipantAttributes pattr;
     pattr.builtin.use_WriterLivelinessProtocol = true;
@@ -93,7 +96,7 @@ bool BridgedParticipant::createParticipant(const char* name, const char *interfa
     pattr.useBuiltinTransports = false;
 
     mp_listener = new BridgedParticipantListener();
-    mp_participant = RTPSDomain::createParticipant(0, pattr, mp_listener);
+    mp_participant = RTPSDomain::createParticipant(domain, pattr, mp_listener);
     if (mp_participant == nullptr)
         return false;
 
