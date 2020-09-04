@@ -27,8 +27,6 @@
 		0A6E631324F6AC6B00887543 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A6E630F24F6AC6B00887543 /* FastRTPSBridge.h */; };
 		0A6E631424F7B2F700887543 /* BridgedParticipantListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130812363514900817593 /* BridgedParticipantListener.cpp */; };
 		0A6E631524F7B2F800887543 /* BridgedParticipantListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130812363514900817593 /* BridgedParticipantListener.cpp */; };
-		0A70B3212375A147007E05B6 /* FastRTPSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */; };
-		0A70B3222375A147007E05B6 /* FastRTPSNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */; };
 		0A7130892363514900817593 /* CustomLogConsumer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130822363514900817593 /* CustomLogConsumer.cpp */; };
 		0A71308A2363514900817593 /* CustomLogConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130832363514900817593 /* CustomLogConsumer.h */; };
 		0A71308D2363514900817593 /* DDSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130862363514900817593 /* DDSType.swift */; };
@@ -40,6 +38,8 @@
 		0A71309B2363516700817593 /* BridgedReaderListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130932363516700817593 /* BridgedReaderListener.cpp */; };
 		0A71309C2363516700817593 /* FastRTPSBridge-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */; };
 		0A71309D2363516700817593 /* BridgedParticipant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130952363516700817593 /* BridgedParticipant.cpp */; };
+		0A8680FB25028979001DAAF9 /* BridgeContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A8680F825028979001DAAF9 /* BridgeContainer.h */; };
+		0A8680FC25028979001DAAF9 /* BridgeContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A8680F825028979001DAAF9 /* BridgeContainer.h */; };
 		0A8A37E32366DC51008E8DC1 /* DDSType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130862363514900817593 /* DDSType.swift */; };
 		0A8A37E42366DC51008E8DC1 /* PayloadDecoderProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7130912363516700817593 /* PayloadDecoderProxy.swift */; };
 		0A8A37E72366DC51008E8DC1 /* BridgedParticipant.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A7130922363516700817593 /* BridgedParticipant.h */; };
@@ -101,7 +101,6 @@
 		0A5F6F7823E1EFDE006A6D5A /* fastrtps_build_catalyst.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_catalyst.sh; sourceTree = "<group>"; };
 		0A6E630E24F6AC6B00887543 /* FastRTPSBridge.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FastRTPSBridge.cpp; sourceTree = "<group>"; };
 		0A6E630F24F6AC6B00887543 /* FastRTPSBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastRTPSBridge.h; sourceTree = "<group>"; };
-		0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastRTPSNotifications.swift; sourceTree = "<group>"; };
 		0A7130752363503500817593 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A7130792363503500817593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A7130812363514900817593 /* BridgedParticipantListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedParticipantListener.cpp; sourceTree = "<group>"; };
@@ -117,6 +116,7 @@
 		0A7130932363516700817593 /* BridgedReaderListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedReaderListener.cpp; sourceTree = "<group>"; };
 		0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FastRTPSBridge-Bridging-Header.h"; sourceTree = "<group>"; };
 		0A7130952363516700817593 /* BridgedParticipant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedParticipant.cpp; sourceTree = "<group>"; };
+		0A8680F825028979001DAAF9 /* BridgeContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgeContainer.h; sourceTree = "<group>"; };
 		0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_ios.sh; sourceTree = "<group>"; };
 		0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AC2BE6524F7FFB20040EBBA /* FastRTPS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastRTPS.swift; sourceTree = "<group>"; };
@@ -199,6 +199,7 @@
 			children = (
 				0A6E630E24F6AC6B00887543 /* FastRTPSBridge.cpp */,
 				0A6E630F24F6AC6B00887543 /* FastRTPSBridge.h */,
+				0A8680F825028979001DAAF9 /* BridgeContainer.h */,
 				0A7130952363516700817593 /* BridgedParticipant.cpp */,
 				0A7130922363516700817593 /* BridgedParticipant.h */,
 				0A7130932363516700817593 /* BridgedReaderListener.cpp */,
@@ -213,7 +214,6 @@
 				0A1FE2EE24F8FDD1002CBB56 /* DDSTopic.swift */,
 				0A7130862363514900817593 /* DDSType.swift */,
 				0A7130912363516700817593 /* PayloadDecoderProxy.swift */,
-				0A70B3202375A147007E05B6 /* FastRTPSNotifications.swift */,
 				0A7130942363516700817593 /* FastRTPSBridge-Bridging-Header.h */,
 				0A7130792363503500817593 /* Info.plist */,
 			);
@@ -240,6 +240,7 @@
 				0A6E631224F6AC6B00887543 /* FastRTPSBridge.h in Headers */,
 				0A71309C2363516700817593 /* FastRTPSBridge-Bridging-Header.h in Headers */,
 				0A71309A2363516700817593 /* BridgedParticipant.h in Headers */,
+				0A8680FB25028979001DAAF9 /* BridgeContainer.h in Headers */,
 				0A71308A2363514900817593 /* CustomLogConsumer.h in Headers */,
 				0A7130972363516700817593 /* BridgedWriterListener.h in Headers */,
 				0A7130982363516700817593 /* BridgedReaderListener.h in Headers */,
@@ -253,6 +254,7 @@
 				0A6E631324F6AC6B00887543 /* FastRTPSBridge.h in Headers */,
 				0A8A37ED2366DC51008E8DC1 /* FastRTPSBridge-Bridging-Header.h in Headers */,
 				0A8A37E92366DC51008E8DC1 /* BridgedReaderListener.h in Headers */,
+				0A8680FC25028979001DAAF9 /* BridgeContainer.h in Headers */,
 				0A8A37E72366DC51008E8DC1 /* BridgedParticipant.h in Headers */,
 				0A8A37EC2366DC51008E8DC1 /* BridgedWriterListener.h in Headers */,
 				0A8A37EF2366DC51008E8DC1 /* CustomLogConsumer.h in Headers */,
@@ -474,7 +476,6 @@
 				0A71309B2363516700817593 /* BridgedReaderListener.cpp in Sources */,
 				0A71309D2363516700817593 /* BridgedParticipant.cpp in Sources */,
 				0A1FE2EC24F803F9002CBB56 /* FastRTPS.swift in Sources */,
-				0A70B3212375A147007E05B6 /* FastRTPSNotifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,7 +493,6 @@
 				0A8A37E42366DC51008E8DC1 /* PayloadDecoderProxy.swift in Sources */,
 				0A8A37E82366DC51008E8DC1 /* BridgedParticipant.cpp in Sources */,
 				0A1FE2ED24F803FA002CBB56 /* FastRTPS.swift in Sources */,
-				0A70B3222375A147007E05B6 /* FastRTPSNotifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -688,7 +688,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -752,7 +752,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";

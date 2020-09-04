@@ -15,10 +15,21 @@ using namespace fastrtps;
 using namespace rtps;
 using namespace std;
 
-const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback)
+const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback,
+                                             ReleaseCallback releaseCallback)
 {
     auto participant = new BridgedParticipant(decoderCallback, releaseCallback);
     return participant;
+}
+
+void setRTPSListenerCallback(const void * participant,
+                             const void * listnerObject,
+                             ReaderWriterListenerCallback readerWriterListenerCallback,
+                             DiscoveryParticipantCallback discoveryParticipantCallback,
+                             DiscoveryReaderWriterCallback discoveryReaderWriterCallback)
+{
+    auto p = (BridgedParticipant *)participant;
+    p->setListenerCallback(listnerObject, readerWriterListenerCallback, discoveryParticipantCallback, discoveryReaderWriterCallback);
 }
 
 void createRTPSParticipantFilered(const void * participant,
@@ -134,7 +145,3 @@ void removeRTPSParticipant(const void * participant)
     p->resignAll();
     delete p;
 }
-
-
-void participantListenerCallback(int reason, const char *topicName, const char* typeName, const char* remoteLocators, const char* properties[]) {}
-void readerWriterListenerCallback(int reason, const char *topicName) {}

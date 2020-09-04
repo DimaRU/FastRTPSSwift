@@ -9,11 +9,14 @@
 #include "fastrtps/rtps/rtps_fwd.h"
 #include "fastrtps/rtps/reader/ReaderListener.h"
 #include "FastRTPSBridge.h"
+#include "BridgeContainer.h"
 
 class BridgedReaderListener:public eprosima::fastrtps::rtps::ReaderListener
 {
 public:
-    BridgedReaderListener(const char* topicName, DecoderCallback callback, const void * payloadDecoder);
+    BridgedReaderListener(const char* topicName,
+                          const void * payloadDecoder,
+                          BridgeContainer container);
     ~BridgedReaderListener();
     void onNewCacheChangeAdded(eprosima::fastrtps::rtps::RTPSReader* reader,
                                const eprosima::fastrtps::rtps::CacheChange_t* const change) override;
@@ -23,7 +26,7 @@ public:
                                const eprosima::fastrtps::LivelinessChangedStatus &status) override;
     
     const void * payloadDecoder;
-    DecoderCallback decoderCallback;
     uint32_t n_matched;
     std::string topicName;
+    BridgeContainer container;
 };

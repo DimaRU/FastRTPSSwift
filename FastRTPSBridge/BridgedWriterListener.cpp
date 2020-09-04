@@ -9,12 +9,11 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-void readerWriterListenerCallback(int reason, const char *topicName);
-
-BridgedWriterListener::BridgedWriterListener(const char* topicName)
+BridgedWriterListener::BridgedWriterListener(const char* topicName, BridgeContainer container)
 {
     BridgedWriterListener::n_matched = 0;
     BridgedWriterListener::topicName = std::string(topicName);
+    BridgedWriterListener::container = container;
 }
 
 BridgedWriterListener::~BridgedWriterListener()
@@ -23,7 +22,7 @@ BridgedWriterListener::~BridgedWriterListener()
 
 void BridgedWriterListener::on_liveliness_lost(RTPSWriter* writer, const LivelinessLostStatus& status)
 {
-    readerWriterListenerCallback(RTPSNotificationWriterLivelinessLost, topicName.c_str());
+    container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationWriterLivelinessLost, topicName.c_str());
 }
 
 void BridgedWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& info)
@@ -32,11 +31,11 @@ void BridgedWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& in
     {
         case MATCHED_MATCHING:
             n_matched++;
-            readerWriterListenerCallback(RTPSNotificationWriterMatchedMatching, topicName.c_str());
+            container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationWriterMatchedMatching, topicName.c_str());
             break;
         case REMOVED_MATCHING:
             n_matched--;
-            readerWriterListenerCallback(RTPSNotificationWriterRemovedMatching, topicName.c_str());
+            container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationWriterRemovedMatching, topicName.c_str());
             break;
     }
 }

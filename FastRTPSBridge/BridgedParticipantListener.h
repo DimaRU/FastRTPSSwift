@@ -9,6 +9,7 @@
 #include <fastrtps/subscriber/SampleInfo.h>
 #include <fastrtps/rtps/participant/RTPSParticipantListener.h>
 #include "FastRTPSBridge.h"
+#include "BridgeContainer.h"
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
@@ -18,5 +19,11 @@ class BridgedParticipantListener: public eprosima::fastrtps::rtps::RTPSParticipa
     void onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo &&info) override;
     void onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info) override;
     void onWriterDiscovery(RTPSParticipant *participant, WriterDiscoveryInfo &&info) override;
-//    NSSet* dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators);
+    const char** dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators);
+    BridgeContainer container;
+public:
+    BridgedParticipantListener(BridgeContainer container)
+    {
+        BridgedParticipantListener::container = container;
+    }
 };

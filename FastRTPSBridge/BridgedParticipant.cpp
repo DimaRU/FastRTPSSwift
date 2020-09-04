@@ -25,13 +25,25 @@
 using namespace eprosima::fastdds;
 using namespace eprosima::fastrtps::rtps;
 
-BridgedParticipant::BridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback):
+BridgedParticipant::BridgedParticipant(DecoderCallback decoderCallback,
+                                       ReleaseCallback releaseCallback):
 mp_participant(nullptr),
 mp_listener(nullptr),
 partitionName("*")
 {
-    BridgedParticipant::decoderCallback = decoderCallback;
-    BridgedParticipant::releaseCallback = releaseCallback;
+    BridgedParticipant::container.decoderCallback = decoderCallback;
+    BridgedParticipant::container.releaseCallback = releaseCallback;
+}
+
+void BridgedParticipant::setListenerCallback(const void* listnerObject,
+                                             ReaderWriterListenerCallback readerWriterListenerCallback,
+                                             DiscoveryParticipantCallback discoveryParticipantCallback,
+                                             DiscoveryReaderWriterCallback discoveryReaderWriterCallback)
+{
+    BridgedParticipant::container.listnerObject = listnerObject;
+    BridgedParticipant::container.readerWriterListenerCallback = readerWriterListenerCallback;
+    BridgedParticipant::container.discoveryParticipantCallback = discoveryParticipantCallback;
+    BridgedParticipant::container.discoveryReaderWriterCallback = discoveryReaderWriterCallback;
 }
 
 BridgedParticipant::~BridgedParticipant()
@@ -51,7 +63,7 @@ void BridgedParticipant::resignAll() {
         logInfo(ROV_PARTICIPANT, "Remove reader: " << it->first)
         auto readerInfo = it->second;
         auto payloadDecoder = (void * _Nonnull)readerInfo->listener->payloadDecoder;
-        releaseCallback(payloadDecoder);
+        container.releaseCallback(payloadDecoder);
         RTPSDomain::removeRTPSReader(readerInfo->reader);
         delete readerInfo;
     }
@@ -95,7 +107,7 @@ bool BridgedParticipant::createParticipant(const char* name,
     pattr.userTransports.push_back(customTransport);
     pattr.useBuiltinTransports = false;
 
-    mp_listener = new BridgedParticipantListener();
+    mp_listener = new BridgedParticipantListener(container);
     mp_participant = RTPSDomain::createParticipant(domain, pattr, mp_listener);
     if (mp_participant == nullptr)
         return false;
@@ -124,7 +136,7 @@ bool BridgedParticipant::addReader(const char* name,
     if (reliable) {
         readerAttributes.endpoint.reliabilityKind = RELIABLE;
     }
-    auto listener = new BridgedReaderListener(name, decoderCallback, payloadDecoder);
+    auto listener = new BridgedReaderListener(name, payloadDecoder, container);
 
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
@@ -178,7 +190,7 @@ bool BridgedParticipant::removeReader(const char* name)
         return false;
     readerList.erase(topicName);
     delete readerInfo;
-    releaseCallback(payloadDecoder);
+    container.releaseCallback(payloadDecoder);
     return true;
 }
 
@@ -202,7 +214,7 @@ bool BridgedParticipant::addWriter(const char* name,
     writerAttributes.endpoint.reliabilityKind = RELIABLE;
     writerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
 
-    auto listener = new BridgedWriterListener(name);
+    auto listener = new BridgedWriterListener(name, container);
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
     historyAttributes.payloadMaxSize = 1000;

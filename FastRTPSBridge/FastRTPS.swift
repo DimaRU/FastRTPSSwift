@@ -11,7 +11,8 @@ public protocol RTPSListenerDelegate {
 }
 
 public protocol RTPSParticipantListenerDelegate {
-    func RTPSParticipantNotification(reason: RTPSParticipantNotification, topic: String)
+    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: [String], properties: [String])
+    func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: [String])
 }
 
 open class FastRTPS {
@@ -19,12 +20,13 @@ open class FastRTPS {
         case error=0, warning, info
     }
     private var participant: UnsafeRawPointer
-    private var listenerDelegate: RTPSListenerDelegate?
+    fileprivate var listenerDelegate: RTPSListenerDelegate?
+    fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
     
     init() {
         participant = makeBridgedParticipant({
             (payloadDecoder, sequence, payloadSize, payload) in
-            let payloadDecoder = payloadDecoder as! PayloadDecoderInterface
+            let payloadDecoder = Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).takeUnretainedValue()
             payloadDecoder.decode(sequence: sequence,
                                   payloadSize: Int(payloadSize),
                                   payload: payload)
@@ -34,10 +36,57 @@ open class FastRTPS {
         })
     }
     
-    func setRTPSListener(delegate: RTPSListenerDelegate?) {
-        listenerDelegate = delegate
+    func setListenerCallback()
+    {
+        setRTPSListenerCallback(participant, Unmanaged.passUnretained(self).toOpaque(), {
+            (listenerObject, reason, topicName) in
+            let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.listenerDelegate else { return }
+            let topic = String(cString: topicName)
+            delegate.RTPSNotification(reason: reason, topic: topic)
+        }, {
+            (listenerObject, reason, participantName, unicastLocators, properties) in
+            let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.participantListenerDelegate else { return }
+            var unicastLocatorsArr: [String] = []
+            var propertiesArr: [String] = []
+            if let unicastLocators = unicastLocators {
+                var i = 0
+                while unicastLocators[i] != nil {
+                    unicastLocatorsArr.append(String(cString: unicastLocators[i]!))
+                    i += 1
+                }
+            }
+            if let properties = properties {
+                var i = 0
+                while properties[i] != nil {
+                    propertiesArr.append(String(cString: properties[i]!))
+                    i += 1
+                }
+            }
+            delegate.participantNotification(reason: reason,
+                                             participant: String(cString: participantName),
+                                             unicastLocators: unicastLocatorsArr,
+                                             properties: propertiesArr)
+        }, {
+            (listenerObject, reason, topicName, typeName, remoteLocators) in
+            let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.participantListenerDelegate else { return }
+            
+            let topic = String(cString: topicName)
+            let type = String(cString: typeName)
+            var locators: [String] = []
+            if let remoteLocators = remoteLocators {
+                var i = 0
+                while remoteLocators[i] != nil {
+                    locators.append(String(cString: remoteLocators[i]!))
+                    i += 1
+                }
+            }
+            delegate.readerWriterNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators)
+        })
     }
-    
+
     // MARK: Public interface
 
     
@@ -48,11 +97,20 @@ open class FastRTPS {
     ///   - localAddress: bind only to localAddress
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
     func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filerAddress: String? = nil) {
+        setListenerCallback()
         createRTPSParticipantFilered(participant,
                                      domainID,
                                      name.cString(using: .utf8)!,
                                      localAddress?.cString(using: .utf8),
                                      filerAddress?.cString(using: .utf8))
+    }
+
+    func setRTPSListener(delegate: RTPSListenerDelegate?) {
+        listenerDelegate = delegate
+    }
+    
+    func setRTPSParticipantListener(delegate: RTPSParticipantListenerDelegate?) {
+        participantListenerDelegate = delegate
     }
     
     func setPartition(name: String) {

@@ -11,6 +11,7 @@
 #include <fastrtps/rtps/history/WriterHistory.h>
 #include "BridgedReaderListener.h"
 #include "BridgedWriterListener.h"
+#include "BridgeContainer.h"
 
 class BridgedParticipantListener;
 class BridgedParticipant
@@ -34,17 +35,23 @@ class BridgedParticipant
             delete listener;
         }
     };
-public:
-    BridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback);
-    virtual ~BridgedParticipant();
+
     eprosima::fastrtps::rtps::RTPSParticipant* mp_participant;
     BridgedParticipantListener* mp_listener;
     std::string partitionName;
-    DecoderCallback decoderCallback;
-    ReleaseCallback releaseCallback;
+    
+    BridgeContainer container;
     
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;
+public:
+    BridgedParticipant(DecoderCallback decoderCallback,
+                       ReleaseCallback releaseCallback);
+    virtual ~BridgedParticipant();
+    void setListenerCallback(const void* listnerObject,
+                             ReaderWriterListenerCallback readerWriterListenerCallback,
+                             DiscoveryParticipantCallback discoveryParticipantCallback,
+                             DiscoveryReaderWriterCallback discoveryReaderWriterCallback);
 
     bool createParticipant(const char* name,
                            const uint32_t domain,

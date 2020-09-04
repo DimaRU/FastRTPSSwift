@@ -6,13 +6,7 @@
 import Foundation
 import CDRCodable
 
-public protocol PayloadDecoderInterface {
-    func decode(sequence: UInt64,
-                payloadSize: Int,
-                payload: UnsafeMutableRawPointer)
-}
-
-public class PayloadDecoderProxy: PayloadDecoderInterface {
+public class PayloadDecoderProxy {
     typealias Completion = (UInt64, Data) -> Void
     var completion: Completion
     
@@ -26,9 +20,7 @@ public class PayloadDecoderProxy: PayloadDecoderInterface {
     }
     #endif
     
-    public func decode(sequence: UInt64,
-                       payloadSize: Int,
-                       payload: UnsafeMutableRawPointer) {
+    public func decode(sequence: UInt64, payloadSize: Int, payload: UnsafeMutableRawPointer) {
         let data = Data(bytesNoCopy: payload, count: payloadSize, deallocator: .none)
         completion(sequence, data)
     }

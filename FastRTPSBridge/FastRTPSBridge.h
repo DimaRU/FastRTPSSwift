@@ -7,50 +7,67 @@
 #ifndef FastRTPSBridge_h
 #define FastRTPSBridge_h
 
+#ifndef  __cplusplus
+#import <Foundation/Foundation.h>
+
+#else
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifndef NS_ENUM
+#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
+#endif
+
+#endif
 enum FastRTPSLogLevel {
     error=0, warning, info
 };
 
 
-typedef enum {
+typedef NS_ENUM(uint32_t, RTPSNotification) {
   RTPSNotificationReaderMatchedMatching = 0,
-  RTPSNotificationReaderRemovedMatching = 1,
-  RTPSNotificationReaderLivelinessLost = 2,
-  RTPSNotificationWriterMatchedMatching = 3,
-  RTPSNotificationWriterRemovedMatching = 4,
-  RTPSNotificationWriterLivelinessLost = 5,
-} RTPSNotification;
+  RTPSNotificationReaderRemovedMatching,
+  RTPSNotificationReaderLivelinessLost,
+  RTPSNotificationWriterMatchedMatching,
+  RTPSNotificationWriterRemovedMatching,
+  RTPSNotificationWriterLivelinessLost,
+};
 
-typedef enum {
-  RTPSNotificationKeyParticipant = 0,
-  RTPSNotificationKeyReason = 1,
-  RTPSNotificationKeyTopic = 2,
-  RTPSNotificationKeyLocators = 3,
-  RTPSNotificationKeyMetaLocators = 4,
-  RTPSNotificationKeyProperties = 5,
-  RTPSNotificationKeyTypeName = 6,
-} RTPSNotificationKey;
-
-typedef enum {
-  RTPSParticipantNotificationDiscoveredReader = 0,
-  RTPSParticipantNotificationChangedQosReader = 1,
-  RTPSParticipantNotificationRemovedReader = 2,
-  RTPSParticipantNotificationDiscoveredWriter = 3,
-  RTPSParticipantNotificationChangedQosWriter = 4,
-  RTPSParticipantNotificationRemovedWriter = 5,
-  RTPSParticipantNotificationDiscoveredParticipant = 6,
-  RTPSParticipantNotificationChangedQosParticipant = 7,
-  RTPSParticipantNotificationRemovedParticipant = 8,
-  RTPSParticipantNotificationDroppedParticipant = 9,
-} RTPSParticipantNotification;
-
+typedef NS_ENUM(uint32_t, RTPSReaderWriterNotification) {
+  RTPSReaderWriterNotificationDiscoveredReader = 0,
+  RTPSReaderWriterNotificationChangedQosReader,
+  RTPSReaderWriterNotificationRemovedReader,
+  RTPSReaderWriterNotificationDiscoveredWriter,
+  RTPSReaderWriterNotificationChangedQosWriter,
+  RTPSReaderWriterNotificationRemovedWriter,
+};
+typedef NS_ENUM(uint32_t, RTPSParticipantNotification) {
+  RTPSParticipantNotificationDiscoveredParticipant = 0,
+  RTPSParticipantNotificationChangedQosParticipant,
+  RTPSParticipantNotificationRemovedParticipant,
+  RTPSParticipantNotificationDroppedParticipant,
+};
 
 typedef void (*DecoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
 typedef void (*ReleaseCallback)(void * _Nonnull payloadDecoder);
+typedef void (*ReaderWriterListenerCallback)(const void * _Nonnull listnerObject,
+                                             RTPSNotification reason,
+                                             const char* _Nonnull topicName);
+
+typedef void (*DiscoveryParticipantCallback)(const void * _Nonnull listnerObject,
+                                             RTPSParticipantNotification reason,
+                                             const char * _Nonnull participantName,
+                                             const char* const _Nullable unicastLocators[_Nullable],
+                                             const char* const _Nullable properties[_Nullable]);
+
+typedef void (*DiscoveryReaderWriterCallback)(const void * _Nonnull listnerObject,
+                                              RTPSReaderWriterNotification reason,
+                                              const char* _Nonnull topicName,
+                                              const char* _Nonnull typeName,
+                                              const char* const _Nullable remoteLocators[_Nullable]);
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,16 +75,26 @@ extern "C" {
 
 
 #pragma clang assume_nonnull begin
-const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback, ReleaseCallback releaseCallback);
+const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback,
+                                             ReleaseCallback releaseCallback);
+
+void setRTPSListenerCallback(const void * participant,
+                             const void * listnerObject,
+                             ReaderWriterListenerCallback readerWriterListenerCallback,
+                             DiscoveryParticipantCallback discoveryParticipantCallback,
+                             DiscoveryReaderWriterCallback discoveryReaderWriterCallback);
+
 void createRTPSParticipantFilered(const void * participant,
                                   const uint32_t domain,
                                   const char* name,
                                   const char* _Nullable localAddress,
                                   const char* _Nullable filterAddress);
+
 void createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,
                            const char* _Nullable localAddress);
+
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel);
 void setRTPSPartition(const void * participant, const char * partition);
 void registerRTPSReader(const void * participant,
