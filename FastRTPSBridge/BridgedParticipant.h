@@ -11,7 +11,6 @@
 #include <fastrtps/rtps/history/WriterHistory.h>
 #include "BridgedReaderListener.h"
 #include "BridgedWriterListener.h"
-#include "BridgeContainer.h"
 
 class BridgedParticipantListener;
 class BridgedParticipant
@@ -45,13 +44,9 @@ class BridgedParticipant
     std::map<std::string, ReaderInfo*> readerList;
     std::map<std::string, WriterInfo*> writerList;
 public:
-    BridgedParticipant(DecoderCallback decoderCallback,
-                       ReleaseCallback releaseCallback);
+    BridgedParticipant();
     virtual ~BridgedParticipant();
-    void setListenerCallback(const void* listnerObject,
-                             ReaderWriterListenerCallback readerWriterListenerCallback,
-                             DiscoveryParticipantCallback discoveryParticipantCallback,
-                             DiscoveryReaderWriterCallback discoveryReaderWriterCallback);
+    void setContainer(BridgeContainer container);
 
     bool createParticipant(const char* name,
                            const uint32_t domain,

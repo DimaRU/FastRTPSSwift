@@ -9,7 +9,6 @@
 #include <fastrtps/subscriber/SampleInfo.h>
 #include <fastrtps/rtps/participant/RTPSParticipantListener.h>
 #include "FastRTPSBridge.h"
-#include "BridgeContainer.h"
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;

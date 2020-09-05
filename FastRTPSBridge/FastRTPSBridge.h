@@ -70,18 +70,25 @@ typedef void (*DiscoveryReaderWriterCallback)(const void * _Nonnull listnerObjec
                                               const char* _Nonnull typeName,
                                               const char* const _Nullable remoteLocators[_Nullable]);
 
+#pragma clang assume_nonnull begin
+
+struct BridgeContainer
+{
+    DecoderCallback decoderCallback;
+    ReleaseCallback releaseCallback;
+    const void *listnerObject;
+    ReaderWriterListenerCallback readerWriterListenerCallback;
+    DiscoveryParticipantCallback discoveryParticipantCallback;
+    DiscoveryReaderWriterCallback discoveryReaderWriterCallback;
+};
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-#pragma clang assume_nonnull begin
-const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback,
-                                             ReleaseCallback releaseCallback);
+const void * _Nonnull makeBridgedParticipant(void);
 
-void setRTPSListenerCallback(const void * participant,
-                             const void * listnerObject,
-                             ReaderWriterListenerCallback readerWriterListenerCallback,
-                             DiscoveryParticipantCallback discoveryParticipantCallback,
-                             DiscoveryReaderWriterCallback discoveryReaderWriterCallback);
+void setupRTPSBridgeContainer(const void * participant,
+                              struct BridgeContainer container);
 
 void createRTPSParticipantFilered(const void * participant,
                                   const uint32_t domain,

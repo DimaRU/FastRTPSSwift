@@ -49,8 +49,6 @@ class FastRTPSBridgeTests: XCTestCase {
         fastRTPSBridge?.removeParticipant()
     }
     
-    func testDelegate() {
-    }
 }
 
 extension FastRTPSBridgeTests: RTPSParticipantListenerDelegate {

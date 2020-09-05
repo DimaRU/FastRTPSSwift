@@ -25,25 +25,16 @@
 using namespace eprosima::fastdds;
 using namespace eprosima::fastrtps::rtps;
 
-BridgedParticipant::BridgedParticipant(DecoderCallback decoderCallback,
-                                       ReleaseCallback releaseCallback):
+BridgedParticipant::BridgedParticipant():
 mp_participant(nullptr),
 mp_listener(nullptr),
 partitionName("*")
 {
-    BridgedParticipant::container.decoderCallback = decoderCallback;
-    BridgedParticipant::container.releaseCallback = releaseCallback;
 }
 
-void BridgedParticipant::setListenerCallback(const void* listnerObject,
-                                             ReaderWriterListenerCallback readerWriterListenerCallback,
-                                             DiscoveryParticipantCallback discoveryParticipantCallback,
-                                             DiscoveryReaderWriterCallback discoveryReaderWriterCallback)
+void BridgedParticipant::setContainer(BridgeContainer container)
 {
-    BridgedParticipant::container.listnerObject = listnerObject;
-    BridgedParticipant::container.readerWriterListenerCallback = readerWriterListenerCallback;
-    BridgedParticipant::container.discoveryParticipantCallback = discoveryParticipantCallback;
-    BridgedParticipant::container.discoveryReaderWriterCallback = discoveryReaderWriterCallback;
+    BridgedParticipant::container = container;
 }
 
 BridgedParticipant::~BridgedParticipant()
