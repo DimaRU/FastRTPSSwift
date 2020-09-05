@@ -20,6 +20,7 @@ class BridgedParticipantListener: public eprosima::fastrtps::rtps::RTPSParticipa
     void onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info) override;
     void onWriterDiscovery(RTPSParticipant *participant, WriterDiscoveryInfo &&info) override;
     const char** dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators);
+    void releaseList(const char** locators);
     BridgeContainer container;
 public:
     BridgedParticipantListener(BridgeContainer container)

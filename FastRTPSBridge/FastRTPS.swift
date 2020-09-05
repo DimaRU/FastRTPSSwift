@@ -11,14 +11,11 @@ public protocol RTPSListenerDelegate {
 }
 
 public protocol RTPSParticipantListenerDelegate {
-    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: [String], properties: [String])
+    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: [String], properties: [String:String])
     func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: [String])
 }
 
 open class FastRTPS {
-    public enum LogLevel: UInt32 {
-        case error=0, warning, info
-    }
     private var participant: UnsafeRawPointer
     fileprivate var listenerDelegate: RTPSListenerDelegate?
     fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
@@ -49,7 +46,7 @@ open class FastRTPS {
             let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
             guard let delegate = mySelf.participantListenerDelegate else { return }
             var unicastLocatorsArr: [String] = []
-            var propertiesArr: [String] = []
+            var propertiesDict: [String:String] = [:]
             if let unicastLocators = unicastLocators {
                 var i = 0
                 while unicastLocators[i] != nil {
@@ -60,14 +57,16 @@ open class FastRTPS {
             if let properties = properties {
                 var i = 0
                 while properties[i] != nil {
-                    propertiesArr.append(String(cString: properties[i]!))
-                    i += 1
+                    let key = String(cString: properties[i]!)
+                    let value = String(cString: properties[i+1]!)
+                    propertiesDict[key] = value
+                    i += 2
                 }
             }
             delegate.participantNotification(reason: reason,
                                              participant: String(cString: participantName),
                                              unicastLocators: unicastLocatorsArr,
-                                             properties: propertiesArr)
+                                             properties: propertiesDict)
         }, {
             (listenerObject, reason, topicName, typeName, remoteLocators) in
             let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
@@ -204,8 +203,8 @@ open class FastRTPS {
         removeRTPSParticipant(participant)
     }
 
-    func setlogLevel(_ level: LogLevel) {
-        setRTPSLoglevel(.init(level.rawValue))
+    func setlogLevel(_ level: FastRTPSLogLevel) {
+        setRTPSLoglevel(level)
     }
     
     class func getIP4Address() -> [String: String] {

@@ -56,13 +56,13 @@ void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
     Log::ClearConsumers();
     Log::RegisterConsumer(std::unique_ptr<LogConsumer>(new eprosima::fastdds::dds::CustomLogConsumer));
     switch (logLevel) {
-        case error:
+        case FastRTPSLogLevelError:
             Log::SetVerbosity(Log::Kind::Error);
             break;
-        case warning:
+        case FastRTPSLogLevelWarning:
             Log::SetVerbosity(Log::Kind::Warning);
             break;
-        case info:
+        case FastRTPSLogLevelInfo:
             Log::SetVerbosity(Log::Kind::Info);
             break;
     }

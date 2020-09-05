@@ -21,10 +21,6 @@
 #endif
 
 #endif
-enum FastRTPSLogLevel {
-    error=0, warning, info
-};
-
 
 typedef NS_ENUM(uint32_t, RTPSNotification) {
   RTPSNotificationReaderMatchedMatching = 0,
@@ -50,6 +46,12 @@ typedef NS_ENUM(uint32_t, RTPSParticipantNotification) {
   RTPSParticipantNotificationDroppedParticipant,
 };
 
+typedef NS_ENUM(uint32_t, FastRTPSLogLevel) {
+    FastRTPSLogLevelError=0,
+    FastRTPSLogLevelWarning,
+    FastRTPSLogLevelInfo
+};
+
 typedef void (*DecoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
 typedef void (*ReleaseCallback)(void * _Nonnull payloadDecoder);
 typedef void (*ReaderWriterListenerCallback)(const void * _Nonnull listnerObject,
@@ -68,12 +70,9 @@ typedef void (*DiscoveryReaderWriterCallback)(const void * _Nonnull listnerObjec
                                               const char* _Nonnull typeName,
                                               const char* const _Nullable remoteLocators[_Nullable]);
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
 #pragma clang assume_nonnull begin
 const void * _Nonnull makeBridgedParticipant(DecoderCallback decoderCallback,
                                              ReleaseCallback releaseCallback);

@@ -23,7 +23,7 @@ void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant,
         case ReaderDiscoveryInfo::DISCOVERED_READER:
             locators = dumpLocators(info.info.remote_locators().unicast);
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredReader, topicName, typeName, locators);
-            delete [] locators;
+            releaseList(locators);
             break;
         case ReaderDiscoveryInfo::CHANGED_QOS_READER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosReader, topicName, typeName, nullptr);
@@ -45,7 +45,7 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
         case WriterDiscoveryInfo::DISCOVERED_WRITER:
             locators = dumpLocators(info.info.remote_locators().unicast);
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredWriter, topicName, typeName, locators);
-            delete [] locators;
+            releaseList(locators);
             break;
         case WriterDiscoveryInfo::CHANGED_QOS_WRITER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosWriter, topicName, typeName, nullptr);
@@ -73,15 +73,15 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
             for (auto prop = properties.begin(); prop != properties.end(); prop++) {
                 auto key = prop->first().c_str();
                 auto value = prop->second().c_str();
-                propDict[i++] = key;
-                propDict[i++] = value;
+                propDict[i++] = strdup(key);
+                propDict[i++] = strdup(value);
             }
             propDict[i] = nullptr;
 //          dumpLocators(info.info.metatraffic_locators.unicast);
             locators = dumpLocators(info.info.default_locators.unicast);
             container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDiscoveredParticipant, info.info.m_participantName, locators, propDict);
-            delete [] propDict;
-            delete [] locators;
+            releaseList(propDict);
+            releaseList(locators);
             break;
         case ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
             container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDroppedParticipant, info.info.m_participantName, nullptr, nullptr);
@@ -102,8 +102,16 @@ const char** BridgedParticipantListener::dumpLocators(ResourceLimitedVector<epro
     locatorList[count] = nullptr;
     for (int i = 0; i < count; i++) {
         auto locatorStr = IPLocator::ip_to_string(locators[i]) + ":" + std::to_string(locators[i].port);
-        locatorList[i] = locatorStr.c_str();
+        locatorList[i] = strdup(locatorStr.c_str());
     }
     
     return locatorList;
+}
+
+void BridgedParticipantListener::releaseList(const char** list) {
+    char** ptr = (char** )list;
+    while(*ptr != nullptr) {
+        free(*ptr++);
+    }
+    delete [] list;
 }
