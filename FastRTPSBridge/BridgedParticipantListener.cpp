@@ -71,10 +71,8 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
             propDict = new const char*[count * 2 + 1];
             
             for (auto prop = properties.begin(); prop != properties.end(); prop++) {
-                auto key = prop->first().c_str();
-                auto value = prop->second().c_str();
-                propDict[i++] = strdup(key);
-                propDict[i++] = strdup(value);
+                propDict[i++] = strdup(prop->first().c_str());
+                propDict[i++] = strdup(prop->second().c_str());
             }
             propDict[i] = nullptr;
 //          dumpLocators(info.info.metatraffic_locators.unicast);
