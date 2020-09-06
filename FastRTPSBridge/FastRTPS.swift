@@ -115,6 +115,8 @@ open class FastRTPS {
         participantListenerDelegate = delegate
     }
     
+    /// Set RTPS partition (default: "*")
+    /// - Parameter name: partition name
     func setPartition(name: String) {
         setRTPSPartition(participant, name.cString(using: .utf8)!)
     }
@@ -123,7 +125,13 @@ open class FastRTPS {
     func deleteParticipant() {
         removeRTPSParticipant(participant)
     }
-
+    
+    /// Register RTPS reader with raw data callback
+    /// - Parameters:
+    ///   - topic: DDSReaderTopic topic description
+    ///   - ddsType: DDSType topic DDS data type
+    ///   - completion: (sequence: UInt64, data: Data) -> Void
+    ///      where data is topic ..................
     func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
         registerRTPSReader(participant,
@@ -155,6 +163,8 @@ open class FastRTPS {
         }
     }
     
+    /// Remove RTPS reader
+    /// - Parameter topic: topic descriptor
     func removeReader<T: DDSReaderTopic>(topic: T) {
         removeRTPSReader(participant, topic.rawValue.cString(using: .utf8)!)
     }
@@ -168,6 +178,8 @@ open class FastRTPS {
                             topic.reliable)
     }
     
+    /// Remove RTPS writer
+    /// - Parameter topic: topic descriptor
     func removeWriter<T: DDSReaderTopic>(topic: T) {
         removeRTPSWriter(participant, topic.rawValue.cString(using: .utf8)!)
     }
@@ -197,11 +209,13 @@ open class FastRTPS {
             fatalError(error.localizedDescription)
         }
     }
-
+    
+    /// Remove all readers and writers from participant
     func resignAll() {
         resignRTPSAll(participant)
     }
     
+    /// Method to shut down all RTPS participants, readers, writers, etc. It may be called at the end of the process to avoid memory leaks.
     func stopAll() {
         stopRTPSAll(participant)
     }
@@ -214,6 +228,8 @@ open class FastRTPS {
         setRTPSLoglevel(level)
     }
     
+    /// Get IPV4 addresses of all network interfaces
+    /// - Returns: String array with IPV4 addresses with dot notation x.x.x.x
     class func getIP4Address() -> [String: String] {
         var localIP: [String: String] = [:]
 
