@@ -135,6 +135,12 @@ void resignRTPSAll(const void * participant)
     p->resignAll();
 }
 
+void stopRTPSAll(const void * participant)
+{
+    auto p = (BridgedParticipant *)participant;
+    p->stopAll();
+}
+
 void removeRTPSParticipant(const void * participant)
 {
     auto p = (BridgedParticipant *)participant;

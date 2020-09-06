@@ -202,6 +202,10 @@ open class FastRTPS {
         resignRTPSAll(participant)
     }
     
+    func stopAll() {
+        stopRTPSAll(participant)
+    }
+
     func removeParticipant() {
         removeRTPSParticipant(participant)
     }

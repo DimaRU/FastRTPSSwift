@@ -45,7 +45,11 @@ BridgedParticipant::~BridgedParticipant()
     resignAll();
     RTPSDomain::removeRTPSParticipant(mp_participant);
     delete mp_listener;
-//    RTPSDomain::stopAll();
+}
+
+void BridgedParticipant::stopAll()
+{
+    RTPSDomain::stopAll();
 }
 
 void BridgedParticipant::resignAll() {

@@ -138,6 +138,8 @@ void sendData(const void * participant,
 
 void resignRTPSAll(const void * participant);
 
+void stopRTPSAll(const void * participant);
+
 void removeRTPSParticipant(const void * participant);
 
 #pragma clang assume_nonnull end
