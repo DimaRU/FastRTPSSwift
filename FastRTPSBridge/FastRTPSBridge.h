@@ -76,10 +76,10 @@ struct BridgeContainer
 {
     DecoderCallback decoderCallback;
     ReleaseCallback releaseCallback;
-    const void *listnerObject;
     ReaderWriterListenerCallback readerWriterListenerCallback;
     DiscoveryParticipantCallback discoveryParticipantCallback;
     DiscoveryReaderWriterCallback discoveryReaderWriterCallback;
+    const void *listnerObject;
 };
 
 #ifdef __cplusplus

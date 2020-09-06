@@ -36,8 +36,7 @@ open class FastRTPS {
         }, releaseCallback: {
             (payloadDecoder) in
             Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
-        }, listnerObject: Unmanaged.passUnretained(self).toOpaque(),
-           readerWriterListenerCallback: {
+        }, readerWriterListenerCallback: {
             (listenerObject, reason, topicName) in
             let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
             guard let delegate = mySelf.listenerDelegate else { return }
@@ -85,7 +84,7 @@ open class FastRTPS {
                 }
             }
             delegate.readerWriterNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators)
-        })
+        }, listnerObject: Unmanaged.passUnretained(self).toOpaque())
         
         setupRTPSBridgeContainer(participant, container)
     }
