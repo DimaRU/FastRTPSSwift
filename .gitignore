@@ -8,7 +8,7 @@ Fast-DDS/
 # Xcode
 
 ## Build generated
-build/
+/build
 DerivedData
 
 ## Various settings
@@ -37,7 +37,8 @@ timeline.xctimeline
 playground.xcworkspace
 
 # Swift Package Manager
-.build/
+.build
+.swiftpm
 
 # Carthage
 Carthage/Build

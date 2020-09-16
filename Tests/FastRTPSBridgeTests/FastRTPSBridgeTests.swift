@@ -6,6 +6,9 @@
 
 import XCTest
 @testable import FastRTPSBridge
+#if SWIFT_PACKAGE
+import FastRTPSWrapper
+#endif
 
 class FastRTPSBridgeTests: XCTestCase {
 

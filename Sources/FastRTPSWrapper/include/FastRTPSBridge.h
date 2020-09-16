@@ -85,6 +85,7 @@ struct BridgeContainer
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 const void * _Nonnull makeBridgedParticipant(void);
 
 void setupRTPSBridgeContainer(const void * participant,

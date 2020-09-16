@@ -5,6 +5,9 @@
 
 import Foundation
 import CDRCodable
+#if SWIFT_PACKAGE
+import FastRTPSWrapper
+#endif
 
 public protocol RTPSListenerDelegate {
     func RTPSNotification(reason: RTPSNotification, topic: String)
