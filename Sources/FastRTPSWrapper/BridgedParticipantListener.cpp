@@ -98,8 +98,7 @@ void BridgedParticipantListener::dumpLocators(ResourceLimitedVector<eprosima::fa
     locatorsString[0] = '\0';
     int count = 0;
     
-    auto count = locators.size();
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < locators.size(); i++) {
         auto str = IPLocator::ip_to_string(locators[i]) + ":" + std::to_string(locators[i].port);
         if (count + str.size() >= LocatorStringSize) {
             break;
