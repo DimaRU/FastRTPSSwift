@@ -6,7 +6,7 @@
 import Foundation
 import CDRCodable
 #if SWIFT_PACKAGE
-import FastRTPSWrapper
+@_exported import FastRTPSWrapper
 #endif
 
 public protocol RTPSListenerDelegate {
@@ -14,8 +14,8 @@ public protocol RTPSListenerDelegate {
 }
 
 public protocol RTPSParticipantListenerDelegate {
-    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: [String], properties: [String:String])
-    func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: [String])
+    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: String, properties: [String:String])
+    func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String)
 }
 
 open class FastRTPS {
@@ -49,14 +49,10 @@ open class FastRTPS {
             (listenerObject, reason, participantName, unicastLocators, properties) in
             let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
             guard let delegate = mySelf.participantListenerDelegate else { return }
-            var unicastLocatorsArr: [String] = []
+            var locators = ""
             var propertiesDict: [String:String] = [:]
             if let unicastLocators = unicastLocators {
-                var i = 0
-                while unicastLocators[i] != nil {
-                    unicastLocatorsArr.append(String(cString: unicastLocators[i]!))
-                    i += 1
-                }
+                locators = String(cString: unicastLocators)
             }
             if let properties = properties {
                 var i = 0
@@ -69,7 +65,7 @@ open class FastRTPS {
             }
             delegate.participantNotification(reason: reason,
                                              participant: String(cString: participantName),
-                                             unicastLocators: unicastLocatorsArr,
+                                             unicastLocators: locators,
                                              properties: propertiesDict)
         }, discoveryReaderWriterCallback: {
             (listenerObject, reason, topicName, typeName, remoteLocators) in
@@ -78,13 +74,9 @@ open class FastRTPS {
             
             let topic = String(cString: topicName)
             let type = String(cString: typeName)
-            var locators: [String] = []
+            var locators = ""
             if let remoteLocators = remoteLocators {
-                var i = 0
-                while remoteLocators[i] != nil {
-                    locators.append(String(cString: remoteLocators[i]!))
-                    i += 1
-                }
+                locators = String(cString: remoteLocators)
             }
             delegate.readerWriterNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators)
         }, listnerObject: Unmanaged.passUnretained(self).toOpaque())

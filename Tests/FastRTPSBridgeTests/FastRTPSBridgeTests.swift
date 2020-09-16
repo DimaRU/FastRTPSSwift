@@ -6,9 +6,6 @@
 
 import XCTest
 @testable import FastRTPSBridge
-#if SWIFT_PACKAGE
-import FastRTPSWrapper
-#endif
 
 class FastRTPSBridgeTests: XCTestCase {
 
@@ -55,11 +52,11 @@ class FastRTPSBridgeTests: XCTestCase {
 }
 
 extension FastRTPSBridgeTests: RTPSParticipantListenerDelegate {
-    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: [String], properties: [String:String]) {
+    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: String, properties: [String:String]) {
         print(reason,  participant, unicastLocators, properties)
     }
     
-    func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: [String]) {
+    func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String) {
         print(reason, topic, type, remoteLocators)
     }
     

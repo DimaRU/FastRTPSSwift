@@ -8,22 +8,24 @@
 #include <arpa/inet.h>
 #include <fastrtps/rtps/common/Locator.h>
 #include <fastrtps/utils/IPLocator.h>
+#include <memory.h>
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
+
+const int LocatorStringSize = 1000;
 
 void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info)
 {
     (void)participant;
     auto topicName = info.info.topicName();
     auto typeName = info.info.typeName();
-    const char** locators;
+    char locatorString[LocatorStringSize];
 
     switch(info.status) {
         case ReaderDiscoveryInfo::DISCOVERED_READER:
-            locators = dumpLocators(info.info.remote_locators().unicast);
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredReader, topicName, typeName, locators);
-            releaseList(locators);
+            dumpLocators(info.info.remote_locators().unicast, locatorString);
+            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredReader, topicName, typeName, locatorString);
             break;
         case ReaderDiscoveryInfo::CHANGED_QOS_READER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosReader, topicName, typeName, nullptr);
@@ -39,13 +41,12 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
     (void)participant;
     auto topicName = info.info.topicName();
     auto typeName = info.info.typeName();
-    const char** locators;
+    char locatorString[LocatorStringSize];
 
     switch(info.status) {
         case WriterDiscoveryInfo::DISCOVERED_WRITER:
-            locators = dumpLocators(info.info.remote_locators().unicast);
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredWriter, topicName, typeName, locators);
-            releaseList(locators);
+            dumpLocators(info.info.remote_locators().unicast, locatorString);
+            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredWriter, topicName, typeName, locatorString);
             break;
         case WriterDiscoveryInfo::CHANGED_QOS_WRITER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosWriter, topicName, typeName, nullptr);
@@ -61,7 +62,7 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
 {
     (void)participant;
     const char** propDict;
-    const char** locators;
+    char locatorString[LocatorStringSize];
     auto properties = info.info.m_properties;
     auto count = properties.size();
     int i = 0;
@@ -76,10 +77,9 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
             }
             propDict[i] = nullptr;
 //          dumpLocators(info.info.metatraffic_locators.unicast);
-            locators = dumpLocators(info.info.default_locators.unicast);
-            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDiscoveredParticipant, info.info.m_participantName, locators, propDict);
+            dumpLocators(info.info.default_locators.unicast, locatorString);
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDiscoveredParticipant, info.info.m_participantName, locatorString, propDict);
             releaseList(propDict);
-            releaseList(locators);
             break;
         case ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
             container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDroppedParticipant, info.info.m_participantName, nullptr, nullptr);
@@ -93,17 +93,24 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
     }
 }
 
-const char** BridgedParticipantListener::dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators)
+void BridgedParticipantListener::dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators, char locatorsString[])
 {
-    auto count = locators.size();
-    auto locatorList = new const char* [count+1];
-    locatorList[count] = nullptr;
-    for (int i = 0; i < count; i++) {
-        auto locatorStr = IPLocator::ip_to_string(locators[i]) + ":" + std::to_string(locators[i].port);
-        locatorList[i] = strdup(locatorStr.c_str());
-    }
+    locatorsString[0] = '\0';
+    int count = 0;
     
-    return locatorList;
+    auto count = locators.size();
+    for (int i = 0; i < count; i++) {
+        auto str = IPLocator::ip_to_string(locators[i]) + ":" + std::to_string(locators[i].port);
+        if (count + str.size() >= LocatorStringSize) {
+            break;
+        }
+        memcpy(locatorsString+count, str.c_str(), str.size());
+        count += str.size();
+        locatorsString[count++] = ',';
+    }
+    if (count != 0) {
+        locatorsString[--count] = '\0';
+    }
 }
 
 void BridgedParticipantListener::releaseList(const char** list) {

@@ -61,14 +61,14 @@ typedef void (*ReaderWriterListenerCallback)(const void * _Nonnull listnerObject
 typedef void (*DiscoveryParticipantCallback)(const void * _Nonnull listnerObject,
                                              RTPSParticipantNotification reason,
                                              const char * _Nonnull participantName,
-                                             const char* const _Nullable unicastLocators[_Nullable],
+                                             const char* const _Nullable unicastLocators,
                                              const char* const _Nullable properties[_Nullable]);
 
 typedef void (*DiscoveryReaderWriterCallback)(const void * _Nonnull listnerObject,
                                               RTPSReaderWriterNotification reason,
                                               const char* _Nonnull topicName,
                                               const char* _Nonnull typeName,
-                                              const char* const _Nullable remoteLocators[_Nullable]);
+                                              const char* const _Nullable remoteLocators);
 
 #pragma clang assume_nonnull begin
 

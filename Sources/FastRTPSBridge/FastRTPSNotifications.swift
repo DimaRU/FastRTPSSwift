@@ -5,9 +5,6 @@
 
 
 import Foundation
-#if SWIFT_PACKAGE
-import FastRTPSWrapper
-#endif
 
 extension RTPSNotification: CustomStringConvertible {
     public var description: String {
