@@ -1,5 +1,5 @@
 /////
-////  FastRTPS.swift
+////  FastRTPSBridge.swift
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
@@ -18,7 +18,7 @@ public protocol RTPSParticipantListenerDelegate {
     func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String)
 }
 
-open class FastRTPS {
+open class FastRTPSBridge {
     private var participant: UnsafeRawPointer
     fileprivate var listenerDelegate: RTPSListenerDelegate?
     fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
@@ -41,13 +41,13 @@ open class FastRTPS {
             Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
         }, readerWriterListenerCallback: {
             (listenerObject, reason, topicName) in
-            let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
+            let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
             guard let delegate = mySelf.listenerDelegate else { return }
             let topic = String(cString: topicName)
             delegate.RTPSNotification(reason: reason, topic: topic)
         }, discoveryParticipantCallback: {
             (listenerObject, reason, participantName, unicastLocators, properties) in
-            let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
+            let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
             guard let delegate = mySelf.participantListenerDelegate else { return }
             var locators = ""
             var propertiesDict: [String:String] = [:]
@@ -69,7 +69,7 @@ open class FastRTPS {
                                              properties: propertiesDict)
         }, discoveryReaderWriterCallback: {
             (listenerObject, reason, topicName, typeName, remoteLocators) in
-            let mySelf = Unmanaged<FastRTPS>.fromOpaque(listenerObject).takeUnretainedValue()
+            let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
             guard let delegate = mySelf.participantListenerDelegate else { return }
             
             let topic = String(cString: topicName)

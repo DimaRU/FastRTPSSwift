@@ -9,10 +9,10 @@ import XCTest
 
 class FastRTPSBridgeTests: XCTestCase {
 
-    var fastRTPSBridge: FastRTPS?
+    var fastRTPSBridge: FastRTPSBridge?
     
     override func setUpWithError() throws {
-        fastRTPSBridge = FastRTPS()
+        fastRTPSBridge = FastRTPSBridge()
         fastRTPSBridge?.setlogLevel(.warning)
     }
 
