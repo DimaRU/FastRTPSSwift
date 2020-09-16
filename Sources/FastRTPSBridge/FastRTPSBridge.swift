@@ -23,7 +23,7 @@ open class FastRTPSBridge {
     fileprivate var listenerDelegate: RTPSListenerDelegate?
     fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
     
-    init() {
+    public init() {
         participant = makeBridgedParticipant()
     }
     
@@ -93,31 +93,31 @@ open class FastRTPSBridge {
     ///   - domainID: participant domain ID
     ///   - localAddress: bind only to localAddress
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
-    func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filerAddress: String? = nil) {
+    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filterAddress: String? = nil) {
         setupBridgeContainer()
-        createRTPSParticipantFilered(participant,
-                                     domainID,
-                                     name.cString(using: .utf8)!,
-                                     localAddress?.cString(using: .utf8),
-                                     filerAddress?.cString(using: .utf8))
+        createRTPSParticipantFiltered(participant,
+                                      domainID,
+                                      name.cString(using: .utf8)!,
+                                      localAddress?.cString(using: .utf8),
+                                      filterAddress?.cString(using: .utf8))
     }
 
-    func setRTPSListener(delegate: RTPSListenerDelegate?) {
+    public func setRTPSListener(delegate: RTPSListenerDelegate?) {
         listenerDelegate = delegate
     }
     
-    func setRTPSParticipantListener(delegate: RTPSParticipantListenerDelegate?) {
+    public func setRTPSParticipantListener(delegate: RTPSParticipantListenerDelegate?) {
         participantListenerDelegate = delegate
     }
     
     /// Set RTPS partition (default: "*")
     /// - Parameter name: partition name
-    func setPartition(name: String) {
+    public func setPartition(name: String) {
         setRTPSPartition(participant, name.cString(using: .utf8)!)
     }
     
     /// Remove all readers/writers and then delete participant
-    func deleteParticipant() {
+    public func deleteParticipant() {
         removeRTPSParticipant(participant)
     }
     
@@ -127,7 +127,7 @@ open class FastRTPSBridge {
     ///   - ddsType: DDSType topic DDS data type
     ///   - completion: (sequence: UInt64, data: Data) -> Void
     ///      where data is topic ..................
-    func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
+    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
         registerRTPSReader(participant,
                            topic.rawValue.cString(using: .utf8)!,
@@ -138,7 +138,7 @@ open class FastRTPSBridge {
                            payloadDecoderProxy)
     }
     
-    func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) {
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) {
         registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
             let result = Result.init { try decoder.decode(D.self, from: data) }
@@ -146,7 +146,7 @@ open class FastRTPSBridge {
         }
     }
     
-    func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void) {
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void) {
         registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
             do {
@@ -160,11 +160,11 @@ open class FastRTPSBridge {
     
     /// Remove RTPS reader
     /// - Parameter topic: topic descriptor
-    func removeReader<T: DDSReaderTopic>(topic: T) {
+    public func removeReader<T: DDSReaderTopic>(topic: T) {
         removeRTPSReader(participant, topic.rawValue.cString(using: .utf8)!)
     }
     
-    func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
+    public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
         registerRTPSWriter(participant,
                             topic.rawValue.cString(using: .utf8)!,
                             D.ddsTypeName.cString(using: .utf8)!,
@@ -175,11 +175,11 @@ open class FastRTPSBridge {
     
     /// Remove RTPS writer
     /// - Parameter topic: topic descriptor
-    func removeWriter<T: DDSReaderTopic>(topic: T) {
+    public func removeWriter<T: DDSWriterTopic>(topic: T) {
         removeRTPSWriter(participant, topic.rawValue.cString(using: .utf8)!)
     }
 
-    func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) {
+    public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) {
         let encoder = CDREncoder()
         do {
             var data = try encoder.encode(ddsData)
@@ -206,26 +206,26 @@ open class FastRTPSBridge {
     }
     
     /// Remove all readers and writers from participant
-    func resignAll() {
+    public func resignAll() {
         resignRTPSAll(participant)
     }
     
     /// Method to shut down all RTPS participants, readers, writers, etc. It may be called at the end of the process to avoid memory leaks.
-    func stopAll() {
+    public func stopAll() {
         stopRTPSAll(participant)
     }
 
-    func removeParticipant() {
+    public func removeParticipant() {
         removeRTPSParticipant(participant)
     }
 
-    func setlogLevel(_ level: FastRTPSLogLevel) {
+    public func setlogLevel(_ level: FastRTPSLogLevel) {
         setRTPSLoglevel(level)
     }
     
     /// Get IPV4 addresses of all network interfaces
     /// - Returns: String array with IPV4 addresses with dot notation x.x.x.x
-    class func getIP4Address() -> [String: String] {
+    public class func getIP4Address() -> [String: String] {
         var localIP: [String: String] = [:]
 
         var ifaddr: UnsafeMutablePointer<ifaddrs>? = nil
@@ -249,7 +249,7 @@ open class FastRTPSBridge {
         return localIP
     }
     
-    class func getIP6Address() -> [String: String] {
+    public class func getIP6Address() -> [String: String] {
         var localIP: [String: String] = [:]
 
         var ifaddr: UnsafeMutablePointer<ifaddrs>? = nil

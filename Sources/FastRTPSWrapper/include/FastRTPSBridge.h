@@ -91,11 +91,11 @@ const void * _Nonnull makeBridgedParticipant(void);
 void setupRTPSBridgeContainer(const void * participant,
                               struct BridgeContainer container);
 
-void createRTPSParticipantFilered(const void * participant,
-                                  const uint32_t domain,
-                                  const char* name,
-                                  const char* _Nullable localAddress,
-                                  const char* _Nullable filterAddress);
+void createRTPSParticipantFiltered(const void * participant,
+                                   const uint32_t domain,
+                                   const char* name,
+                                   const char* _Nullable localAddress,
+                                   const char* _Nullable filterAddress);
 
 void createRTPSParticipant(const void * participant,
                            const uint32_t domain,

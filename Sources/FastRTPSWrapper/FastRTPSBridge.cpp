@@ -28,11 +28,11 @@ void setupRTPSBridgeContainer(const void * participant,
     p->setContainer(container);
 }
 
-void createRTPSParticipantFilered(const void * participant,
-                                  const uint32_t domain,
-                                  const char* name,
-                                  const char* _Nullable localAddress,
-                                  const char* _Nullable filterAddress)
+void createRTPSParticipantFiltered(const void * participant,
+                                   const uint32_t domain,
+                                   const char* name,
+                                   const char* _Nullable localAddress,
+                                   const char* _Nullable filterAddress)
 {
     auto p = (BridgedParticipant *)participant;
     p->createParticipant(name, domain, filterAddress, localAddress);
