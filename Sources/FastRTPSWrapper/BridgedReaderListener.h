@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "fastrtps/rtps/rtps_fwd.h"
 #include "fastrtps/rtps/reader/ReaderListener.h"
-#include "FastRTPSBridge.h"
+#include "FastRTPSWrapper.h"
 
 class BridgedReaderListener:public eprosima::fastrtps::rtps::ReaderListener
 {

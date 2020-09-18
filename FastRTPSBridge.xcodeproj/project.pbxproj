@@ -18,10 +18,10 @@
 		0A969817236EEF0B00FF958F /* CDRCodable in Frameworks */ = {isa = PBXBuildFile; productRef = 0A969816236EEF0B00FF958F /* CDRCodable */; };
 		0AA1A1B02510FF1100253316 /* BridgedParticipantListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AA1A19D2510FF1000253316 /* BridgedParticipantListener.h */; };
 		0AA1A1B12510FF1100253316 /* BridgedParticipantListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AA1A19D2510FF1000253316 /* BridgedParticipantListener.h */; };
-		0AA1A1B22510FF1100253316 /* FastRTPSBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1A19E2510FF1100253316 /* FastRTPSBridge.cpp */; };
-		0AA1A1B32510FF1100253316 /* FastRTPSBridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1A19E2510FF1100253316 /* FastRTPSBridge.cpp */; };
-		0AA1A1B42510FF1100253316 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AA1A1A02510FF1100253316 /* FastRTPSBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0AA1A1B52510FF1100253316 /* FastRTPSBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AA1A1A02510FF1100253316 /* FastRTPSBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0AA1A1B22510FF1100253316 /* FastRTPSWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1A19E2510FF1100253316 /* FastRTPSWrapper.cpp */; };
+		0AA1A1B32510FF1100253316 /* FastRTPSWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1A19E2510FF1100253316 /* FastRTPSWrapper.cpp */; };
+		0AA1A1B42510FF1100253316 /* FastRTPSWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AA1A1A02510FF1100253316 /* FastRTPSWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0AA1A1B52510FF1100253316 /* FastRTPSWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 0AA1A1A02510FF1100253316 /* FastRTPSWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0AA1A1B62510FF1100253316 /* BridgedParticipant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1A1A12510FF1100253316 /* BridgedParticipant.cpp */; };
 		0AA1A1B72510FF1100253316 /* BridgedParticipant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1A1A12510FF1100253316 /* BridgedParticipant.cpp */; };
 		0AA1A1B82510FF1100253316 /* BridgedReaderListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AA1A1A22510FF1100253316 /* BridgedReaderListener.cpp */; };
@@ -101,8 +101,8 @@
 		0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fastrtps_build_ios.sh; sourceTree = "<group>"; };
 		0A8A37DB2366DB1B008E8DC1 /* FastRTPSBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FastRTPSBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AA1A19D2510FF1000253316 /* BridgedParticipantListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgedParticipantListener.h; sourceTree = "<group>"; };
-		0AA1A19E2510FF1100253316 /* FastRTPSBridge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastRTPSBridge.cpp; sourceTree = "<group>"; };
-		0AA1A1A02510FF1100253316 /* FastRTPSBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastRTPSBridge.h; sourceTree = "<group>"; };
+		0AA1A19E2510FF1100253316 /* FastRTPSWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FastRTPSWrapper.cpp; sourceTree = "<group>"; };
+		0AA1A1A02510FF1100253316 /* FastRTPSWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FastRTPSWrapper.h; sourceTree = "<group>"; };
 		0AA1A1A12510FF1100253316 /* BridgedParticipant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedParticipant.cpp; sourceTree = "<group>"; };
 		0AA1A1A22510FF1100253316 /* BridgedReaderListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BridgedReaderListener.cpp; sourceTree = "<group>"; };
 		0AA1A1A32510FF1100253316 /* CustomLogConsumer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CustomLogConsumer.cpp; sourceTree = "<group>"; };
@@ -225,7 +225,7 @@
 				0AA1A1A42510FF1100253316 /* BridgedWriterListener.h */,
 				0AA1A1A32510FF1100253316 /* CustomLogConsumer.cpp */,
 				0AA1A1A72510FF1100253316 /* CustomLogConsumer.h */,
-				0AA1A19E2510FF1100253316 /* FastRTPSBridge.cpp */,
+				0AA1A19E2510FF1100253316 /* FastRTPSWrapper.cpp */,
 				0AA1A19F2510FF1100253316 /* include */,
 			);
 			path = FastRTPSWrapper;
@@ -234,7 +234,7 @@
 		0AA1A19F2510FF1100253316 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				0AA1A1A02510FF1100253316 /* FastRTPSBridge.h */,
+				0AA1A1A02510FF1100253316 /* FastRTPSWrapper.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -283,7 +283,7 @@
 				0AA1A1C62510FF1100253316 /* BridgedParticipant.h in Headers */,
 				0AA1A1B02510FF1100253316 /* BridgedParticipantListener.h in Headers */,
 				0AA1A1BC2510FF1100253316 /* BridgedWriterListener.h in Headers */,
-				0AA1A1B42510FF1100253316 /* FastRTPSBridge.h in Headers */,
+				0AA1A1B42510FF1100253316 /* FastRTPSWrapper.h in Headers */,
 				0AA1A1C22510FF1100253316 /* CustomLogConsumer.h in Headers */,
 				0AA1A1C42510FF1100253316 /* BridgedReaderListener.h in Headers */,
 			);
@@ -296,7 +296,7 @@
 				0AA1A1C72510FF1100253316 /* BridgedParticipant.h in Headers */,
 				0AA1A1B12510FF1100253316 /* BridgedParticipantListener.h in Headers */,
 				0AA1A1BD2510FF1100253316 /* BridgedWriterListener.h in Headers */,
-				0AA1A1B52510FF1100253316 /* FastRTPSBridge.h in Headers */,
+				0AA1A1B52510FF1100253316 /* FastRTPSWrapper.h in Headers */,
 				0AA1A1C32510FF1100253316 /* CustomLogConsumer.h in Headers */,
 				0AA1A1C52510FF1100253316 /* BridgedReaderListener.h in Headers */,
 			);
@@ -508,7 +508,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AA1A1B22510FF1100253316 /* FastRTPSBridge.cpp in Sources */,
+				0AA1A1B22510FF1100253316 /* FastRTPSWrapper.cpp in Sources */,
 				0AA1A1B82510FF1100253316 /* BridgedReaderListener.cpp in Sources */,
 				0AA1A1C82510FF1100253316 /* DDSTopic.swift in Sources */,
 				0AA1A1C02510FF1100253316 /* BridgedWriterListener.cpp in Sources */,
@@ -526,7 +526,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0AA1A1B32510FF1100253316 /* FastRTPSBridge.cpp in Sources */,
+				0AA1A1B32510FF1100253316 /* FastRTPSWrapper.cpp in Sources */,
 				0AA1A1B92510FF1100253316 /* BridgedReaderListener.cpp in Sources */,
 				0AA1A1C92510FF1100253316 /* DDSTopic.swift in Sources */,
 				0AA1A1C12510FF1100253316 /* BridgedWriterListener.cpp in Sources */,

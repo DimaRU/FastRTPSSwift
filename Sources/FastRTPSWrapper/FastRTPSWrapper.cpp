@@ -4,7 +4,7 @@
 //
 
 
-#include "FastRTPSBridge.h"
+#include "FastRTPSWrapper.h"
 #include "BridgedParticipant.h"
 #include <fastrtps/log/Log.h>
 #include "CustomLogConsumer.h"

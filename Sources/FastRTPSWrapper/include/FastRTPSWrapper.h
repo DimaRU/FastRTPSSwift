@@ -1,11 +1,11 @@
 /////
-////  FastRTPSBridge.h
+////  FastRTPSWrapper.h
 ///   Copyright © 2020 Dmitriy Borovikov. All rights reserved.
 //
 
 
-#ifndef FastRTPSBridge_h
-#define FastRTPSBridge_h
+#ifndef FastRTPSWrapper_h
+#define FastRTPSWrapper_h
 
 #ifndef  __cplusplus
 #import <Foundation/Foundation.h>
@@ -148,4 +148,4 @@ void removeRTPSParticipant(const void * participant);
 }
 #endif
 
-#endif /* FastRTPSBridge_h */
+#endif /* FastRTPSWrapper_h */

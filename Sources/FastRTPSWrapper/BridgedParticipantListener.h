@@ -8,7 +8,7 @@
 #include <fastrtps/fastrtps_fwd.h>
 #include <fastrtps/subscriber/SampleInfo.h>
 #include <fastrtps/rtps/participant/RTPSParticipantListener.h>
-#include "FastRTPSBridge.h"
+#include "FastRTPSWrapper.h"
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
