@@ -179,21 +179,25 @@ open class FastRTPSBridge {
     public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) {
         let encoder = CDREncoder()
         do {
-            var data = try encoder.encode(ddsData)
-            if ddsData is DDSKeyed {
-                var key = (ddsData as! DDSKeyed).key
-                if key.isEmpty {
-                    key = Data([0])
+            let data = try encoder.encode(ddsData)
+            data.withUnsafeBytes { dataPtr in
+                if ddsData is DDSKeyed {
+                    var key = (ddsData as! DDSKeyed).key
+                    if key.isEmpty {
+                        key = Data([0])
+                    }
+                    key.withUnsafeBytes { keyPtr in
+                        wrapper.sendDataWithKey(topicName: topic.rawValue.cString(using: .utf8)!,
+                                                data: dataPtr.baseAddress!,
+                                                length: UInt32(data.count),
+                                                key: keyPtr.baseAddress!,
+                                                keyLength: UInt32(key.count))
+                    }
+                } else {
+                    wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
+                                     data: dataPtr.baseAddress!,
+                                     length: UInt32(data.count))
                 }
-                wrapper.sendDataWithKey(topicName: topic.rawValue.cString(using: .utf8)!,
-                                        data: &data,
-                                        length: UInt32(data.count),
-                                        key: &key,
-                                        keyLength: UInt32(key.count))
-            } else {
-                wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
-                                 data: &data,
-                                 length: UInt32(data.count))
             }
         } catch {
             fatalError(error.localizedDescription)
