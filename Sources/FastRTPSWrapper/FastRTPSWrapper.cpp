@@ -35,7 +35,7 @@ void createRTPSParticipantFiltered(const void * participant,
                                    const char* _Nullable filterAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    p->createParticipant(name, domain, filterAddress, localAddress);
+    p->createParticipant(name, domain, localAddress, filterAddress);
 }
 
 void createRTPSParticipant(const void * participant,
@@ -44,7 +44,7 @@ void createRTPSParticipant(const void * participant,
                            const char* _Nullable localAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    p->createParticipant(name, domain, nullptr, localAddress);
+    p->createParticipant(name, domain, localAddress, nullptr);
 }
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
