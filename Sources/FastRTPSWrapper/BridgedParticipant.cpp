@@ -190,9 +190,10 @@ bool BridgedParticipant::removeReader(const char* name)
 }
 
 bool BridgedParticipant::addWriter(const char* name,
-                               const char* dataType,
-                               const bool keyed,
-                               const bool transientLocal)
+                                   const char* dataType,
+                                   const bool keyed,
+                                   const bool transientLocal,
+                                   const bool reliable)
 {
     auto topicName = std::string(name);
     auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
@@ -206,7 +207,9 @@ bool BridgedParticipant::addWriter(const char* name,
     writerAttributes.times.nackResponseDelay = Duration_t(0.0);
 
     writerAttributes.endpoint.topicKind = tKind;
-    writerAttributes.endpoint.reliabilityKind = RELIABLE;
+    if (reliable) {
+        writerAttributes.endpoint.reliabilityKind = RELIABLE;
+    }
     writerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
 
     auto listener = new BridgedWriterListener(name, container);
@@ -234,7 +237,10 @@ bool BridgedParticipant::addWriter(const char* name,
     writerQos.m_partition.push_back(partitionName.c_str());
     writerQos.m_disablePositiveACKs.enabled = true;
     writerQos.m_durability.kind = transientLocal ? TRANSIENT_LOCAL_DURABILITY_QOS: VOLATILE_DURABILITY_QOS;
-    
+    if (reliable == true) {
+        writerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
+    }
+
     auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);

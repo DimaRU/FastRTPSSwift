@@ -98,7 +98,7 @@ void registerRTPSWriter(const void * participant,
                         bool reliable)
 {
     auto p = (BridgedParticipant *)participant;
-    p->addWriter(topicName, typeName, keyed, transientLocal);
+    p->addWriter(topicName, typeName, keyed, transientLocal, reliable);
 }
 
 void removeRTPSWriter(const void * participant,

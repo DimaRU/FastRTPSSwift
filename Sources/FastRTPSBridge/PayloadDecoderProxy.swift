@@ -14,12 +14,6 @@ public class PayloadDecoderProxy {
         self.completion = completion
     }
     
-    #if DEBUG
-    deinit {
-        print(#file, #function)
-    }
-    #endif
-    
     public func decode(sequence: UInt64, payloadSize: Int, payload: UnsafeMutableRawPointer) {
         let data = Data(bytesNoCopy: payload, count: payloadSize, deallocator: .none)
         completion(sequence, data)
