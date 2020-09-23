@@ -19,71 +19,71 @@ public protocol RTPSParticipantListenerDelegate {
 }
 
 open class FastRTPSBridge {
-    private var participant: UnsafeRawPointer
+    private var wrapper: FastRTPSWrapper
     fileprivate var listenerDelegate: RTPSListenerDelegate?
     fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
     
     public init() {
-        participant = makeBridgedParticipant()
+        wrapper = FastRTPSWrapper()
     }
     
     func setupBridgeContainer()
     {
         let container = BridgeContainer(
             decoderCallback: {
-            (payloadDecoder, sequence, payloadSize, payload) in
-            let payloadDecoder = Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).takeUnretainedValue()
-            payloadDecoder.decode(sequence: sequence,
-                                  payloadSize: Int(payloadSize),
-                                  payload: payload)
-        }, releaseCallback: {
-            (payloadDecoder) in
-            Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
-        }, readerWriterListenerCallback: {
-            (listenerObject, reason, topicName) in
-            let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.listenerDelegate else { return }
-            let topic = String(cString: topicName)
-            delegate.RTPSNotification(reason: reason, topic: topic)
-        }, discoveryParticipantCallback: {
-            (listenerObject, reason, participantName, unicastLocators, properties) in
-            let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.participantListenerDelegate else { return }
-            var locators = ""
-            var propertiesDict: [String:String] = [:]
-            if let unicastLocators = unicastLocators {
-                locators = String(cString: unicastLocators)
-            }
-            if let properties = properties {
-                var i = 0
-                while properties[i] != nil {
-                    let key = String(cString: properties[i]!)
-                    let value = String(cString: properties[i+1]!)
-                    propertiesDict[key] = value
-                    i += 2
+                (payloadDecoder, sequence, payloadSize, payload) in
+                let payloadDecoder = Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).takeUnretainedValue()
+                payloadDecoder.decode(sequence: sequence,
+                                      payloadSize: Int(payloadSize),
+                                      payload: payload)
+            }, releaseCallback: {
+                (payloadDecoder) in
+                Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
+            }, readerWriterListenerCallback: {
+                (listenerObject, reason, topicName) in
+                let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
+                guard let delegate = mySelf.listenerDelegate else { return }
+                let topic = String(cString: topicName)
+                delegate.RTPSNotification(reason: reason, topic: topic)
+            }, discoveryParticipantCallback: {
+                (listenerObject, reason, participantName, unicastLocators, properties) in
+                let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
+                guard let delegate = mySelf.participantListenerDelegate else { return }
+                var locators = ""
+                var propertiesDict: [String:String] = [:]
+                if let unicastLocators = unicastLocators {
+                    locators = String(cString: unicastLocators)
                 }
-            }
-            delegate.participantNotification(reason: reason,
-                                             participant: String(cString: participantName),
-                                             unicastLocators: locators,
-                                             properties: propertiesDict)
-        }, discoveryReaderWriterCallback: {
-            (listenerObject, reason, topicName, typeName, remoteLocators) in
-            let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.participantListenerDelegate else { return }
-            
-            let topic = String(cString: topicName)
-            let type = String(cString: typeName)
-            var locators = ""
-            if let remoteLocators = remoteLocators {
-                locators = String(cString: remoteLocators)
-            }
-            delegate.readerWriterNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators)
-        }, listnerObject: Unmanaged.passUnretained(self).toOpaque())
+                if let properties = properties {
+                    var i = 0
+                    while properties[i] != nil {
+                        let key = String(cString: properties[i]!)
+                        let value = String(cString: properties[i+1]!)
+                        propertiesDict[key] = value
+                        i += 2
+                    }
+                }
+                delegate.participantNotification(reason: reason,
+                                                 participant: String(cString: participantName),
+                                                 unicastLocators: locators,
+                                                 properties: propertiesDict)
+            }, discoveryReaderWriterCallback: {
+                (listenerObject, reason, topicName, typeName, remoteLocators) in
+                let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
+                guard let delegate = mySelf.participantListenerDelegate else { return }
+                
+                let topic = String(cString: topicName)
+                let type = String(cString: typeName)
+                var locators = ""
+                if let remoteLocators = remoteLocators {
+                    locators = String(cString: remoteLocators)
+                }
+                delegate.readerWriterNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators)
+            }, listnerObject: Unmanaged.passUnretained(self).toOpaque())
         
-        setupRTPSBridgeContainer(participant, container)
+        wrapper.setupBridgeContainer(container: container)
     }
-
+    
     // MARK: Public interface
 
     
@@ -95,11 +95,10 @@ open class FastRTPSBridge {
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
     public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filterAddress: String? = nil) {
         setupBridgeContainer()
-        createRTPSParticipantFiltered(participant,
-                                      domainID,
-                                      name.cString(using: .utf8)!,
-                                      localAddress?.cString(using: .utf8),
-                                      filterAddress?.cString(using: .utf8))
+        wrapper.createParticipantFiltered(domain: domainID,
+                                              name: name.cString(using: .utf8)!,
+                                              localAddress: localAddress?.cString(using: .utf8),
+                                              filterAddress: filterAddress?.cString(using: .utf8))
     }
 
     public func setRTPSListener(delegate: RTPSListenerDelegate?) {
@@ -113,12 +112,12 @@ open class FastRTPSBridge {
     /// Set RTPS partition (default: "*")
     /// - Parameter name: partition name
     public func setPartition(name: String) {
-        setRTPSPartition(participant, name.cString(using: .utf8)!)
+        wrapper.setPartition(partition: name.cString(using: .utf8)!)
     }
     
     /// Remove all readers/writers and then delete participant
     public func deleteParticipant() {
-        removeRTPSParticipant(participant)
+        wrapper.removeParticipant()
     }
     
     /// Register RTPS reader with raw data callback
@@ -129,13 +128,12 @@ open class FastRTPSBridge {
     ///      where data is topic ..................
     public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
-        registerRTPSReader(participant,
-                           topic.rawValue.cString(using: .utf8)!,
-                           D.ddsTypeName.cString(using: .utf8)!,
-                           D.isKeyed,
-                           topic.transientLocal,
-                           topic.reliable,
-                           payloadDecoderProxy)
+        wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
+                               typeName: D.ddsTypeName.cString(using: .utf8)!,
+                               keyed: D.isKeyed,
+                               transientLocal: topic.transientLocal,
+                               reliable: topic.reliable,
+                               payloadDecoder: payloadDecoderProxy)
     }
     
     public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) {
@@ -161,24 +159,23 @@ open class FastRTPSBridge {
     /// Remove RTPS reader
     /// - Parameter topic: topic descriptor
     public func removeReader<T: DDSReaderTopic>(topic: T) {
-        removeRTPSReader(participant, topic.rawValue.cString(using: .utf8)!)
+        wrapper.removeReader(topicName: topic.rawValue.cString(using: .utf8)!)
     }
     
     public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
-        registerRTPSWriter(participant,
-                            topic.rawValue.cString(using: .utf8)!,
-                            D.ddsTypeName.cString(using: .utf8)!,
-                            D.isKeyed,
-                            topic.transientLocal,
-                            topic.reliable)
+        wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
+                               typeName: D.ddsTypeName.cString(using: .utf8)!,
+                               keyed: D.isKeyed,
+                               transientLocal: topic.transientLocal,
+                               reliable: topic.reliable)
     }
     
     /// Remove RTPS writer
     /// - Parameter topic: topic descriptor
     public func removeWriter<T: DDSWriterTopic>(topic: T) {
-        removeRTPSWriter(participant, topic.rawValue.cString(using: .utf8)!)
+        wrapper.removeWriter(topicName: topic.rawValue.cString(using: .utf8)!)
     }
-
+    
     public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) {
         let encoder = CDREncoder()
         do {
@@ -188,17 +185,15 @@ open class FastRTPSBridge {
                 if key.isEmpty {
                     key = Data([0])
                 }
-                sendDataWithKey(participant,
-                                topic.rawValue.cString(using: .utf8)!,
-                                &data,
-                                UInt32(data.count),
-                                &key,
-                                UInt32(key.count))
+                wrapper.sendDataWithKey(topicName: topic.rawValue.cString(using: .utf8)!,
+                                        data: &data,
+                                        length: UInt32(data.count),
+                                        key: &key,
+                                        keyLength: UInt32(key.count))
             } else {
-                sendData(participant,
-                         topic.rawValue.cString(using: .utf8)!,
-                         &data,
-                         UInt32(data.count))
+                wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
+                                 data: &data,
+                                 length: UInt32(data.count))
             }
         } catch {
             fatalError(error.localizedDescription)
@@ -207,20 +202,20 @@ open class FastRTPSBridge {
     
     /// Remove all readers and writers from participant
     public func resignAll() {
-        resignRTPSAll(participant)
+        wrapper.resignAll()
     }
     
     /// Method to shut down all RTPS participants, readers, writers, etc. It may be called at the end of the process to avoid memory leaks.
     public func stopAll() {
-        stopRTPSAll(participant)
+        wrapper.stopAll()
     }
 
     public func removeParticipant() {
-        removeRTPSParticipant(participant)
+        wrapper.removeParticipant()
     }
 
     public func setlogLevel(_ level: FastRTPSLogLevel) {
-        setRTPSLoglevel(level)
+        FastRTPSWrapper.logLevel(level: level)
     }
     
     /// Get IPV4 addresses of all network interfaces
