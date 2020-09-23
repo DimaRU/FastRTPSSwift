@@ -15,7 +15,6 @@ extension RTPSNotification: CustomStringConvertible {
         case .writerMatchedMatching : return "writerMatchedMatching"
         case .writerRemovedMatching : return "writerRemovedMatching"
         case .writerLivelinessLost  : return "writerLivelinessLost"
-        @unknown default            : return "unknown"
         }
     }
 }
@@ -29,7 +28,6 @@ extension RTPSReaderWriterNotification: CustomStringConvertible {
         case .discoveredWriter : return "discoveredWriter"
         case .changedQosWriter : return "changedQosWriter"
         case .removedWriter    : return "removedWriter"
-        @unknown default       : return "unknown"
         }
     }
 }
@@ -41,7 +39,6 @@ extension RTPSParticipantNotification: CustomStringConvertible {
         case .changedQosParticipant : return "changedQosParticipant"
         case .removedParticipant    : return "removedParticipant"
         case .droppedParticipant    : return "droppedParticipant"
-        @unknown default            : return "unknown"
         }
     }
 }

@@ -19,6 +19,9 @@
 #ifndef NS_ENUM
 #define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
 #endif
+#ifndef NS_CLOSED_ENUM
+#define NS_CLOSED_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
+#endif
 #if __has_attribute(swift_name)
 # define CF_SWIFT_NAME(_name) __attribute__((swift_name(#_name)))
 #else
@@ -27,7 +30,7 @@
 
 #endif
 
-typedef NS_ENUM(uint32_t, RTPSNotification) {
+typedef NS_CLOSED_ENUM(uint32_t, RTPSNotification) {
   RTPSNotificationReaderMatchedMatching = 0,
   RTPSNotificationReaderRemovedMatching,
   RTPSNotificationReaderLivelinessLost,
@@ -36,7 +39,7 @@ typedef NS_ENUM(uint32_t, RTPSNotification) {
   RTPSNotificationWriterLivelinessLost,
 };
 
-typedef NS_ENUM(uint32_t, RTPSReaderWriterNotification) {
+typedef NS_CLOSED_ENUM(uint32_t, RTPSReaderWriterNotification) {
   RTPSReaderWriterNotificationDiscoveredReader = 0,
   RTPSReaderWriterNotificationChangedQosReader,
   RTPSReaderWriterNotificationRemovedReader,
@@ -44,14 +47,14 @@ typedef NS_ENUM(uint32_t, RTPSReaderWriterNotification) {
   RTPSReaderWriterNotificationChangedQosWriter,
   RTPSReaderWriterNotificationRemovedWriter,
 };
-typedef NS_ENUM(uint32_t, RTPSParticipantNotification) {
+typedef NS_CLOSED_ENUM(uint32_t, RTPSParticipantNotification) {
   RTPSParticipantNotificationDiscoveredParticipant = 0,
   RTPSParticipantNotificationChangedQosParticipant,
   RTPSParticipantNotificationRemovedParticipant,
   RTPSParticipantNotificationDroppedParticipant,
 };
 
-typedef NS_ENUM(uint32_t, FastRTPSLogLevel) {
+typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
     FastRTPSLogLevelError=0,
     FastRTPSLogLevelWarning,
     FastRTPSLogLevelInfo
