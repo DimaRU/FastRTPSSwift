@@ -88,9 +88,18 @@
 			remoteGlobalIDString = 0A8A37D22366D9AE008E8DC1;
 			remoteInfo = "FastRTPS iOS";
 		};
+		0AF0CCD0251D0C8E00D171C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0A71306C2363503500817593 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0A8A37DA2366DB1B008E8DC1;
+			remoteInfo = "FastRTPSBridge iOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A0AFA84251CEE1200C97B6B /* ios.toolchain.cmake */ = {isa = PBXFileReference; lastKnownFileType = text; path = ios.toolchain.cmake; sourceTree = "<group>"; };
+		0A0AFA85251CEE1200C97B6B /* maccatalyst.toolchain.cmake */ = {isa = PBXFileReference; lastKnownFileType = text; path = maccatalyst.toolchain.cmake; sourceTree = "<group>"; };
 		0A1FE2F524F91977002CBB56 /* FastRTPSBridgeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FastRTPSBridgeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A1FE2F924F91977002CBB56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A35C9EF23A52D2500CF48D6 /* libfastrtps.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfastrtps.a; path = fastrtps/lib/libfastrtps.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,7 +135,6 @@
 		0AA1A1D92511015900253316 /* FastRTPSBridgeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastRTPSBridgeTests.swift; sourceTree = "<group>"; };
 		0AA1A1DA2511015900253316 /* XCTestManifests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestManifests.swift; sourceTree = "<group>"; };
 		0AA1A1DB2511015900253316 /* RovDepth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RovDepth.swift; sourceTree = "<group>"; };
-		0ACE0ECA23E2390300C83C55 /* maccatalyst.toolchain.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = maccatalyst.toolchain.cmake; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,11 +171,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0A0AFA83251CEE1200C97B6B /* cmake */ = {
+			isa = PBXGroup;
+			children = (
+				0A0AFA84251CEE1200C97B6B /* ios.toolchain.cmake */,
+				0A0AFA85251CEE1200C97B6B /* maccatalyst.toolchain.cmake */,
+			);
+			path = cmake;
+			sourceTree = "<group>";
+		};
 		0A71306B2363503500817593 = {
 			isa = PBXGroup;
 			children = (
+				0A0AFA83251CEE1200C97B6B /* cmake */,
 				0AA1A19B2510FF1000253316 /* Sources */,
-				0ACE0ECA23E2390300C83C55 /* maccatalyst.toolchain.cmake */,
 				0A5B3F252364E63400BE5707 /* fastrtps_build_osx.sh */,
 				0A5F6F7823E1EFDE006A6D5A /* fastrtps_build_catalyst.sh */,
 				0A8A37CF2366D469008E8DC1 /* fastrtps_build_ios.sh */,
@@ -367,6 +384,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0AF0CCD1251D0C8E00D171C7 /* PBXTargetDependency */,
 				0A1FE2FC24F91977002CBB56 /* PBXTargetDependency */,
 			);
 			name = FastRTPSBridgeTests;
@@ -570,6 +588,12 @@
 			platformFilter = ios;
 			target = 0A8A37D22366D9AE008E8DC1 /* FastRTPS iOS */;
 			targetProxy = 0AD9938D2366F82F00D037A3 /* PBXContainerItemProxy */;
+		};
+		0AF0CCD1251D0C8E00D171C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = 0A8A37DA2366DB1B008E8DC1 /* FastRTPSBridge iOS */;
+			targetProxy = 0AF0CCD0251D0C8E00D171C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

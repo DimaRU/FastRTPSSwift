@@ -5,9 +5,8 @@
 #
 set -e
 
-echo $CONFIGURATION # Build type
 if [ -f "$BUILT_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a" ]; then
-echo Already build $BUILT_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a
+echo Already build "$BUILT_PRODUCTS_DIR/fastrtps/lib/libfastrtps.a"
 exit 0
 fi
 
@@ -19,7 +18,7 @@ fi
 rm -rf "$PROJECT_TEMP_DIR/memory"
 mkdir -p "$PROJECT_TEMP_DIR/memory" || true
 cmake -Smemory -B"$PROJECT_TEMP_DIR/memory" \
--DCMAKE_INSTALL_PREFIX=$BUILT_PRODUCTS_DIR/fastrtps \
+-DCMAKE_INSTALL_PREFIX=$BUILT_PRODUCTS_DIR/cmake/fastrtps \
 -DCMAKE_TOOLCHAIN_FILE=$SRCROOT/maccatalyst.toolchain.cmake \
 -DFOONATHAN_MEMORY_BUILD_EXAMPLES=OFF \
 -DFOONATHAN_MEMORY_BUILD_TESTS=OFF \
@@ -34,7 +33,7 @@ fi
 mkdir -p "$PROJECT_TEMP_DIR/Fast-DDS" || true
 cmake -SFast-DDS -B"$PROJECT_TEMP_DIR/Fast-DDS" \
 -DCMAKE_INSTALL_PREFIX=$BUILT_PRODUCTS_DIR/fastrtps \
--DCMAKE_TOOLCHAIN_FILE=$SRCROOT/maccatalyst.toolchain.cmake \
+-DCMAKE_TOOLCHAIN_FILE=$SRCROOT/cmake/maccatalyst.toolchain.cmake \
 -Dfoonathan_memory_DIR=$BUILT_PRODUCTS_DIR/fastrtps/share/foonathan_memory/cmake \
 -DSQLITE3_SUPPORT=OFF \
 -DTHIRDPARTY=ON \
