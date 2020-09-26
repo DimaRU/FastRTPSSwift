@@ -7,27 +7,30 @@
 #ifndef FastRTPSWrapper_h
 #define FastRTPSWrapper_h
 
-#ifndef  __cplusplus
-#import <Foundation/Foundation.h>
-
-#else
-
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
+#if __has_attribute(enum_extensibility)
+# define CLOSED_ENUM_ATTR __attribute__((enum_extensibility(closed)))
+# define OPEN_ENUM_ATTR __attribute__((enum_extensibility(open)))
+#else
+# define CLOSED_ENUM_ATTR
+# define OPEN_ENUM_ATTR
+#endif
+
 #ifndef NS_ENUM
-#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
+#define NS_ENUM(_type, _name) enum OPEN_ENUM_ATTR _name : _type _name; enum OPEN_ENUM_ATTR _name : _type
 #endif
 #ifndef NS_CLOSED_ENUM
-#define NS_CLOSED_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
+#define NS_CLOSED_ENUM(_type, _name) enum CLOSED_ENUM_ATTR _name : _type _name; enum CLOSED_ENUM_ATTR _name : _type
 #endif
+
+
 #if __has_attribute(swift_name)
 # define CF_SWIFT_NAME(_name) __attribute__((swift_name(#_name)))
 #else
 # define CF_SWIFT_NAME(_name)
-#endif
-
 #endif
 
 typedef NS_CLOSED_ENUM(uint32_t, RTPSNotification) {
