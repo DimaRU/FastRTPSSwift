@@ -30,5 +30,5 @@ let package = Package(
             dependencies: ["FastRTPSBridge"]),
     ],
     swiftLanguageVersions: [.v5],
-    cxxLanguageStandard: .cxx14
+    cxxLanguageStandard: .cxx11
 )
