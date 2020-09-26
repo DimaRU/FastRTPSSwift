@@ -102,13 +102,13 @@ const void * _Nonnull makeBridgedParticipant(void) CF_SWIFT_NAME(FastRTPSWrapper
 
 void setupRTPSBridgeContainer(const void * participant,
                               struct BridgeContainer container) CF_SWIFT_NAME(FastRTPSWrapper.setupBridgeContainer(self:container:));
-
+#ifdef FASTRTPS_FILTER
 void createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
                                    const char* _Nullable localAddress,
                                    const char* _Nullable filterAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:localAddress:filterAddress:));
-
+#endif
 void createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,

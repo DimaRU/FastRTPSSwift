@@ -86,7 +86,7 @@ open class FastRTPSBridge {
     
     // MARK: Public interface
 
-    
+    #if FASTRTPS_FILTER
     /// Create RTPS participant
     /// - Parameters:
     ///   - name: participant name
@@ -100,6 +100,21 @@ open class FastRTPSBridge {
                                           localAddress: localAddress?.cString(using: .utf8),
                                           filterAddress: filterAddress?.cString(using: .utf8))
     }
+
+    #else
+
+    /// Create RTPS participant
+    /// - Parameters:
+    ///   - name: participant name
+    ///   - domainID: participant domain ID
+    ///   - localAddress: bind only to localAddress
+    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil) {
+        setupBridgeContainer()
+        wrapper.createParticipant(domain: domainID,
+                                  name: name.cString(using: .utf8)!,
+                                  localAddress: localAddress?.cString(using: .utf8))
+    }
+    #endif
 
     public func setRTPSListener(delegate: RTPSListenerDelegate?) {
         listenerDelegate = delegate

@@ -96,9 +96,13 @@ bool BridgedParticipant::createParticipant(const char* name,
     if (interfaceIPv4 != nullptr) {
         customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
     }
+
+#ifdef FASTRTPS_FILTER
     if (networkAddress != nullptr) {
         customTransport->remoteWhiteList.emplace_back(networkAddress);
     }
+#endif
+    
     pattr.userTransports.push_back(customTransport);
     pattr.useBuiltinTransports = false;
 

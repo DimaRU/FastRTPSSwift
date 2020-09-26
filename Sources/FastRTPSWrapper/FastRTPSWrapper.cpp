@@ -28,6 +28,7 @@ void setupRTPSBridgeContainer(const void * participant,
     p->setContainer(container);
 }
 
+#ifdef FASTRTPS_FILTER
 void createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
@@ -37,6 +38,7 @@ void createRTPSParticipantFiltered(const void * participant,
     auto p = (BridgedParticipant *)participant;
     p->createParticipant(name, domain, localAddress, filterAddress);
 }
+#endif
 
 void createRTPSParticipant(const void * participant,
                            const uint32_t domain,
