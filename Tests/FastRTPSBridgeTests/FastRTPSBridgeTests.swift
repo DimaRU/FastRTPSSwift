@@ -49,6 +49,10 @@ class FastRTPSBridgeTests: XCTestCase {
         fastRTPSBridge?.removeParticipant()
     }
     
+    static var allTests = [
+        ("testCreateReader", testCreateReader),
+        ("testCreateMultipleReaders", testCreateMultipleReaders),
+    ]
 }
 
 extension FastRTPSBridgeTests: RTPSParticipantListenerDelegate {
@@ -61,3 +65,5 @@ extension FastRTPSBridgeTests: RTPSParticipantListenerDelegate {
     }
     
 }
+
+
