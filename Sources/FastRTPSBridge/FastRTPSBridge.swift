@@ -28,7 +28,7 @@ open class FastRTPSBridge {
         wrapper = FastRTPSWrapper()
     }
     
-    func setupBridgeContainer()
+    private func setupBridgeContainer()
     {
         let container = BridgeContainer(
             decoderCallback: {
@@ -91,7 +91,7 @@ open class FastRTPSBridge {
     /// Create RTPS participant
     /// - Parameters:
     ///   - name: participant name
-    ///   - domainID: participant domain ID
+    ///   - domainID: Domain Id to be used by the participant
     ///   - localAddress: bind only to localAddress
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
     public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filterAddress: String? = nil) {
@@ -107,7 +107,7 @@ open class FastRTPSBridge {
     /// Create RTPS participant
     /// - Parameters:
     ///   - name: participant name
-    ///   - domainID: participant domain ID
+    ///   - domainID: Domain Id to be used by the participant
     ///   - localAddress: bind only to localAddress
     public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil) {
         setupBridgeContainer()
@@ -116,11 +116,18 @@ open class FastRTPSBridge {
                                   localAddress: localAddress?.cString(using: .utf8))
     }
     #endif
-
+    
+    /// Set RTPS messages listener
+    /// Intercepts readers and writers messages - matching and liveliness state changes
+    /// - Parameter delegate: RTPSListenerDelegate
     public func setRTPSListener(delegate: RTPSListenerDelegate?) {
         listenerDelegate = delegate
     }
     
+    /// Set RTPS participant listener
+    /// Intercepts participant messages - discovery and remove participant;
+    ///  discovery, remove and QoS change of readers and writers
+    /// - Parameter delegate: RTPSParticipantListenerDelegate
     public func setRTPSParticipantListener(delegate: RTPSParticipantListenerDelegate?) {
         participantListenerDelegate = delegate
     }
@@ -131,12 +138,7 @@ open class FastRTPSBridge {
         wrapper.setPartition(partition: name.cString(using: .utf8)!)
     }
     
-    /// Remove all readers/writers and then delete participant
-    public func deleteParticipant() {
-        wrapper.removeParticipant()
-    }
-    
-    /// Register RTPS reader with raw data callback
+    /// Register RTPS reader for topic with raw data callback
     /// - Parameters:
     ///   - topic: DDSReaderTopic topic description
     ///   - ddsType: DDSType topic DDS data type
@@ -152,6 +154,10 @@ open class FastRTPSBridge {
                                payloadDecoder: payloadDecoderProxy)
     }
     
+    /// Register a RTPS reader for topic with Result data callback
+    /// - Parameters:
+    ///   - topic: DDSReader topic description
+    ///   - completion: callback with Result<D, Error>, where D is deserialized data
     public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) {
         registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
@@ -160,6 +166,10 @@ open class FastRTPSBridge {
         }
     }
     
+    /// Register a RTPS reader for topic with deserialized data callback
+    /// - Parameters:
+    ///   - topic: DDSReaderTopic topic description
+    ///   - completion: callback with deserialized data
     public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void) {
         registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
@@ -172,26 +182,35 @@ open class FastRTPSBridge {
         }
     }
     
-    /// Remove RTPS reader
-    /// - Parameter topic: topic descriptor
+    /// Remove a RTPS reader for topic
+    /// - Parameter topic: DDSReader topic descriptor
     public func removeReader<T: DDSReaderTopic>(topic: T) {
         wrapper.removeReader(topicName: topic.rawValue.cString(using: .utf8)!)
     }
     
+    /// Register a RTPS writer for topic
+    /// Writer must be registered before send data
+    /// - Parameters:
+    /// - Parameter topic: DDSWriterTopic topic descriptor
+    ///   - ddsType: data type descriptor
     public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
         wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
                                typeName: D.ddsTypeName.cString(using: .utf8)!,
-                               keyed: D.isKeyed,
+                               keyed: ddsType is DDSKeyed,
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable)
     }
     
-    /// Remove RTPS writer
-    /// - Parameter topic: topic descriptor
+    /// Remove RTPS writer for topic
+    /// - Parameter topic: DDSWriterTopic topic descriptor
     public func removeWriter<T: DDSWriterTopic>(topic: T) {
         wrapper.removeWriter(topicName: topic.rawValue.cString(using: .utf8)!)
     }
     
+    /// Send data change for topic
+    /// - Parameters:
+    /// - Parameter topic: DDSWriter topic descriptor
+    ///   - ddsData: any DDSType object
     public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) {
         let encoder = CDREncoder()
         do {
@@ -229,11 +248,14 @@ open class FastRTPSBridge {
     public func stopAll() {
         wrapper.stopAll()
     }
-
+    
+    /// Remove all readers/writers and then remove participant
     public func removeParticipant() {
         wrapper.removeParticipant()
     }
-
+    
+    /// Set FastRTPS log messages level
+    /// - Parameter level: error, warning, info
     public func setlogLevel(_ level: FastRTPSLogLevel) {
         FastRTPSWrapper.logLevel(level: level)
     }
