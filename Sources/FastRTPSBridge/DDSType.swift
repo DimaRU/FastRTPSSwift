@@ -5,19 +5,15 @@
 
 import Foundation
 
+/// Basic desctiption for DDS data types
 public protocol DDSType: Codable {
     static var ddsTypeName: String { get }
-    static var isKeyed: Bool { get }
 }
 
+/// Describe keyed DDS data type
 public protocol DDSKeyed: DDSType {
     var key: Data { get }
 }
-public extension DDSKeyed {
-    static var isKeyed: Bool { true }
-}
 
+/// Describe unkeyed DDS data type
 public protocol DDSUnkeyed: DDSType {}
-public extension DDSUnkeyed {
-    static var isKeyed: Bool { false }
-}

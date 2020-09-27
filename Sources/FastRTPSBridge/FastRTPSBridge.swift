@@ -148,7 +148,7 @@ open class FastRTPSBridge {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
         wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
                                typeName: D.ddsTypeName.cString(using: .utf8)!,
-                               keyed: D.isKeyed,
+                               keyed: ddsType is DDSKeyed,
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable,
                                payloadDecoder: payloadDecoderProxy)
