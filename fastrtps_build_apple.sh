@@ -83,7 +83,6 @@ if [ "$PLATFORM_NAME" = "iphoneos" ] || [ "$PLATFORM_NAME" = "iphonesimulator" ]
 cmake -Smemory -B"$PROJECT_TEMP_DIR/memory" \
 -D CMAKE_TOOLCHAIN_FILE="$SRCROOT/cmake/ios.toolchain.cmake" \
 -D CMAKE_IOS_INSTALL_COMBINED=$COMBINED \
--D IOS_DEPLOYMENT_SDK_VERSION=$IPHONEOS_DEPLOYMENT_TARGET \
 -D CMAKE_INSTALL_PREFIX="$BUILT_PRODUCTS_DIR/fastrtps" \
 -D CMAKE_CONFIGURATION_TYPES=Release \
 -D FOONATHAN_MEMORY_BUILD_EXAMPLES=OFF \
@@ -91,7 +90,6 @@ cmake -Smemory -B"$PROJECT_TEMP_DIR/memory" \
 -D FOONATHAN_MEMORY_BUILD_TOOLS=OFF \
 -G Xcode
 
-cmake --build "$PROJECT_TEMP_DIR/memory" --target ZERO_CHECK
 cmake --build "$PROJECT_TEMP_DIR/memory" --config Release --target install --
 
 cmake -SFast-DDS -B"$PROJECT_TEMP_DIR/Fast-DDS" \
@@ -100,7 +98,6 @@ cmake -SFast-DDS -B"$PROJECT_TEMP_DIR/Fast-DDS" \
 -D CMAKE_CONFIGURATION_TYPES="${CONFIGURATION}" \
 -D CMAKE_DEBUG_POSTFIX="" \
 -D BUILD_SHARED_LIBS=NO \
--D IOS_DEPLOYMENT_SDK_VERSION=$IPHONEOS_DEPLOYMENT_TARGET \
 -D CMAKE_INSTALL_PREFIX="$BUILT_PRODUCTS_DIR/fastrtps" \
 -D foonathan_memory_DIR="$BUILT_PRODUCTS_DIR/fastrtps/foonathan_memory/cmake" \
 -D SQLITE3_SUPPORT=OFF \
@@ -109,6 +106,5 @@ cmake -SFast-DDS -B"$PROJECT_TEMP_DIR/Fast-DDS" \
 -D BUILD_DOCUMENTATION=OFF \
 -G Xcode
 
-cmake --build "$PROJECT_TEMP_DIR/Fast-DDS" --target ZERO_CHECK
 cmake --build "$PROJECT_TEMP_DIR/Fast-DDS" --config ${CONFIGURATION} --target install --
 fi

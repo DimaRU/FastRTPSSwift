@@ -1,0 +1,35 @@
+name: Build
+
+on: 
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+    build:
+        name: Build
+        runs-on: macOS-latest
+        steps:
+        - name: Select Xcode
+          run: xcversion select 12.0
+
+        - name: Check XCode Version
+          run: xcodebuild -version
+
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: macOS Native
+          run: |
+            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=macOS"  CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO | xcpretty
+
+        - name: iOS Simulator
+          run: |
+            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=iOS Simulator,name=iPhone 8,OS=14.0" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=YES | xcpretty
+
+        - name: Mac Catalyst
+          run: |
+            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=macOS,variant=Mac Catalyst" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO | xcpretty
