@@ -12,7 +12,7 @@ exit 0
 fi
 
 FastRTPS_repo="-b feature/remote-whitelist-2.0.1 https://github.com/DimaRU/Fast-DDS.git"
-Foonathan_memory_repo="-b ios https://github.com/DimaRU/memory.git"
+Foonathan_memory_repo="-b crosscompile https://github.com/DimaRU/memory.git"
 export CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl hw.ncpu | awk '{print $2}')
 
 if [[ $ARCHS = *" "* ]]; then
