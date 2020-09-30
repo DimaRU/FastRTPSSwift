@@ -10,7 +10,7 @@ let package = Package(
             targets: ["FastRTPSBridge"]),
     ],
     dependencies: [
-        .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "0.0.2"),
+        .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
     ],
     targets: [
         .target(
