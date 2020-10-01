@@ -125,6 +125,7 @@ bool BridgedParticipant::addReader(const char* name,
     auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
     if (readerList.find(topicName) != readerList.end()) {
         // aready registered
+        container.releaseCallback((void * _Nonnull)payloadDecoder);
         return false;
     }
     ReaderAttributes readerAttributes;
@@ -147,6 +148,7 @@ bool BridgedParticipant::addReader(const char* name,
     if (reader == nullptr) {
         delete listener;
         delete history;
+        container.releaseCallback((void * _Nonnull)payloadDecoder);
         return false;
     }
 

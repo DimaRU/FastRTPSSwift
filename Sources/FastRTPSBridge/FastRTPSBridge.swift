@@ -19,6 +19,10 @@ public protocol RTPSParticipantListenerDelegate {
     func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String)
 }
 
+public enum FastRTPSBridgeError: Error {
+    case fastRTPSError
+}
+
 open class FastRTPSBridge {
     private var wrapper: FastRTPSWrapper
     fileprivate var listenerDelegate: RTPSListenerDelegate?
@@ -26,6 +30,7 @@ open class FastRTPSBridge {
     
     public init() {
         wrapper = FastRTPSWrapper()
+        setupBridgeContainer()
     }
     
     private func setupBridgeContainer()
@@ -94,12 +99,13 @@ open class FastRTPSBridge {
     ///   - domainID: Domain Id to be used by the participant
     ///   - localAddress: bind only to localAddress
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
-    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filterAddress: String? = nil) {
-        setupBridgeContainer()
-        wrapper.createParticipantFiltered(domain: domainID,
+    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filterAddress: String? = nil) throws {
+        if !wrapper.createParticipantFiltered(domain: domainID,
                                           name: name.cString(using: .utf8)!,
                                           localAddress: localAddress?.cString(using: .utf8),
-                                          filterAddress: filterAddress?.cString(using: .utf8))
+                                          filterAddress: filterAddress?.cString(using: .utf8)) {
+            throw FastRTPSBridgeError.fastRTPSError
+        }
     }
 
     #else
@@ -109,11 +115,12 @@ open class FastRTPSBridge {
     ///   - name: participant name
     ///   - domainID: Domain Id to be used by the participant
     ///   - localAddress: bind only to localAddress
-    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil) {
-        setupBridgeContainer()
-        wrapper.createParticipant(domain: domainID,
+    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil) throws {
+        if !wrapper.createParticipant(domain: domainID,
                                   name: name.cString(using: .utf8)!,
-                                  localAddress: localAddress?.cString(using: .utf8))
+                                  localAddress: localAddress?.cString(using: .utf8)) {
+            throw FastRTPSBridgeError.fastRTPSError
+        }
     }
     #endif
     
@@ -144,22 +151,24 @@ open class FastRTPSBridge {
     ///   - ddsType: DDSType topic DDS data type
     ///   - completion: (sequence: UInt64, data: Data) -> Void
     ///      where data is topic ..................
-    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) {
+    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) throws {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
-        wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
+        if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
                                typeName: D.ddsTypeName.cString(using: .utf8)!,
                                keyed: ddsType is DDSKeyed,
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable,
-                               payloadDecoder: payloadDecoderProxy)
+                               payloadDecoder: payloadDecoderProxy) {
+            throw FastRTPSBridgeError.fastRTPSError
+        }
     }
     
     /// Register a RTPS reader for topic with Result data callback
     /// - Parameters:
     ///   - topic: DDSReader topic description
     ///   - completion: callback with Result<D, Error>, where D is deserialized data
-    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) {
-        registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) throws {
+        try registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
             let result = Result.init { try decoder.decode(D.self, from: data) }
             completion(result)
@@ -170,8 +179,8 @@ open class FastRTPSBridge {
     /// - Parameters:
     ///   - topic: DDSReaderTopic topic description
     ///   - completion: callback with deserialized data
-    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void) {
-        registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void) throws {
+        try registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
             do {
                 let t = try decoder.decode(D.self, from: data)
@@ -184,8 +193,10 @@ open class FastRTPSBridge {
     
     /// Remove a RTPS reader for topic
     /// - Parameter topic: DDSReader topic descriptor
-    public func removeReader<T: DDSReaderTopic>(topic: T) {
-        wrapper.removeReader(topicName: topic.rawValue.cString(using: .utf8)!)
+    public func removeReader<T: DDSReaderTopic>(topic: T) throws {
+        if !wrapper.removeReader(topicName: topic.rawValue.cString(using: .utf8)!) {
+            throw FastRTPSBridgeError.fastRTPSError
+        }
     }
     
     /// Register a RTPS writer for topic
@@ -193,49 +204,53 @@ open class FastRTPSBridge {
     /// - Parameters:
     /// - Parameter topic: DDSWriterTopic topic descriptor
     ///   - ddsType: data type descriptor
-    public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type)  {
-        wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
+    public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type) throws  {
+        if !wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
                                typeName: D.ddsTypeName.cString(using: .utf8)!,
                                keyed: ddsType is DDSKeyed,
                                transientLocal: topic.transientLocal,
-                               reliable: topic.reliable)
+                               reliable: topic.reliable) {
+            throw FastRTPSBridgeError.fastRTPSError
+        }
     }
     
     /// Remove RTPS writer for topic
     /// - Parameter topic: DDSWriterTopic topic descriptor
-    public func removeWriter<T: DDSWriterTopic>(topic: T) {
-        wrapper.removeWriter(topicName: topic.rawValue.cString(using: .utf8)!)
+    public func removeWriter<T: DDSWriterTopic>(topic: T) throws {
+        if !wrapper.removeWriter(topicName: topic.rawValue.cString(using: .utf8)!) {
+            throw FastRTPSBridgeError.fastRTPSError
+        }
     }
     
     /// Send data change for topic
     /// - Parameters:
     /// - Parameter topic: DDSWriter topic descriptor
     ///   - ddsData: any DDSType object
-    public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) {
+    public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
         let encoder = CDREncoder()
-        do {
-            let data = try encoder.encode(ddsData)
-            data.withUnsafeBytes { dataPtr in
-                if ddsData is DDSKeyed {
-                    var key = (ddsData as! DDSKeyed).key
-                    if key.isEmpty {
-                        key = Data([0])
-                    }
-                    key.withUnsafeBytes { keyPtr in
-                        wrapper.sendDataWithKey(topicName: topic.rawValue.cString(using: .utf8)!,
+        let data = try encoder.encode(ddsData)
+        try data.withUnsafeBytes { dataPtr in
+            if ddsData is DDSKeyed {
+                var key = (ddsData as! DDSKeyed).key
+                if key.isEmpty {
+                    key = Data([0])
+                }
+                try key.withUnsafeBytes { keyPtr in
+                    if !wrapper.sendDataWithKey(topicName: topic.rawValue.cString(using: .utf8)!,
                                                 data: dataPtr.baseAddress!,
                                                 length: UInt32(data.count),
                                                 key: keyPtr.baseAddress!,
-                                                keyLength: UInt32(key.count))
+                                                keyLength: UInt32(key.count)) {
+                        throw FastRTPSBridgeError.fastRTPSError
                     }
-                } else {
-                    wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
+                }
+            } else {
+                if !wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
                                      data: dataPtr.baseAddress!,
-                                     length: UInt32(data.count))
+                                     length: UInt32(data.count)) {
+                    throw FastRTPSBridgeError.fastRTPSError
                 }
             }
-        } catch {
-            fatalError(error.localizedDescription)
         }
     }
     

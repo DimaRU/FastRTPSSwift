@@ -20,26 +20,26 @@ class FastRTPSBridgeTests: XCTestCase {
         fastRTPSBridge = nil
     }
 
-    func testCreateReader() {
-        fastRTPSBridge?.createParticipant(name: "TestParticipant")
+    func testCreateReader() throws {
+        try fastRTPSBridge?.createParticipant(name: "TestParticipant")
         fastRTPSBridge?.setRTPSParticipantListener(delegate: self)
-        fastRTPSBridge?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self) { (sequence, data) in
+        try fastRTPSBridge?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self) { (sequence, data) in
             print("Depth sequence, data count:", sequence, data.count)
         }
         print("Reader created")
         Thread.sleep(forTimeInterval: 2)
-        fastRTPSBridge?.removeReader(topic: ReaderTopic.rovDepth)
+        try fastRTPSBridge?.removeReader(topic: ReaderTopic.rovDepth)
         fastRTPSBridge?.removeParticipant()
     }
     
-    func testCreateMultipleReaders() {
-        fastRTPSBridge?.createParticipant(name: "TestParticipant")
+    func testCreateMultipleReaders() throws {
+        try fastRTPSBridge?.createParticipant(name: "TestParticipant")
         fastRTPSBridge?.setRTPSParticipantListener(delegate: self)
-        fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (depth: RovDepth) in
+        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (depth: RovDepth) in
             print("Depth:", depth)
         }
         
-        fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal) { (baro: RovBarometer) in
+        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal) { (baro: RovBarometer) in
             print("Barometer:", baro)
         }
         

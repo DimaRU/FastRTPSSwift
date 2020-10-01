@@ -29,24 +29,24 @@ void setupRTPSBridgeContainer(const void * participant,
 }
 
 #ifdef FASTRTPS_FILTER
-void createRTPSParticipantFiltered(const void * participant,
+bool createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
                                    const char* _Nullable localAddress,
                                    const char* _Nullable filterAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    p->createParticipant(name, domain, localAddress, filterAddress);
+    return p->createParticipant(name, domain, localAddress, filterAddress);
 }
 #endif
 
-void createRTPSParticipant(const void * participant,
+bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,
                            const char* _Nullable localAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    p->createParticipant(name, domain, localAddress, nullptr);
+    return p->createParticipant(name, domain, localAddress, nullptr);
 }
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
@@ -73,7 +73,7 @@ void setRTPSPartition(const void * participant, const char * partition)
     p->setPartition(partition);
 }
 
-void registerRTPSReader(const void * participant,
+bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         bool keyed,
@@ -82,17 +82,17 @@ void registerRTPSReader(const void * participant,
                         const void * payloadDecoder)
 {
     auto p = (BridgedParticipant *)participant;
-    p->addReader(topicName, typeName, keyed, transientLocal, reliable, payloadDecoder);
+    return p->addReader(topicName, typeName, keyed, transientLocal, reliable, payloadDecoder);
 }
 
-void removeRTPSReader(const void * participant,
+bool removeRTPSReader(const void * participant,
                       const char * topicName)
 {
     auto p = (BridgedParticipant *)participant;
-    p->removeReader(topicName);
+    return p->removeReader(topicName);
 }
 
-void registerRTPSWriter(const void * participant,
+bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         bool keyed,
@@ -100,17 +100,17 @@ void registerRTPSWriter(const void * participant,
                         bool reliable)
 {
     auto p = (BridgedParticipant *)participant;
-    p->addWriter(topicName, typeName, keyed, transientLocal, reliable);
+    return p->addWriter(topicName, typeName, keyed, transientLocal, reliable);
 }
 
-void removeRTPSWriter(const void * participant,
+bool removeRTPSWriter(const void * participant,
                       const char * topicName)
 {
     auto p = (BridgedParticipant *)participant;
-    p->removeWriter(topicName);
+    return p->removeWriter(topicName);
 }
 
-void sendDataWithKey(const void * participant,
+bool sendDataWithKey(const void * participant,
                      const char * topicName,
                      const void * data,
                      uint32_t length,
@@ -118,16 +118,16 @@ void sendDataWithKey(const void * participant,
                      uint32_t keyLength)
 {
     auto p = (BridgedParticipant *)participant;
-    p->send(topicName, (uint8_t *)data, length, key, keyLength);
+    return p->send(topicName, (uint8_t *)data, length, key, keyLength);
 }
 
-void sendData(const void * participant,
+bool sendData(const void * participant,
               const char * topicName,
               const void * data,
               uint32_t length)
 {
     auto p = (BridgedParticipant *)participant;
-    p->send(topicName, (uint8_t *)data, length, nullptr, 0);
+    return p->send(topicName, (uint8_t *)data, length, nullptr, 0);
 }
 
 

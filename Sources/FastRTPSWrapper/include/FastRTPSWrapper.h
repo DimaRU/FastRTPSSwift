@@ -106,13 +106,13 @@ const void * _Nonnull makeBridgedParticipant(void) CF_SWIFT_NAME(FastRTPSWrapper
 void setupRTPSBridgeContainer(const void * participant,
                               struct BridgeContainer container) CF_SWIFT_NAME(FastRTPSWrapper.setupBridgeContainer(self:container:));
 #ifdef FASTRTPS_FILTER
-void createRTPSParticipantFiltered(const void * participant,
+bool createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
                                    const char* _Nullable localAddress,
                                    const char* _Nullable filterAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:localAddress:filterAddress:));
 #endif
-void createRTPSParticipant(const void * participant,
+bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,
                            const char* _Nullable localAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipant(self:domain:name:localAddress:));
@@ -120,7 +120,7 @@ void createRTPSParticipant(const void * participant,
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel) CF_SWIFT_NAME(FastRTPSWrapper.logLevel(level:));
 void setRTPSPartition(const void * participant, const char * partition) CF_SWIFT_NAME(FastRTPSWrapper.setPartition(self:partition:));
 
-void registerRTPSReader(const void * participant,
+bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         bool keyed,
@@ -128,27 +128,27 @@ void registerRTPSReader(const void * participant,
                         bool reliable,
                         const void * payloadDecoder) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:keyed:transientLocal:reliable:payloadDecoder:));
 
-void removeRTPSReader(const void * participant,
+bool removeRTPSReader(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeReader(self:topicName:));
 
-void registerRTPSWriter(const void * participant,
+bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         bool keyed,
                         bool transientLocal,
                         bool reliable) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:keyed:transientLocal:reliable:));
 
-void removeRTPSWriter(const void * participant,
+bool removeRTPSWriter(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeWriter(self:topicName:));
 
-void sendDataWithKey(const void * participant,
+bool sendDataWithKey(const void * participant,
                      const char * topicName,
                      const void * data,
                      uint32_t length,
                      const void * key,
                      uint32_t keyLength) CF_SWIFT_NAME(FastRTPSWrapper.sendDataWithKey(self:topicName:data:length:key:keyLength:));
 
-void sendData(const void * participant,
+bool sendData(const void * participant,
               const char * topicName,
               const void * data,
               uint32_t length) CF_SWIFT_NAME(FastRTPSWrapper.sendData(self:topicName:data:length:));
