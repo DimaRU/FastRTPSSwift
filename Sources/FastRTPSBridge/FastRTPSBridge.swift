@@ -155,7 +155,7 @@ open class FastRTPSBridge {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
         if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
                                typeName: D.ddsTypeName.cString(using: .utf8)!,
-                               keyed: ddsType is DDSKeyed,
+                               keyed: ddsType is DDSKeyed.Type,
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable,
                                payloadDecoder: payloadDecoderProxy) {
@@ -207,7 +207,7 @@ open class FastRTPSBridge {
     public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type) throws  {
         if !wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
                                typeName: D.ddsTypeName.cString(using: .utf8)!,
-                               keyed: ddsType is DDSKeyed,
+                               keyed: ddsType is DDSKeyed.Type,
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable) {
             throw FastRTPSBridgeError.fastRTPSError
