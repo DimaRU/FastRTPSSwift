@@ -58,8 +58,8 @@ void BridgedParticipant::resignAll() {
         logInfo(ROV_PARTICIPANT, "Remove reader: " << it->first)
         auto readerInfo = it->second;
         auto payloadDecoder = (void * _Nonnull)readerInfo->listener->payloadDecoder;
-        container.releaseCallback(payloadDecoder);
         RTPSDomain::removeRTPSReader(readerInfo->reader);
+        container.releaseCallback(payloadDecoder);
         delete readerInfo;
     }
     readerList.clear();
