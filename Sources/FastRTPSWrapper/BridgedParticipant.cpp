@@ -15,6 +15,7 @@
 #include <fastrtps/rtps/attributes/ReaderAttributes.h>
 #include <fastrtps/rtps/attributes/WriterAttributes.h>
 #include <fastrtps/rtps/attributes/HistoryAttributes.h>
+#include <fastrtps/TopicDataType.h>
 
 #include <fastrtps/attributes/TopicAttributes.h>
 #include <fastrtps/qos/ReaderQos.h>
@@ -276,6 +277,8 @@ bool BridgedParticipant::removeWriter(const char* name)
 bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength)
 {
     static const octet header[] = {0, 1, 0, 0};
+    MD5 md5;
+    
     auto topicName = std::string(name);
     if (writerList.find(topicName) == writerList.end()) {
         return false;
@@ -294,8 +297,14 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
     CacheChange_t * change;
     if (key) {
         InstanceHandle_t instanceHandle;
-        auto len = keyLength < 16 ? keyLength : 16;
-        memcpy(instanceHandle.value, key, len);
+        if (keyLength > 16) {
+            md5.init();
+            md5.update((octet *)key, static_cast<unsigned int>(keyLength));
+            md5.finalize();
+            memcpy(instanceHandle.value, md5.digest, sizeof(md5.digest));
+        } else {
+            memcpy(instanceHandle.value, key, keyLength);
+        }
         change = writer->new_change([length]() -> uint32_t { return length+sizeof(header);}, ALIVE, instanceHandle);
         if (!change) {    // In the case history is full, remove some old changes
             logInfo(ROV_PARTICIPANT, "cleaning history...")
