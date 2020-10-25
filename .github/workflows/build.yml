@@ -14,7 +14,7 @@ jobs:
         runs-on: macOS-latest
         steps:
         - name: Select Xcode
-          run: xcversion select 12.0
+          run: xcversion select 12.2
 
         - name: Check XCode Version
           run: xcodebuild -version
@@ -28,8 +28,8 @@ jobs:
 
         - name: iOS Simulator
           run: |
-            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=iOS Simulator,name=iPhone 8,OS=14.0" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=YES | xcpretty
+            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=iOS Simulator,name=iPhone 8,OS=14.2" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=YES | xcpretty
 
         - name: Mac Catalyst
           run: |
-            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=macOS,variant=Mac Catalyst" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO | xcpretty
+            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "generic/platform=macOS,variant=Mac Catalyst" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO | xcpretty
