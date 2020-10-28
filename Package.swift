@@ -3,11 +3,13 @@
 import PackageDescription
 
 #if os(Linux)
+let dependencies: [Target.Dependency] = []
 let linkerSettings: [LinkerSetting]? = [
     .linkedLibrary("fastrtps", .when(platforms: [.linux])),
     .unsafeFlags(["-L/usr/local/lib"], .when(platforms: [.linux]))
 ]
 #else
+let dependencies: [Target.Dependency] = ["FastRTPS"]
 let linkerSettings: [LinkerSetting]? = nil
 #endif
 
@@ -26,10 +28,7 @@ let package = Package(
     targets: [
         .target(
             name: "FastRTPSWrapper",
-            dependencies: [
-                .target(name: "FastRTPS",
-                        condition: .when(platforms: .some([.iOS, .macOS, .watchOS])))
-                ],
+            dependencies: dependencies,
             path: "Sources/FastRTPSWrapper",
             cxxSettings: [.define("FASTRTPS_FILTER")]),
         .binaryTarget(name: "FastRTPS",
