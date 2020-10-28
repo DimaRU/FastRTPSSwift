@@ -13,7 +13,7 @@ let linkerSettings: [LinkerSetting]? = nil
 
 let package = Package(
     name: "FastRTPSBridge",
-    platforms: [.iOS(.v11), .macOS(.v10_10)],
+    platforms: [.iOS(.v11), .macOS(.v10_13)],
     products: [
         .library(
             name: "FastRTPSBridge",
@@ -28,7 +28,7 @@ let package = Package(
             name: "FastRTPSWrapper",
             dependencies: [
                 .target(name: "FastRTPS",
-                        condition: .when(platforms: [.iOS, .macOS, .watchOS]))
+                        condition: .when(platforms: .some([.iOS, .macOS, .watchOS])))
                 ],
             path: "Sources/FastRTPSWrapper",
             cxxSettings: [.define("FASTRTPS_FILTER")]),
