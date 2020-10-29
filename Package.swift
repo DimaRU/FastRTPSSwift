@@ -29,7 +29,7 @@ let package = Package(
         .binaryTarget(
             name: "FastRTPS",
             url: "https://github.com/DimaRU/FastDDSPrebuild/releases/download/v1.0.0/fastrtps.xcframework.zip",
-            checksum: "30df55cb2f793c5c78d66d7ea404fe24ffd4cc47e066cd09a6c99569c2641d7c"),
+            checksum: "2496009d220874a61c6e2678dc24ce43f459ba21571e3490d61777e186ae57d6"),
         .target(
             name: "FastRTPSWrapper",
             dependencies: dependencies,
