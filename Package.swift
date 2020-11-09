@@ -9,13 +9,12 @@ let linkerSettings: [LinkerSetting]? = [
     .unsafeFlags(["-L/usr/local/lib"], .when(platforms: [.linux]))
 ]
 #else
-let dependencies: [Target.Dependency] = ["FastRTPS"]
+let dependencies: [Target.Dependency] = ["FastDDS"]
 let linkerSettings: [LinkerSetting]? = nil
 #endif
 
 let package = Package(
     name: "FastRTPSBridge",
-    platforms: [.iOS(.v11), .macOS(.v10_13)],
     products: [
         .library(
             name: "FastRTPSBridge",
@@ -24,23 +23,20 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
+        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .revision("whitelist-2.0.2"))
     ],
     targets: [
-        .binaryTarget(
-            name: "FastRTPS",
-            url: "https://github.com/DimaRU/FastDDSPrebuild/releases/download/v1.0.0/fastrtps.xcframework.zip",
-            checksum: "2496009d220874a61c6e2678dc24ce43f459ba21571e3490d61777e186ae57d6"),
         .target(
             name: "FastRTPSWrapper",
             dependencies: dependencies,
             path: "Sources/FastRTPSWrapper",
-            cxxSettings: [.define("FASTRTPS_FILTER")]),
+            cxxSettings: [.define("FASTRTPS_WHITELIST")]),
         .target(
             name: "FastRTPSBridge",
             dependencies: ["CDRCodable", "FastRTPSWrapper"],
             path: "Sources/FastRTPSBridge",
-            cxxSettings: [.define("FASTRTPS_FILTER")],
-            swiftSettings: [.define("FASTRTPS_FILTER")],
+            cxxSettings: [.define("FASTRTPS_WHITELIST")],
+            swiftSettings: [.define("FASTRTPS_WHITELIST")],
             linkerSettings: linkerSettings),
         .testTarget(
             name: "FastRTPSBridgeTests",

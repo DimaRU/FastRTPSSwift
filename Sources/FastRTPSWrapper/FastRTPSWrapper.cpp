@@ -28,7 +28,7 @@ void setupRTPSBridgeContainer(const void * participant,
     p->setContainer(container);
 }
 
-#ifdef FASTRTPS_FILTER
+#ifdef FASTRTPS_WHITELIST
 bool createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
