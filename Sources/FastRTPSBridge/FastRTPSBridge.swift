@@ -92,7 +92,7 @@ open class FastRTPSBridge {
     
     // MARK: Public interface
 
-    #if FASTRTPS_FILTER
+    #if FASTRTPS_WHITELIST
     /// Create RTPS participant
     /// - Parameters:
     ///   - name: participant name
