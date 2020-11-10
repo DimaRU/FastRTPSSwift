@@ -2,17 +2,6 @@
 
 import PackageDescription
 
-#if os(Linux)
-let dependencies: [Target.Dependency] = []
-let linkerSettings: [LinkerSetting]? = [
-    .linkedLibrary("fastrtps", .when(platforms: [.linux])),
-    .unsafeFlags(["-L/usr/local/lib"], .when(platforms: [.linux]))
-]
-#else
-let dependencies: [Target.Dependency] = ["FastDDS"]
-let linkerSettings: [LinkerSetting]? = nil
-#endif
-
 let package = Package(
     name: "FastRTPSBridge",
     products: [
@@ -23,12 +12,12 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
-        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .revision("whitelist-2.0.2"))
+        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .exact("2.0.2+whitelist"))
     ],
     targets: [
         .target(
             name: "FastRTPSWrapper",
-            dependencies: dependencies,
+            dependencies: ["FastDDS"],
             path: "Sources/FastRTPSWrapper",
             cxxSettings: [.define("FASTRTPS_WHITELIST")]),
         .target(
@@ -36,8 +25,7 @@ let package = Package(
             dependencies: ["CDRCodable", "FastRTPSWrapper"],
             path: "Sources/FastRTPSBridge",
             cxxSettings: [.define("FASTRTPS_WHITELIST")],
-            swiftSettings: [.define("FASTRTPS_WHITELIST")],
-            linkerSettings: linkerSettings),
+            swiftSettings: [.define("FASTRTPS_WHITELIST")]),
         .testTarget(
             name: "FastRTPSBridgeTests",
             dependencies: ["FastRTPSBridge"]),
@@ -45,3 +33,12 @@ let package = Package(
     swiftLanguageVersions: [.v5],
     cxxLanguageStandard: .cxx11
 )
+
+#if os(Linux)
+package.dependencies.removeAll(where: { $0.name == "FastDDS"})
+package.targets.first(where: { $0.name == "FastRTPSWrapper"})!.dependencies = []
+package.targets.first(where: { $0.name == "FastRTPSBridge"})!.linkerSettings = [
+    .linkedLibrary("fastrtps", .when(platforms: [.linux])),
+    .unsafeFlags(["-L/usr/local/lib"], .when(platforms: [.linux]))
+]
+#endif
