@@ -12,20 +12,17 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
-        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .exact("2.0.2+whitelist"))
+        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .upToNextMajor(from: "2.0.0"))
     ],
     targets: [
         .target(
             name: "FastRTPSWrapper",
             dependencies: ["FastDDS"],
-            path: "Sources/FastRTPSWrapper",
-            cxxSettings: [.define("FASTRTPS_WHITELIST")]),
+            path: "Sources/FastRTPSWrapper"),
         .target(
             name: "FastRTPSBridge",
             dependencies: ["CDRCodable", "FastRTPSWrapper"],
-            path: "Sources/FastRTPSBridge",
-            cxxSettings: [.define("FASTRTPS_WHITELIST")],
-            swiftSettings: [.define("FASTRTPS_WHITELIST")]),
+            path: "Sources/FastRTPSBridge"),
         .testTarget(
             name: "FastRTPSBridgeTests",
             dependencies: ["FastRTPSBridge"]),
