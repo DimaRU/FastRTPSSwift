@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - whitelist
   pull_request:
     branches:
       - master
@@ -23,13 +24,4 @@ jobs:
           uses: actions/checkout@v2
 
         - name: macOS Native
-          run: |
-            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=macOS"  CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO | xcpretty
-
-        - name: iOS Simulator
-          run: |
-            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "platform=iOS Simulator,name=iPhone 8,OS=14.2" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=YES | xcpretty
-
-        - name: Mac Catalyst
-          run: |
-            set -o pipefail && xcodebuild clean build -project FastRTPSBridge.xcodeproj -scheme FastRTPSBridge -destination "generic/platform=macOS,variant=Mac Catalyst" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO | xcpretty
+          run: swift test
