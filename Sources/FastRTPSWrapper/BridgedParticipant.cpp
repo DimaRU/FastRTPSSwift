@@ -131,12 +131,8 @@ bool BridgedParticipant::addReader(const char* name,
     }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    if (transientLocal) {
-        readerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
-    }
-    if (reliable) {
-        readerAttributes.endpoint.reliabilityKind = RELIABLE;
-    }
+    readerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
+    readerAttributes.endpoint.reliabilityKind = reliable ? RELIABLE : BEST_EFFORT;
     auto listener = new BridgedReaderListener(name, payloadDecoder, container);
 
     HistoryAttributes historyAttributes;
@@ -162,12 +158,8 @@ bool BridgedParticipant::addReader(const char* name,
     TopicAttributes topicAttributes(name, dataType, tKind);
     ReaderQos readerQos;
     readerQos.m_partition.push_back(partitionName.c_str());
-    if (transientLocal == true) {
-        readerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
-    }
-    if (reliable == true) {
-        readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
-    }
+    readerQos.m_durability.kind = transientLocal ? TRANSIENT_LOCAL_DURABILITY_QOS : VOLATILE_DURABILITY_QOS;
+    readerQos.m_reliability.kind = reliable ? RELIABLE_RELIABILITY_QOS : BEST_EFFORT_RELIABILITY_QOS;
     auto rezult = mp_participant->registerReader(reader, topicAttributes, readerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
@@ -214,9 +206,7 @@ bool BridgedParticipant::addWriter(const char* name,
     writerAttributes.times.nackResponseDelay = Duration_t(0.0);
 
     writerAttributes.endpoint.topicKind = tKind;
-    if (reliable) {
-        writerAttributes.endpoint.reliabilityKind = RELIABLE;
-    }
+    writerAttributes.endpoint.reliabilityKind = reliable ? RELIABLE : BEST_EFFORT;
     writerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
 
     auto listener = new BridgedWriterListener(name, container);
@@ -244,9 +234,7 @@ bool BridgedParticipant::addWriter(const char* name,
     writerQos.m_partition.push_back(partitionName.c_str());
     writerQos.m_disablePositiveACKs.enabled = true;
     writerQos.m_durability.kind = transientLocal ? TRANSIENT_LOCAL_DURABILITY_QOS: VOLATILE_DURABILITY_QOS;
-    if (reliable == true) {
-        writerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
-    }
+    writerQos.m_reliability.kind = reliable ? RELIABLE_RELIABILITY_QOS : BEST_EFFORT_RELIABILITY_QOS;
 
     auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
