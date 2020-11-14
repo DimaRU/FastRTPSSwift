@@ -231,10 +231,7 @@ open class FastRTPSBridge {
         let data = try encoder.encode(ddsData)
         try data.withUnsafeBytes { dataPtr in
             if ddsData is DDSKeyed {
-                var key = (ddsData as! DDSKeyed).key
-                if key.isEmpty {
-                    key = Data([0])
-                }
+                let key = (ddsData as! DDSKeyed).key
                 try key.withUnsafeBytes { keyPtr in
                     if !wrapper.sendDataWithKey(topicName: topic.rawValue.cString(using: .utf8)!,
                                                 data: dataPtr.baseAddress!,

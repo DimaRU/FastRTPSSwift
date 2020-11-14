@@ -283,7 +283,7 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
         history->remove_all_changes();
     }
     CacheChange_t * change;
-    if (key) {
+    if (key && keyLength > 0) {
         InstanceHandle_t instanceHandle;
         if (keyLength > 16) {
             md5.init();
