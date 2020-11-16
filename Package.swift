@@ -7,7 +7,6 @@ let package = Package(
     products: [
         .library(
             name: "FastRTPSBridge",
-            type: .dynamic,
             targets: ["FastRTPSBridge"]),
     ],
     dependencies: [
