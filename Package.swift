@@ -7,12 +7,11 @@ let package = Package(
     products: [
         .library(
             name: "FastRTPSBridge",
-            type: .dynamic,
             targets: ["FastRTPSBridge"]),
     ],
     dependencies: [
         .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
-        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .exact("2.0.2-whitelist"))
+        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .exact("2.1.0-whitelist"))
     ],
     targets: [
         .target(
