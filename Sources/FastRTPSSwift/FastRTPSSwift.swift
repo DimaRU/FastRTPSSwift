@@ -7,7 +7,8 @@ import Foundation
 import CDRCodable
 
 #if SWIFT_PACKAGE
-@_exported import FastRTPSWrapper
+@_exported import FastRTPSDefs
+import FastRTPSWrapper
 #endif
 
 public protocol RTPSListenerDelegate {
