@@ -1,18 +1,18 @@
 /////
-////  FastRTPSBridgeTests.swift
+////  FastRTPSSwiftTests.swift
 ///   Copyright © 2020 Dmitriy Borovikov. All rights reserved.
 //
 
 
 import XCTest
-@testable import FastRTPSBridge
+@testable import FastRTPSSwift
 
-class FastRTPSBridgeTests: XCTestCase {
+class FastRTPSSwiftTests: XCTestCase {
 
-    var fastRTPSBridge: FastRTPSBridge?
+    var fastRTPSBridge: FastRTPSSwift?
     
     override func setUpWithError() throws {
-        fastRTPSBridge = FastRTPSBridge()
+        fastRTPSBridge = FastRTPSSwift()
         fastRTPSBridge?.setlogLevel(.warning)
     }
 
@@ -55,7 +55,7 @@ class FastRTPSBridgeTests: XCTestCase {
     ]
 }
 
-extension FastRTPSBridgeTests: RTPSParticipantListenerDelegate {
+extension FastRTPSSwiftTests: RTPSParticipantListenerDelegate {
     func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: String, properties: [String:String]) {
         print(reason,  participant, unicastLocators, properties)
     }

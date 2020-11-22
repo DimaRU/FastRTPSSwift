@@ -3,11 +3,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "FastRTPSBridge",
+    name: "FastRTPSSwift",
     products: [
         .library(
-            name: "FastRTPSBridge",
-            targets: ["FastRTPSBridge"]),
+            name: "FastRTPSSwift",
+            targets: ["FastRTPSSwift"]),
     ],
     dependencies: [
         .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
@@ -20,14 +20,14 @@ let package = Package(
             path: "Sources/FastRTPSWrapper",
             cxxSettings: [.define("FASTRTPS_WHITELIST")]),
         .target(
-            name: "FastRTPSBridge",
+            name: "FastRTPSSwift",
             dependencies: ["CDRCodable", "FastRTPSWrapper"],
-            path: "Sources/FastRTPSBridge",
+            path: "Sources/FastRTPSSwift",
             cxxSettings: [.define("FASTRTPS_WHITELIST")],
             swiftSettings: [.define("FASTRTPS_WHITELIST")]),
         .testTarget(
-            name: "FastRTPSBridgeTests",
-            dependencies: ["FastRTPSBridge"]),
+            name: "FastRTPSSwiftTests",
+            dependencies: ["FastRTPSSwift"]),
     ],
     swiftLanguageVersions: [.v5],
     cxxLanguageStandard: .cxx11
@@ -36,7 +36,7 @@ let package = Package(
 #if os(Linux)
 package.dependencies.removeAll(where: { $0.name == "FastDDS"})
 package.targets.first(where: { $0.name == "FastRTPSWrapper"})!.dependencies = []
-package.targets.first(where: { $0.name == "FastRTPSBridge"})!.linkerSettings = [
+package.targets.first(where: { $0.name == "FastRTPSSwift"})!.linkerSettings = [
     .linkedLibrary("fastrtps", .when(platforms: [.linux])),
     .unsafeFlags(["-L/usr/local/lib"], .when(platforms: [.linux]))
 ]

@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import FastRTPSBridge
+import FastRTPSSwift
 
 enum ReaderTopic: String, DDSReaderTopic {
     case rovDepth                    = "rov_depth"                         // orov::msg::sensor::Depth

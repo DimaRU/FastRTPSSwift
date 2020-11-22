@@ -1,5 +1,5 @@
 /////
-////  FastRTPSBridge.swift
+////  FastRTPSSwift.swift
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
@@ -19,11 +19,11 @@ public protocol RTPSParticipantListenerDelegate {
     func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String)
 }
 
-public enum FastRTPSBridgeError: Error {
+public enum FastRTPSSwiftError: Error {
     case fastRTPSError
 }
 
-open class FastRTPSBridge {
+open class FastRTPSSwift {
     private var wrapper: FastRTPSWrapper
     fileprivate var listenerDelegate: RTPSListenerDelegate?
     fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
@@ -47,13 +47,13 @@ open class FastRTPSBridge {
                 Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
             }, readerWriterListenerCallback: {
                 (listenerObject, reason, topicName) in
-                let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.listenerDelegate else { return }
                 let topic = String(cString: topicName)
                 delegate.RTPSNotification(reason: reason, topic: topic)
             }, discoveryParticipantCallback: {
                 (listenerObject, reason, participantName, unicastLocators, properties) in
-                let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.participantListenerDelegate else { return }
                 var locators = ""
                 var propertiesDict: [String:String] = [:]
@@ -75,7 +75,7 @@ open class FastRTPSBridge {
                                                  properties: propertiesDict)
             }, discoveryReaderWriterCallback: {
                 (listenerObject, reason, topicName, typeName, remoteLocators) in
-                let mySelf = Unmanaged<FastRTPSBridge>.fromOpaque(listenerObject).takeUnretainedValue()
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.participantListenerDelegate else { return }
                 
                 let topic = String(cString: topicName)
@@ -104,7 +104,7 @@ open class FastRTPSBridge {
                                           name: name.cString(using: .utf8)!,
                                           localAddress: localAddress?.cString(using: .utf8),
                                           filterAddress: filterAddress?.cString(using: .utf8)) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSSwiftError.fastRTPSError
         }
     }
 
@@ -119,7 +119,7 @@ open class FastRTPSBridge {
         if !wrapper.createParticipant(domain: domainID,
                                   name: name.cString(using: .utf8)!,
                                   localAddress: localAddress?.cString(using: .utf8)) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSSwiftError.fastRTPSError
         }
     }
     #endif
@@ -159,7 +159,7 @@ open class FastRTPSBridge {
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable,
                                payloadDecoder: payloadDecoderProxy) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSSwiftError.fastRTPSError
         }
     }
     
@@ -195,7 +195,7 @@ open class FastRTPSBridge {
     /// - Parameter topic: DDSReader topic descriptor
     public func removeReader<T: DDSReaderTopic>(topic: T) throws {
         if !wrapper.removeReader(topicName: topic.rawValue.cString(using: .utf8)!) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSSwiftError.fastRTPSError
         }
     }
     
@@ -210,7 +210,7 @@ open class FastRTPSBridge {
                                keyed: ddsType is DDSKeyed.Type,
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSSwiftError.fastRTPSError
         }
     }
     
@@ -218,7 +218,7 @@ open class FastRTPSBridge {
     /// - Parameter topic: DDSWriterTopic topic descriptor
     public func removeWriter<T: DDSWriterTopic>(topic: T) throws {
         if !wrapper.removeWriter(topicName: topic.rawValue.cString(using: .utf8)!) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSSwiftError.fastRTPSError
         }
     }
     
@@ -238,14 +238,14 @@ open class FastRTPSBridge {
                                                 length: UInt32(data.count),
                                                 key: keyPtr.baseAddress!,
                                                 keyLength: UInt32(key.count)) {
-                        throw FastRTPSBridgeError.fastRTPSError
+                        throw FastRTPSSwiftError.fastRTPSError
                     }
                 }
             } else {
                 if !wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
                                      data: dataPtr.baseAddress!,
                                      length: UInt32(data.count)) {
-                    throw FastRTPSBridgeError.fastRTPSError
+                    throw FastRTPSSwiftError.fastRTPSError
                 }
             }
         }
