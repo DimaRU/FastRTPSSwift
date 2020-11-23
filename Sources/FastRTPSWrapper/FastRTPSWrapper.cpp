@@ -15,6 +15,11 @@ using namespace fastrtps;
 using namespace rtps;
 using namespace std;
 
+const char * _Nonnull fastDDSVersion(void)
+{
+    return FASTRTPS_VERSION_STR;
+}
+
 const void * _Nonnull makeBridgedParticipant(void)
 {
     auto participant = new BridgedParticipant();

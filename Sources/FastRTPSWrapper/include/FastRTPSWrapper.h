@@ -51,6 +51,8 @@ typedef struct {
 
 const void * _Nonnull makeBridgedParticipant(void) CF_SWIFT_NAME(FastRTPSWrapper.init());
 
+const char * _Nonnull fastDDSVersion(void) CF_SWIFT_NAME(FastRTPSWrapper.fastDDSVersion());
+
 void setupRTPSBridgeContainer(const void * participant,
                               struct BridgeContainer container) CF_SWIFT_NAME(FastRTPSWrapper.setupBridgeContainer(self:container:));
 #ifdef FASTRTPS_WHITELIST

@@ -34,6 +34,11 @@ open class FastRTPSSwift {
         setupBridgeContainer()
     }
     
+    public static func fastDDSVersion() -> String {
+        let version = FastRTPSWrapper.fastDDSVersion()
+        return String(cString: version)
+    }
+    
     private func setupBridgeContainer()
     {
         let container = BridgeContainer(
