@@ -91,22 +91,27 @@ bool BridgedParticipant::createParticipant(const char* name,
     pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
     pattr.setName(name);
     
-    auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
-    customTransport->sendBufferSize = 65536;
-    customTransport->receiveBufferSize = 65536;
+#ifdef FASTRTPS_WHITELIST
+    if (interfaceIPv4 != nullptr || networkAddress != nullptr) {
+#else
     if (interfaceIPv4 != nullptr) {
-        customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
-    }
+#endif
+        auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
+        customTransport->sendBufferSize = 65536;
+        customTransport->receiveBufferSize = 65536;
+        if (interfaceIPv4 != nullptr) {
+            customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
+        }
 
 #ifdef FASTRTPS_WHITELIST
-    if (networkAddress != nullptr) {
-        customTransport->remoteWhiteList.emplace_back(networkAddress);
-    }
+        if (networkAddress != nullptr) {
+            customTransport->remoteWhiteList.emplace_back(networkAddress);
+        }
 #endif
     
-    pattr.userTransports.push_back(customTransport);
-    pattr.useBuiltinTransports = false;
-
+        pattr.userTransports.push_back(customTransport);
+        pattr.useBuiltinTransports = false;
+    }
     mp_listener = new BridgedParticipantListener(container);
     mp_participant = RTPSDomain::createParticipant(domain, pattr, mp_listener);
     if (mp_participant == nullptr)
