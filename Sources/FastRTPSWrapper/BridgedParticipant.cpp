@@ -141,7 +141,7 @@ bool BridgedParticipant::addReader(const char* name,
     auto listener = new BridgedReaderListener(name, payloadDecoder, container);
 
     HistoryAttributes historyAttributes;
-    historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;
     historyAttributes.payloadMaxSize = 1000;
     historyAttributes.initialReservedCaches = 5;
     historyAttributes.maximumReservedCaches = 0;
@@ -216,7 +216,7 @@ bool BridgedParticipant::addWriter(const char* name,
 
     auto listener = new BridgedWriterListener(name, container);
     HistoryAttributes historyAttributes;
-    historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;
     historyAttributes.payloadMaxSize = 1000;
     historyAttributes.initialReservedCaches = 5;
     historyAttributes.maximumReservedCaches = 0;
