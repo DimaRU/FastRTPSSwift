@@ -81,13 +81,11 @@ void setRTPSPartition(const void * participant, const char * partition)
 bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable,
+                        const ReaderParams readerParams,
                         const void * payloadDecoder)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addReader(topicName, typeName, keyed, transientLocal, reliable, payloadDecoder);
+    return p->addReader(topicName, typeName, readerParams, payloadDecoder);
 }
 
 bool removeRTPSReader(const void * participant,
@@ -100,12 +98,10 @@ bool removeRTPSReader(const void * participant,
 bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable)
+                        const WriterParams writerParams)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addWriter(topicName, typeName, keyed, transientLocal, reliable);
+    return p->addWriter(topicName, typeName, writerParams);
 }
 
 bool removeRTPSWriter(const void * participant,

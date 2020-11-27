@@ -61,5 +61,29 @@ typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
     FastRTPSLogLevelInfo
 };
 
+typedef NS_CLOSED_ENUM(uint32_t, Durability) {
+  DurabilityVolatile = 0,
+  DurabilityTransientLocal,
+  DurabilityTransient,
+  DurabilityPersistent,
+};
+
+typedef NS_CLOSED_ENUM(uint32_t, Reliability) {
+  ReliabilityReliable = 0,
+  ReliabilityBestEffort,
+};
+
+struct ReaderParams {
+    bool keyed;
+    Reliability reliability;
+    Durability durability;
+};
+
+struct WriterParams {
+    bool keyed;
+    Reliability reliability;
+    Durability durability;
+    bool disablePositiveACKs;
+};
 
 #endif /* FastRTPSDefs_h */

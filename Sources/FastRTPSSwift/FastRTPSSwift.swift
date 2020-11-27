@@ -160,11 +160,9 @@ open class FastRTPSSwift {
     public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, completion: @escaping (UInt64, Data)->Void) throws {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
         if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
-                               typeName: D.ddsTypeName.cString(using: .utf8)!,
-                               keyed: ddsType is DDSKeyed.Type,
-                               transientLocal: topic.transientLocal,
-                               reliable: topic.reliable,
-                               payloadDecoder: payloadDecoderProxy) {
+                                   typeName: D.ddsTypeName.cString(using: .utf8)!,
+                                   readerParams: topic.readerParams,
+                                   payloadDecoder: payloadDecoderProxy) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -212,10 +210,8 @@ open class FastRTPSSwift {
     ///   - ddsType: data type descriptor
     public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type) throws  {
         if !wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
-                               typeName: D.ddsTypeName.cString(using: .utf8)!,
-                               keyed: ddsType is DDSKeyed.Type,
-                               transientLocal: topic.transientLocal,
-                               reliable: topic.reliable) {
+                                   typeName: D.ddsTypeName.cString(using: .utf8)!,
+                                   writerParams: topic.writerParams) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }

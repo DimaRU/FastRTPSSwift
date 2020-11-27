@@ -122,13 +122,11 @@ bool BridgedParticipant::createParticipant(const char* name,
 
 bool BridgedParticipant::addReader(const char* name,
                                    const char* dataType,
-                                   const bool keyed,
-                                   const bool transientLocal,
-                                   const bool reliable,
+                                   const ReaderParams readerParams,
                                    const void * payloadDecoder)
 {
     auto topicName = std::string(name);
-    auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
+    auto tKind = readerParams.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
     if (readerList.find(topicName) != readerList.end()) {
         // aready registered
         container.releaseCallback((void * _Nonnull)payloadDecoder);
@@ -136,8 +134,38 @@ bool BridgedParticipant::addReader(const char* name,
     }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    readerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
-    readerAttributes.endpoint.reliabilityKind = reliable ? RELIABLE : BEST_EFFORT;
+    ReaderQos readerQos;
+    readerQos.m_partition.push_back(partitionName.c_str());
+    
+    switch (readerParams.reliability) {
+        case ReliabilityReliable:
+            readerAttributes.endpoint.reliabilityKind = RELIABLE;
+            readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
+            break;
+        case ReliabilityBestEffort:
+            readerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
+            readerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
+            break;
+    }
+    switch (readerParams.durability) {
+        case DurabilityVolatile:
+            readerAttributes.endpoint.durabilityKind = VOLATILE;
+            readerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;
+            break;
+        case DurabilityTransientLocal:
+            readerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
+            readerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+            break;
+        case DurabilityTransient:
+            readerAttributes.endpoint.durabilityKind = TRANSIENT;
+            readerQos.m_durability.kind = TRANSIENT_DURABILITY_QOS;
+            break;
+        case DurabilityPersistent:
+            readerAttributes.endpoint.durabilityKind = PERSISTENT;
+            readerQos.m_durability.kind = PERSISTENT_DURABILITY_QOS;
+            break;
+    }
+
     auto listener = new BridgedReaderListener(name, payloadDecoder, container);
 
     HistoryAttributes historyAttributes;
@@ -161,10 +189,6 @@ bool BridgedParticipant::addReader(const char* name,
     readerList[topicName] = readerInfo;
 
     TopicAttributes topicAttributes(name, dataType, tKind);
-    ReaderQos readerQos;
-    readerQos.m_partition.push_back(partitionName.c_str());
-    readerQos.m_durability.kind = transientLocal ? TRANSIENT_LOCAL_DURABILITY_QOS : VOLATILE_DURABILITY_QOS;
-    readerQos.m_reliability.kind = reliable ? RELIABLE_RELIABILITY_QOS : BEST_EFFORT_RELIABILITY_QOS;
     auto rezult = mp_participant->registerReader(reader, topicAttributes, readerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
@@ -195,12 +219,10 @@ bool BridgedParticipant::removeReader(const char* name)
 
 bool BridgedParticipant::addWriter(const char* name,
                                    const char* dataType,
-                                   const bool keyed,
-                                   const bool transientLocal,
-                                   const bool reliable)
+                                   const WriterParams writerParams)
 {
     auto topicName = std::string(name);
-    auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
+    auto tKind = writerParams.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
     if (writerList.find(topicName) != writerList.end()) {
         // aready registered
         return false;
@@ -209,10 +231,38 @@ bool BridgedParticipant::addWriter(const char* name,
     WriterAttributes writerAttributes;
     writerAttributes.times.heartbeatPeriod = Duration_t(0, 100000000);       // 100 ms
     writerAttributes.times.nackResponseDelay = Duration_t(0.0);
-
     writerAttributes.endpoint.topicKind = tKind;
-    writerAttributes.endpoint.reliabilityKind = reliable ? RELIABLE : BEST_EFFORT;
-    writerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
+    WriterQos writerQos;
+    writerQos.m_partition.push_back(partitionName.c_str());
+    writerQos.m_disablePositiveACKs.enabled = writerParams.disablePositiveACKs;
+    switch (writerParams.reliability) {
+        case ReliabilityReliable:
+            writerAttributes.endpoint.reliabilityKind = RELIABLE;
+            writerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
+            break;
+        case ReliabilityBestEffort:
+            writerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
+            writerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
+            break;
+    }
+    switch (writerParams.durability) {
+        case DurabilityVolatile:
+            writerAttributes.endpoint.durabilityKind = VOLATILE;
+            writerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;
+            break;
+        case DurabilityTransientLocal:
+            writerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
+            writerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+            break;
+        case DurabilityTransient:
+            writerAttributes.endpoint.durabilityKind = TRANSIENT;
+            writerQos.m_durability.kind = TRANSIENT_DURABILITY_QOS;
+            break;
+        case DurabilityPersistent:
+            writerAttributes.endpoint.durabilityKind = PERSISTENT;
+            writerQos.m_durability.kind = PERSISTENT_DURABILITY_QOS;
+            break;
+    }
 
     auto listener = new BridgedWriterListener(name, container);
     HistoryAttributes historyAttributes;
@@ -235,12 +285,6 @@ bool BridgedParticipant::addWriter(const char* name,
     writerList[topicName] = writerInfo;
 
     TopicAttributes topicAttributes(name, dataType, tKind);
-    WriterQos writerQos;
-    writerQos.m_partition.push_back(partitionName.c_str());
-    writerQos.m_disablePositiveACKs.enabled = true;
-    writerQos.m_durability.kind = transientLocal ? TRANSIENT_LOCAL_DURABILITY_QOS: VOLATILE_DURABILITY_QOS;
-    writerQos.m_reliability.kind = reliable ? RELIABLE_RELIABILITY_QOS : BEST_EFFORT_RELIABILITY_QOS;
-
     auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);

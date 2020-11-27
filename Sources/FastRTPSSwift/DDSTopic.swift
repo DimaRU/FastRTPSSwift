@@ -6,12 +6,12 @@
 
 import Foundation
 
+public protocol DDSTopic: RawRepresentable where RawValue == String {}
 
-public protocol DDSTopic: RawRepresentable where RawValue == String {
-    var transientLocal: Bool { get }
-    var reliable: Bool { get }
+public protocol DDSReaderTopic: DDSTopic {
+    var readerParams: ReaderParams { get }
 }
 
-public protocol DDSReaderTopic: DDSTopic {}
-
-public protocol DDSWriterTopic: DDSTopic {}
+public protocol DDSWriterTopic: DDSTopic {
+    var writerParams: WriterParams { get }
+}

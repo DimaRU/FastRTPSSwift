@@ -73,10 +73,8 @@ void setRTPSPartition(const void * participant, const char * partition) CF_SWIFT
 bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable,
-                        const void * payloadDecoder) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:keyed:transientLocal:reliable:payloadDecoder:));
+                        const struct ReaderParams readerParams,
+                        const void * payloadDecoder) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:readerParams:payloadDecoder:));
 
 bool removeRTPSReader(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeReader(self:topicName:));
@@ -84,9 +82,7 @@ bool removeRTPSReader(const void * participant,
 bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:keyed:transientLocal:reliable:));
+                        const struct WriterParams writerParams) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:writerParams:));
 
 bool removeRTPSWriter(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeWriter(self:topicName:));
