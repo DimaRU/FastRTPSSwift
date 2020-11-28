@@ -9,9 +9,9 @@ import Foundation
 public protocol DDSTopic: RawRepresentable where RawValue == String {}
 
 public protocol DDSReaderTopic: DDSTopic {
-    var readerParams: ReaderParams { get }
+    var readerProfile: ReaderProfile { get }
 }
 
 public protocol DDSWriterTopic: DDSTopic {
-    var writerParams: WriterParams { get }
+    var writerProfile: WriterProfile { get }
 }

@@ -122,11 +122,11 @@ bool BridgedParticipant::createParticipant(const char* name,
 
 bool BridgedParticipant::addReader(const char* name,
                                    const char* dataType,
-                                   const ReaderParams readerParams,
+                                   const ReaderProfile readerProfile,
                                    const void * payloadDecoder)
 {
     auto topicName = std::string(name);
-    auto tKind = readerParams.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
+    auto tKind = readerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
     if (readerList.find(topicName) != readerList.end()) {
         // aready registered
         container.releaseCallback((void * _Nonnull)payloadDecoder);
@@ -137,7 +137,7 @@ bool BridgedParticipant::addReader(const char* name,
     ReaderQos readerQos;
     readerQos.m_partition.push_back(partitionName.c_str());
     
-    switch (readerParams.reliability) {
+    switch (readerProfile.reliability) {
         case ReliabilityReliable:
             readerAttributes.endpoint.reliabilityKind = RELIABLE;
             readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
@@ -147,7 +147,7 @@ bool BridgedParticipant::addReader(const char* name,
             readerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
             break;
     }
-    switch (readerParams.durability) {
+    switch (readerProfile.durability) {
         case DurabilityVolatile:
             readerAttributes.endpoint.durabilityKind = VOLATILE;
             readerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;
@@ -219,23 +219,21 @@ bool BridgedParticipant::removeReader(const char* name)
 
 bool BridgedParticipant::addWriter(const char* name,
                                    const char* dataType,
-                                   const WriterParams writerParams)
+                                   const WriterProfile writerProfile)
 {
     auto topicName = std::string(name);
-    auto tKind = writerParams.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
+    auto tKind = writerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
     if (writerList.find(topicName) != writerList.end()) {
         // aready registered
         return false;
     }
 
     WriterAttributes writerAttributes;
-    writerAttributes.times.heartbeatPeriod = Duration_t(0, 100000000);       // 100 ms
-    writerAttributes.times.nackResponseDelay = Duration_t(0.0);
     writerAttributes.endpoint.topicKind = tKind;
     WriterQos writerQos;
     writerQos.m_partition.push_back(partitionName.c_str());
-    writerQos.m_disablePositiveACKs.enabled = writerParams.disablePositiveACKs;
-    switch (writerParams.reliability) {
+    writerQos.m_disablePositiveACKs.enabled = writerProfile.disablePositiveACKs;
+    switch (writerProfile.reliability) {
         case ReliabilityReliable:
             writerAttributes.endpoint.reliabilityKind = RELIABLE;
             writerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
@@ -245,7 +243,7 @@ bool BridgedParticipant::addWriter(const char* name,
             writerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
             break;
     }
-    switch (writerParams.durability) {
+    switch (writerProfile.durability) {
         case DurabilityVolatile:
             writerAttributes.endpoint.durabilityKind = VOLATILE;
             writerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;

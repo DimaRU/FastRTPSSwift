@@ -97,7 +97,7 @@ open class FastRTPSSwift {
     }
     
     // MARK: Public interface
-
+    
     #if FASTRTPS_WHITELIST
     /// Create RTPS participant
     /// - Parameters:
@@ -107,15 +107,15 @@ open class FastRTPSSwift {
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
     public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filterAddress: String? = nil) throws {
         if !wrapper.createParticipantFiltered(domain: domainID,
-                                          name: name.cString(using: .utf8)!,
-                                          localAddress: localAddress?.cString(using: .utf8),
-                                          filterAddress: filterAddress?.cString(using: .utf8)) {
+                                              name: name.cString(using: .utf8)!,
+                                              localAddress: localAddress?.cString(using: .utf8),
+                                              filterAddress: filterAddress?.cString(using: .utf8)) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
-
+    
     #else
-
+    
     /// Create RTPS participant
     /// - Parameters:
     ///   - name: participant name
@@ -123,8 +123,8 @@ open class FastRTPSSwift {
     ///   - localAddress: bind only to localAddress
     public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil) throws {
         if !wrapper.createParticipant(domain: domainID,
-                                  name: name.cString(using: .utf8)!,
-                                  localAddress: localAddress?.cString(using: .utf8)) {
+                                      name: name.cString(using: .utf8)!,
+                                      localAddress: localAddress?.cString(using: .utf8)) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -161,7 +161,7 @@ open class FastRTPSSwift {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
         if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
                                    typeName: D.ddsTypeName.cString(using: .utf8)!,
-                                   readerParams: topic.readerParams,
+                                   readerProfile: topic.readerProfile,
                                    payloadDecoder: payloadDecoderProxy) {
             throw FastRTPSSwiftError.fastRTPSError
         }
@@ -211,7 +211,7 @@ open class FastRTPSSwift {
     public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type) throws  {
         if !wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
                                    typeName: D.ddsTypeName.cString(using: .utf8)!,
-                                   writerParams: topic.writerParams) {
+                                   writerProfile: topic.writerProfile) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -273,5 +273,5 @@ open class FastRTPSSwift {
     public func setlogLevel(_ level: FastRTPSLogLevel) {
         FastRTPSWrapper.logLevel(level: level)
     }
-
+    
 }

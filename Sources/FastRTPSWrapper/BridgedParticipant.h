@@ -52,17 +52,19 @@ public:
                            const uint32_t domain,
                            const char *interfaceIPv4,
                            const char* networkAddress);
+    
     void setPartition(const char* name) { partitionName = std::string(name); }
+    
     bool addReader(const char* name,
                    const char* dataType,
-                   const ReaderParams readerParams,
+                   const ReaderProfile readerProfile,
                    const void * payloadDecoder);
     
     bool removeReader(const char* name);
     
     bool addWriter(const char* name,
                    const char* dataType,
-                   const WriterParams writerParams);
+                   const WriterProfile writerProfile);
     
     bool removeWriter(const char* name);
     bool send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength);

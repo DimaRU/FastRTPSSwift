@@ -73,13 +73,13 @@ typedef NS_CLOSED_ENUM(uint32_t, Reliability) {
   ReliabilityBestEffort,
 };
 
-struct ReaderParams {
+struct ReaderProfile {
     bool keyed;
     Reliability reliability;
     Durability durability;
 };
 
-struct WriterParams {
+struct WriterProfile {
     bool keyed;
     Reliability reliability;
     Durability durability;
