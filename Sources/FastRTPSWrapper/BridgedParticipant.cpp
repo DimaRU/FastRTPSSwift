@@ -78,21 +78,21 @@ void BridgedParticipant::resignAll() {
 bool BridgedParticipant::createParticipant(const char* name,
                                            const uint32_t domain,
                                            const char *interfaceIPv4,
-                                           const char* networkAddress)
+                                           const char* remoteWhitelistAddress)
 {
-    RTPSParticipantAttributes pattr;
-    pattr.builtin.use_WriterLivelinessProtocol = true;
-    pattr.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
-    pattr.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(3,0);
-    pattr.builtin.discovery_config.leaseDuration = Duration_t(10,0);
-    pattr.builtin.discovery_config.initial_announcements.count = 5;
-    pattr.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
-    pattr.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    pattr.setName(name);
+    RTPSParticipantAttributes participantAttributes;
+    participantAttributes.builtin.use_WriterLivelinessProtocol = true;
+    participantAttributes.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
+    participantAttributes.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(3,0);
+    participantAttributes.builtin.discovery_config.leaseDuration = Duration_t(10,0);
+    participantAttributes.builtin.discovery_config.initial_announcements.count = 5;
+    participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
+    participantAttributes.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+    participantAttributes.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+    participantAttributes.setName(name);
     
 #ifdef FASTRTPS_WHITELIST
-    if (interfaceIPv4 != nullptr || networkAddress != nullptr) {
+    if (interfaceIPv4 != nullptr || remoteWhitelistAddress != nullptr) {
 #else
     if (interfaceIPv4 != nullptr) {
 #endif
@@ -104,16 +104,16 @@ bool BridgedParticipant::createParticipant(const char* name,
         }
 
 #ifdef FASTRTPS_WHITELIST
-        if (networkAddress != nullptr) {
-            customTransport->remoteWhiteList.emplace_back(networkAddress);
+        if (remoteWhitelistAddress != nullptr) {
+            customTransport->remoteWhiteList.emplace_back(remoteWhitelistAddress);
         }
 #endif
     
-        pattr.userTransports.push_back(customTransport);
-        pattr.useBuiltinTransports = false;
+        participantAttributes.userTransports.push_back(customTransport);
+        participantAttributes.useBuiltinTransports = false;
     }
     mp_listener = new BridgedParticipantListener(container);
-    mp_participant = RTPSDomain::createParticipant(domain, pattr, mp_listener);
+    mp_participant = RTPSDomain::createParticipant(domain, participantAttributes, mp_listener);
     if (mp_participant == nullptr)
         return false;
 

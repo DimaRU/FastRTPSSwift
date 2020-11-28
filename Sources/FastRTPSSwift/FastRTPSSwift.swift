@@ -105,11 +105,11 @@ open class FastRTPSSwift {
     ///   - domainID: Domain Id to be used by the participant
     ///   - localAddress: bind only to localAddress
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
-    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, filterAddress: String? = nil) throws {
+    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, remoteWhitelistAddress: String? = nil) throws {
         if !wrapper.createParticipantFiltered(domain: domainID,
                                               name: name.cString(using: .utf8)!,
                                               localAddress: localAddress?.cString(using: .utf8),
-                                              filterAddress: filterAddress?.cString(using: .utf8)) {
+                                              remoteWhitelistAddress: remoteWhitelistAddress?.cString(using: .utf8)) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }

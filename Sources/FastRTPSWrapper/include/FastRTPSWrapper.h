@@ -60,7 +60,7 @@ bool createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
                                    const char* _Nullable localAddress,
-                                   const char* _Nullable filterAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:localAddress:filterAddress:));
+                                   const char* _Nullable remoteWhitelistAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:localAddress:remoteWhitelistAddress:));
 #endif
 bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,

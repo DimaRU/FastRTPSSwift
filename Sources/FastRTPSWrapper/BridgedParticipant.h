@@ -51,7 +51,7 @@ public:
     bool createParticipant(const char* name,
                            const uint32_t domain,
                            const char *interfaceIPv4,
-                           const char* networkAddress);
+                           const char* remoteWhitelistAddress);
     
     void setPartition(const char* name) { partitionName = std::string(name); }
     
