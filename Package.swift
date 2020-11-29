@@ -15,16 +15,13 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "FastRTPSDefs",
-            path: "Sources/FastRTPSDefs"),
-        .target(
             name: "FastRTPSWrapper",
-            dependencies: ["FastDDS", "FastRTPSDefs"],
+            dependencies: ["FastDDS"],
             path: "Sources/FastRTPSWrapper",
             cxxSettings: [.define("FASTRTPS_WHITELIST")]),
         .target(
             name: "FastRTPSSwift",
-            dependencies: ["CDRCodable", "FastRTPSWrapper", "FastRTPSDefs"],
+            dependencies: ["CDRCodable", "FastRTPSWrapper"],
             path: "Sources/FastRTPSSwift",
             cxxSettings: [.define("FASTRTPS_WHITELIST")],
             swiftSettings: [.define("FASTRTPS_WHITELIST")]),

@@ -77,7 +77,6 @@ struct RTPSReaderProfile {
     bool keyed;
     Reliability reliability;
     Durability durability;
-    char * const _Nullable ipv4Locator;
 };
 
 struct RTPSWriterProfile {
@@ -85,7 +84,6 @@ struct RTPSWriterProfile {
     Reliability reliability;
     Durability durability;
     bool disablePositiveACKs;
-    char * const _Nullable ipv4Locator;
 };
 
 #endif /* FastRTPSDefs_h */

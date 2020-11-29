@@ -58,13 +58,15 @@ public:
     bool addReader(const char* name,
                    const char* dataType,
                    const RTPSReaderProfile readerProfile,
-                   const void * payloadDecoder);
+                   const void * payloadDecoder,
+                   const char * ipv4Locator);
     
     bool removeReader(const char* name);
     
     bool addWriter(const char* name,
                    const char* dataType,
-                   const RTPSWriterProfile writerProfile);
+                   const RTPSWriterProfile writerProfile,
+                   const char * ipv4Locator);
     
     bool removeWriter(const char* name);
     bool send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength);

@@ -74,7 +74,8 @@ bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         const struct RTPSReaderProfile readerProfile,
-                        const void * payloadDecoder) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:readerProfile:payloadDecoder:));
+                        const void * payloadDecoder,
+                        const char * _Nullable ipv4Locator) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:readerProfile:payloadDecoder:ipv4Locator:));
 
 bool removeRTPSReader(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeReader(self:topicName:));
@@ -82,7 +83,8 @@ bool removeRTPSReader(const void * participant,
 bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        const struct RTPSWriterProfile writerProfile) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:writerProfile:));
+                        const struct RTPSWriterProfile writerProfile,
+                        const char * _Nullable ipv4Locator) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:writerProfile:ipv4Locator:));
 
 bool removeRTPSWriter(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeWriter(self:topicName:));

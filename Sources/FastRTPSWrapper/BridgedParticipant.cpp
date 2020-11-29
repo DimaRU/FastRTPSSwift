@@ -123,7 +123,8 @@ bool BridgedParticipant::createParticipant(const char* name,
 bool BridgedParticipant::addReader(const char* name,
                                    const char* dataType,
                                    const RTPSReaderProfile readerProfile,
-                                   const void * payloadDecoder)
+                                   const void * payloadDecoder,
+                                   const char * ipv4Locator)
 {
     auto topicName = std::string(name);
     auto tKind = readerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
@@ -134,9 +135,9 @@ bool BridgedParticipant::addReader(const char* name,
     }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    if (readerProfile.ipv4Locator != NULL) {
+    if (ipv4Locator != NULL) {
         Locator_t locator;
-        IPLocator::setIPv4(locator, readerProfile.ipv4Locator);
+        IPLocator::setIPv4(locator, ipv4Locator);
         readerAttributes.endpoint.remoteLocatorList.push_back(locator);
     }
     ReaderQos readerQos;
@@ -224,7 +225,8 @@ bool BridgedParticipant::removeReader(const char* name)
 
 bool BridgedParticipant::addWriter(const char* name,
                                    const char* dataType,
-                                   const RTPSWriterProfile writerProfile)
+                                   const RTPSWriterProfile writerProfile,
+                                   const char * ipv4Locator)
 {
     auto topicName = std::string(name);
     auto tKind = writerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
@@ -235,9 +237,9 @@ bool BridgedParticipant::addWriter(const char* name,
 
     WriterAttributes writerAttributes;
     writerAttributes.endpoint.topicKind = tKind;
-    if (writerProfile.ipv4Locator != NULL) {
+    if (ipv4Locator != NULL) {
         Locator_t locator;
-        IPLocator::setIPv4(locator, writerProfile.ipv4Locator);
+        IPLocator::setIPv4(locator, ipv4Locator);
         writerAttributes.endpoint.remoteLocatorList.push_back(locator);
     }
     WriterQos writerQos;

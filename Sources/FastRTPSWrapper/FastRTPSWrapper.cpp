@@ -82,10 +82,11 @@ bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         const RTPSReaderProfile readerProfile,
-                        const void * payloadDecoder)
+                        const void * payloadDecoder,
+                        const char * ipv4Locator)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addReader(topicName, typeName, readerProfile, payloadDecoder);
+    return p->addReader(topicName, typeName, readerProfile, payloadDecoder, ipv4Locator);
 }
 
 bool removeRTPSReader(const void * participant,
@@ -98,10 +99,11 @@ bool removeRTPSReader(const void * participant,
 bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        const RTPSWriterProfile writerProfile)
+                        const RTPSWriterProfile writerProfile,
+                        const char * ipv4Locator)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addWriter(topicName, typeName, writerProfile);
+    return p->addWriter(topicName, typeName, writerProfile, ipv4Locator);
 }
 
 bool removeRTPSWriter(const void * participant,
