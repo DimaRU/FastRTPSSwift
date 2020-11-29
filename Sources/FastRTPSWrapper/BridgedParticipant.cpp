@@ -122,7 +122,7 @@ bool BridgedParticipant::createParticipant(const char* name,
 
 bool BridgedParticipant::addReader(const char* name,
                                    const char* dataType,
-                                   const ReaderProfile readerProfile,
+                                   const RTPSReaderProfile readerProfile,
                                    const void * payloadDecoder)
 {
     auto topicName = std::string(name);
@@ -224,7 +224,7 @@ bool BridgedParticipant::removeReader(const char* name)
 
 bool BridgedParticipant::addWriter(const char* name,
                                    const char* dataType,
-                                   const WriterProfile writerProfile)
+                                   const RTPSWriterProfile writerProfile)
 {
     auto topicName = std::string(name);
     auto tKind = writerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;

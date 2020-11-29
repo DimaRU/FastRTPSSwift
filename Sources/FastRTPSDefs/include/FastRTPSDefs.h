@@ -73,14 +73,14 @@ typedef NS_CLOSED_ENUM(uint32_t, Reliability) {
   ReliabilityBestEffort,
 };
 
-struct ReaderProfile {
+struct RTPSReaderProfile {
     bool keyed;
     Reliability reliability;
     Durability durability;
     char * const _Nullable ipv4Locator;
 };
 
-struct WriterProfile {
+struct RTPSWriterProfile {
     bool keyed;
     Reliability reliability;
     Durability durability;

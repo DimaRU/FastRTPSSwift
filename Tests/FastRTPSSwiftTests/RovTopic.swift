@@ -11,7 +11,7 @@ enum ReaderTopic: String, DDSReaderTopic {
     case rovDepth                    = "rov_depth"                         // orov::msg::sensor::Depth
     case rovPressureInternal         = "rov_pressure_internal"             // orov::msg::sensor::Barometer
 
-    var readerProfile: ReaderProfile {
-        ReaderProfile(keyed: true, reliability: .bestEffort, durability: .volatile, ipv4Locator: nil)
+    var readerProfile: RTPSReaderProfile {
+        RTPSReaderProfile(keyed: true, reliability: .bestEffort, durability: .volatile, ipv4Locator: nil)
     }
 }
