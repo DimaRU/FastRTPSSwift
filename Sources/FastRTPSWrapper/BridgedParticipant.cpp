@@ -134,6 +134,11 @@ bool BridgedParticipant::addReader(const char* name,
     }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
+    if (readerProfile.ipv4Locator != NULL) {
+        Locator_t locator;
+        IPLocator::setIPv4(locator, readerProfile.ipv4Locator);
+        readerAttributes.endpoint.remoteLocatorList.push_back(locator);
+    }
     ReaderQos readerQos;
     readerQos.m_partition.push_back(partitionName.c_str());
     
@@ -230,6 +235,11 @@ bool BridgedParticipant::addWriter(const char* name,
 
     WriterAttributes writerAttributes;
     writerAttributes.endpoint.topicKind = tKind;
+    if (writerProfile.ipv4Locator != NULL) {
+        Locator_t locator;
+        IPLocator::setIPv4(locator, writerProfile.ipv4Locator);
+        writerAttributes.endpoint.remoteLocatorList.push_back(locator);
+    }
     WriterQos writerQos;
     writerQos.m_partition.push_back(partitionName.c_str());
     writerQos.m_disablePositiveACKs.enabled = writerProfile.disablePositiveACKs;
