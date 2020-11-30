@@ -15,3 +15,15 @@ public protocol DDSReaderTopic: DDSTopic {
 public protocol DDSWriterTopic: DDSTopic {
     var writerProfile: RTPSWriterProfile { get }
 }
+
+public extension RTPSReaderProfile {
+    init(reliability: Reliability, durability: Durability) {
+        self.init(keyed: false, reliability: reliability, durability: durability)
+    }
+}
+
+public extension RTPSWriterProfile {
+    init(reliability: Reliability, durability: Durability, disablePositiveACKs: Bool) {
+        self.init(keyed: false, reliability: reliability, durability: durability, disablePositiveACKs: disablePositiveACKs)
+    }
+}

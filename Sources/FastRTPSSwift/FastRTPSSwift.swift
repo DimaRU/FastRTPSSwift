@@ -158,9 +158,11 @@ open class FastRTPSSwift {
     ///      where data is topic ..................
     public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, ipv4Locator: String? = nil, completion: @escaping (UInt64, Data)->Void) throws {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
+        var profile = topic.readerProfile
+        profile.keyed = ddsType is DDSKeyed.Type
         if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
                                    typeName: D.ddsTypeName.cString(using: .utf8)!,
-                                   readerProfile: topic.readerProfile,
+                                   readerProfile: profile,
                                    payloadDecoder: payloadDecoderProxy,
                                    ipv4Locator: ipv4Locator?.cString(using: .utf8)!) {
             throw FastRTPSSwiftError.fastRTPSError
@@ -193,9 +195,11 @@ open class FastRTPSSwift {
     /// - Parameter topic: DDSWriterTopic topic descriptor
     ///   - ddsType: data type descriptor
     public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type, ipv4Locator: String? = nil) throws  {
+        var profile = topic.writerProfile
+        profile.keyed = ddsType is DDSKeyed.Type
         if !wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
                                    typeName: D.ddsTypeName.cString(using: .utf8)!,
-                                   writerProfile: topic.writerProfile,
+                                   writerProfile: profile,
                                    ipv4Locator: ipv4Locator?.cString(using: .utf8)!) {
             throw FastRTPSSwiftError.fastRTPSError
         }
