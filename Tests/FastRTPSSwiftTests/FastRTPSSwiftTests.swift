@@ -23,7 +23,7 @@ class FastRTPSSwiftTests: XCTestCase {
     func testCreateReader() throws {
         try fastRTPSBridge?.createParticipant(name: "TestParticipant")
         fastRTPSBridge?.setRTPSParticipantListener(delegate: self)
-        try fastRTPSBridge?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self) { (sequence, data) in
+        try fastRTPSBridge?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self, partition: "*") { (sequence, data) in
             print("Depth sequence, data count:", sequence, data.count)
         }
         print("Reader created")
@@ -35,7 +35,7 @@ class FastRTPSSwiftTests: XCTestCase {
     func testCreateMultipleReaders() throws {
         try fastRTPSBridge?.createParticipant(name: "TestParticipant")
         fastRTPSBridge?.setRTPSParticipantListener(delegate: self)
-        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (result: Result<RovDepth, Error>) in
+        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth, partition: "*") { (result: Result<RovDepth, Error>) in
             switch result {
             case .success(let depth):
                 print("Depth:", depth)
@@ -44,7 +44,7 @@ class FastRTPSSwiftTests: XCTestCase {
             }
         }
         
-        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal) { (result: Result<RovBarometer, Error>) in
+        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal, partition: "*") { (result: Result<RovBarometer, Error>) in
             switch result {
             case .success(let baro):
                 print("Barometer:", baro)

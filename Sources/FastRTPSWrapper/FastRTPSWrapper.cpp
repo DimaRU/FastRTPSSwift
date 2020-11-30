@@ -72,21 +72,15 @@ void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
     Log::ReportFilenames(true);
 }
 
-void setRTPSPartition(const void * participant, const char * partition)
-{
-    auto p = (BridgedParticipant *)participant;
-    p->setPartition(partition);
-}
-
 bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         const RTPSReaderProfile readerProfile,
                         const void * payloadDecoder,
-                        const char * ipv4Locator)
+                        const char * partition)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addReader(topicName, typeName, readerProfile, payloadDecoder, ipv4Locator);
+    return p->addReader(topicName, typeName, readerProfile, payloadDecoder, partition);
 }
 
 bool removeRTPSReader(const void * participant,
@@ -100,10 +94,10 @@ bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         const RTPSWriterProfile writerProfile,
-                        const char * ipv4Locator)
+                        const char * partition)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addWriter(topicName, typeName, writerProfile, ipv4Locator);
+    return p->addWriter(topicName, typeName, writerProfile, partition);
 }
 
 bool removeRTPSWriter(const void * participant,

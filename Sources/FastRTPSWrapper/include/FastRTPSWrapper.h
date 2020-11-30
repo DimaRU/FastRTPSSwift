@@ -68,14 +68,13 @@ bool createRTPSParticipant(const void * participant,
                            const char* _Nullable localAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipant(self:domain:name:localAddress:));
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel) CF_SWIFT_NAME(FastRTPSWrapper.logLevel(level:));
-void setRTPSPartition(const void * participant, const char * partition) CF_SWIFT_NAME(FastRTPSWrapper.setPartition(self:partition:));
 
 bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         const struct RTPSReaderProfile readerProfile,
                         const void * payloadDecoder,
-                        const char * _Nullable ipv4Locator) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:readerProfile:payloadDecoder:ipv4Locator:));
+                        const char * _Nullable partition) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:readerProfile:payloadDecoder:partition:));
 
 bool removeRTPSReader(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeReader(self:topicName:));
@@ -84,7 +83,7 @@ bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
                         const struct RTPSWriterProfile writerProfile,
-                        const char * _Nullable ipv4Locator) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:writerProfile:ipv4Locator:));
+                        const char * _Nullable partition) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:writerProfile:partition:));
 
 bool removeRTPSWriter(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeWriter(self:topicName:));

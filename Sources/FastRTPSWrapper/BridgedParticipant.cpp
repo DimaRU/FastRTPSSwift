@@ -28,8 +28,7 @@ using namespace eprosima::fastrtps::rtps;
 
 BridgedParticipant::BridgedParticipant():
 mp_participant(nullptr),
-mp_listener(nullptr),
-partitionName("*")
+mp_listener(nullptr)
 {
 }
 
@@ -124,7 +123,7 @@ bool BridgedParticipant::addReader(const char* name,
                                    const char* dataType,
                                    const RTPSReaderProfile readerProfile,
                                    const void * payloadDecoder,
-                                   const char * ipv4Locator)
+                                   const char * partition)
 {
     auto topicName = std::string(name);
     auto tKind = readerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
@@ -135,14 +134,10 @@ bool BridgedParticipant::addReader(const char* name,
     }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    if (ipv4Locator != NULL) {
-        Locator_t locator;
-        IPLocator::setIPv4(locator, ipv4Locator);
-        readerAttributes.endpoint.remoteLocatorList.push_back(locator);
-    }
     ReaderQos readerQos;
-    readerQos.m_partition.push_back(partitionName.c_str());
-    
+    if (partition != NULL) {
+        readerQos.m_partition.push_back(partition);
+    }
     switch (readerProfile.reliability) {
         case ReliabilityReliable:
             readerAttributes.endpoint.reliabilityKind = RELIABLE;
@@ -226,7 +221,7 @@ bool BridgedParticipant::removeReader(const char* name)
 bool BridgedParticipant::addWriter(const char* name,
                                    const char* dataType,
                                    const RTPSWriterProfile writerProfile,
-                                   const char * ipv4Locator)
+                                   const char * partition)
 {
     auto topicName = std::string(name);
     auto tKind = writerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
@@ -237,13 +232,10 @@ bool BridgedParticipant::addWriter(const char* name,
 
     WriterAttributes writerAttributes;
     writerAttributes.endpoint.topicKind = tKind;
-    if (ipv4Locator != NULL) {
-        Locator_t locator;
-        IPLocator::setIPv4(locator, ipv4Locator);
-        writerAttributes.endpoint.remoteLocatorList.push_back(locator);
-    }
     WriterQos writerQos;
-    writerQos.m_partition.push_back(partitionName.c_str());
+    if (partition != NULL) {
+        writerQos.m_partition.push_back(partition);
+    }
     writerQos.m_disablePositiveACKs.enabled = writerProfile.disablePositiveACKs;
     switch (writerProfile.reliability) {
         case ReliabilityReliable:

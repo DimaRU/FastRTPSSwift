@@ -37,8 +37,6 @@ class BridgedParticipant
 
     eprosima::fastrtps::rtps::RTPSParticipant* mp_participant;
     BridgedParticipantListener* mp_listener;
-    std::string partitionName;
-    
     BridgeContainer container;
     
     std::map<std::string, ReaderInfo*> readerList;
@@ -53,20 +51,18 @@ public:
                            const char *interfaceIPv4,
                            const char* remoteWhitelistAddress);
     
-    void setPartition(const char* name) { partitionName = std::string(name); }
-    
     bool addReader(const char* name,
                    const char* dataType,
                    const RTPSReaderProfile readerProfile,
                    const void * payloadDecoder,
-                   const char * ipv4Locator);
+                   const char * partition);
     
     bool removeReader(const char* name);
     
     bool addWriter(const char* name,
                    const char* dataType,
                    const RTPSWriterProfile writerProfile,
-                   const char * ipv4Locator);
+                   const char * partition);
     
     bool removeWriter(const char* name);
     bool send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength);
