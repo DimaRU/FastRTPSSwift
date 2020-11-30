@@ -35,15 +35,26 @@ class FastRTPSSwiftTests: XCTestCase {
     func testCreateMultipleReaders() throws {
         try fastRTPSBridge?.createParticipant(name: "TestParticipant")
         fastRTPSBridge?.setRTPSParticipantListener(delegate: self)
-        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (depth: RovDepth) in
-            print("Depth:", depth)
+        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth) { (result: Result<RovDepth, Error>) in
+            switch result {
+            case .success(let depth):
+                print("Depth:", depth)
+            case .failure(let error):
+                print(error)
+            }
         }
         
-        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal) { (baro: RovBarometer) in
-            print("Barometer:", baro)
+        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal) { (result: Result<RovBarometer, Error>) in
+            switch result {
+            case .success(let baro):
+                print("Barometer:", baro)
+            case .failure(let error):
+                print(error)
+            }
         }
         
         print("Readers created")
+        Thread.sleep(forTimeInterval: 2)
         fastRTPSBridge?.resignAll()
         print("Readers removed")
         fastRTPSBridge?.removeParticipant()
