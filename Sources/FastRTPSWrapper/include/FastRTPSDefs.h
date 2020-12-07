@@ -62,16 +62,24 @@ typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, Durability) {
-  DurabilityVolatile = 0,
-  DurabilityTransientLocal,
-  DurabilityTransient,
-  DurabilityPersistent,
+    DurabilityVolatile = 0,
+    DurabilityTransientLocal,
+    DurabilityTransient,
+    DurabilityPersistent,
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, Reliability) {
-  ReliabilityReliable = 0,
-  ReliabilityBestEffort,
+    ReliabilityReliable = 0,
+    ReliabilityBestEffort,
 };
+
+typedef NS_CLOSED_ENUM(uint32_t, ParticipantFilter) {
+    Disabled = 0,
+    DifferentHost,
+    DifferentProcess,
+    SameProcess,
+};
+
 
 struct RTPSReaderProfile {
     bool keyed;
@@ -84,6 +92,12 @@ struct RTPSWriterProfile {
     Reliability reliability;
     Durability durability;
     bool disablePositiveACKs;
+};
+
+struct RTPSParticipantProfile {
+    long double leaseDuration_announcementperiod;
+    long double leaseDuration;
+    ParticipantFilter participantFilter;
 };
 
 #endif /* FastRTPSDefs_h */

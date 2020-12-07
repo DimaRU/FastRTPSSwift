@@ -76,19 +76,31 @@ void BridgedParticipant::resignAll() {
 
 bool BridgedParticipant::createParticipant(const char* name,
                                            const uint32_t domain,
+                                           const RTPSParticipantProfile* participantProfile,
                                            const char *interfaceIPv4,
                                            const char* remoteWhitelistAddress)
 {
     RTPSParticipantAttributes participantAttributes;
-    participantAttributes.builtin.use_WriterLivelinessProtocol = true;
     participantAttributes.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
-    participantAttributes.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(3,0);
-    participantAttributes.builtin.discovery_config.leaseDuration = Duration_t(10,0);
-    participantAttributes.builtin.discovery_config.initial_announcements.count = 5;
-    participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
-    participantAttributes.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    participantAttributes.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
     participantAttributes.setName(name);
+    if (participantProfile != nullptr) {
+        participantAttributes.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(participantProfile->leaseDuration_announcementperiod);
+        participantAttributes.builtin.discovery_config.leaseDuration = Duration_t(participantProfile->leaseDuration);
+        switch (participantProfile->participantFilter) {
+            case Disabled:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = NO_FILTER;
+                break;
+            case DifferentHost:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_DIFFERENT_HOST;
+                break;
+            case DifferentProcess:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_DIFFERENT_PROCESS;
+                break;
+            case SameProcess:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
+                break;
+        }
+    }
     
 #ifdef FASTRTPS_WHITELIST
     if (interfaceIPv4 != nullptr || remoteWhitelistAddress != nullptr) {
@@ -135,7 +147,7 @@ bool BridgedParticipant::addReader(const char* name,
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
     ReaderQos readerQos;
-    if (partition != NULL) {
+    if (partition != nullptr) {
         readerQos.m_partition.push_back(partition);
     }
     switch (readerProfile.reliability) {
@@ -233,7 +245,7 @@ bool BridgedParticipant::addWriter(const char* name,
     WriterAttributes writerAttributes;
     writerAttributes.endpoint.topicKind = tKind;
     WriterQos writerQos;
-    if (partition != NULL) {
+    if (partition != nullptr) {
         writerQos.m_partition.push_back(partition);
     }
     writerQos.m_disablePositiveACKs.enabled = writerProfile.disablePositiveACKs;

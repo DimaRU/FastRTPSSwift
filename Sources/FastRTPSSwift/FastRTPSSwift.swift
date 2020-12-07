@@ -102,13 +102,30 @@ open class FastRTPSSwift {
     /// - Parameters:
     ///   - name: participant name
     ///   - domainID: Domain Id to be used by the participant
+    ///   - participantProfile:
     ///   - localAddress: bind only to localAddress
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
-    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil, remoteWhitelistAddress: String? = nil) throws {
-        if !wrapper.createParticipantFiltered(domain: domainID,
-                                              name: name.cString(using: .utf8)!,
-                                              localAddress: localAddress?.cString(using: .utf8),
-                                              remoteWhitelistAddress: remoteWhitelistAddress?.cString(using: .utf8)) {
+    public func createParticipant(name: String,
+                                  domainID: UInt32 = 0,
+                                  participantProfile: RTPSParticipantProfile? = nil,
+                                  localAddress: String? = nil,
+                                  remoteWhitelistAddress: String? = nil) throws
+    {
+        let result: Bool
+        if var participantProfile = participantProfile {
+            result = wrapper.createParticipantFiltered(domain: domainID,
+                                                       name: name.cString(using: .utf8)!,
+                                                       participantProfile: &participantProfile,
+                                                       localAddress: localAddress?.cString(using: .utf8),
+                                                       remoteWhitelistAddress: remoteWhitelistAddress?.cString(using: .utf8))
+        } else {
+            result = wrapper.createParticipantFiltered(domain: domainID,
+                                                       name: name.cString(using: .utf8)!,
+                                                       participantProfile: nil,
+                                                       localAddress: localAddress?.cString(using: .utf8),
+                                                       remoteWhitelistAddress: remoteWhitelistAddress?.cString(using: .utf8))
+        }
+        guard result else {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -119,11 +136,26 @@ open class FastRTPSSwift {
     /// - Parameters:
     ///   - name: participant name
     ///   - domainID: Domain Id to be used by the participant
+    ///   - participantProfile:
     ///   - localAddress: bind only to localAddress
-    public func createParticipant(name: String, domainID: UInt32 = 0, localAddress: String? = nil) throws {
-        if !wrapper.createParticipant(domain: domainID,
-                                      name: name.cString(using: .utf8)!,
-                                      localAddress: localAddress?.cString(using: .utf8)) {
+    public func createParticipant(name: String,
+                                  domainID: UInt32 = 0,
+                                  participantProfile: RTPSParticipantProfile? = nil,
+                                  localAddress: String? = nil) throws
+    {
+        let result: Bool
+        if var participantProfile = participantProfile {
+            result = wrapper.createParticipant(domain: domainID,
+                                               name: name.cString(using: .utf8)!,
+                                               participantProfile: &participantProfile,
+                                               localAddress: localAddress?.cString(using: .utf8))
+        } else {
+            result = wrapper.createParticipant(domain: domainID,
+                                               name: name.cString(using: .utf8)!,
+                                               participantProfile: nil,
+                                               localAddress: localAddress?.cString(using: .utf8))
+        }
+        guard result else {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }

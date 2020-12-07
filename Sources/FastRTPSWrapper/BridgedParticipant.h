@@ -48,6 +48,7 @@ public:
 
     bool createParticipant(const char* name,
                            const uint32_t domain,
+                           const RTPSParticipantProfile* participantProfile,
                            const char *interfaceIPv4,
                            const char* remoteWhitelistAddress);
     

@@ -59,13 +59,15 @@ void setupRTPSBridgeContainer(const void * participant,
 bool createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
+                                   const struct RTPSParticipantProfile * _Nullable participantProfile,
                                    const char* _Nullable localAddress,
-                                   const char* _Nullable remoteWhitelistAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:localAddress:remoteWhitelistAddress:));
+                                   const char* _Nullable remoteWhitelistAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:participantProfile:localAddress:remoteWhitelistAddress:));
 #endif
 bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,
-                           const char* _Nullable localAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipant(self:domain:name:localAddress:));
+                           const struct RTPSParticipantProfile * _Nullable participantProfile,
+                           const char* _Nullable localAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipant(self:domain:name:participantProfile:localAddress:));
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel) CF_SWIFT_NAME(FastRTPSWrapper.logLevel(level:));
 
