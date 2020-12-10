@@ -33,11 +33,6 @@ open class FastRTPSSwift {
         setupBridgeContainer()
     }
     
-    public static func fastDDSVersion() -> String {
-        let version = FastRTPSWrapper.fastDDSVersion()
-        return String(cString: version)
-    }
-    
     private func setupBridgeContainer()
     {
         let container = BridgeContainer(
@@ -97,12 +92,19 @@ open class FastRTPSSwift {
     
     // MARK: Public interface
     
+    /// Get Fast-DDS linked version string
+    /// - Returns: version string
+    public static func fastDDSVersion() -> String {
+        let version = FastRTPSWrapper.fastDDSVersion()
+        return String(cString: version)
+    }
+    
     #if FASTRTPS_WHITELIST
-    /// Create RTPS participant
+    /// Create a RTPS participant
     /// - Parameters:
     ///   - name: participant name
-    ///   - domainID: Domain Id to be used by the participant
-    ///   - participantProfile:
+    ///   - domainID: DomainId to be used by the participant (0 by default)
+    ///   - participantProfile: Defines configuration for created participant. See RTPSParticipantProfile struct
     ///   - localAddress: bind only to localAddress
     ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
     public func createParticipant(name: String,
@@ -132,11 +134,11 @@ open class FastRTPSSwift {
     
     #else
     
-    /// Create RTPS participant
+    /// Create a RTPS participant
     /// - Parameters:
     ///   - name: participant name
-    ///   - domainID: Domain Id to be used by the participant
-    ///   - participantProfile:
+    ///   - domainID: DomainId to be used by the participant (0 by default)
+    ///   - participantProfile: Defines configuration for created participant. See RTPSParticipantProfile struct
     ///   - localAddress: bind only to localAddress
     public func createParticipant(name: String,
                                   domainID: UInt32 = 0,
@@ -161,14 +163,14 @@ open class FastRTPSSwift {
     }
     #endif
     
-    /// Set RTPS messages listener
+    /// Set RTPS messages listener delegate
     /// Intercepts readers and writers messages - matching and liveliness state changes
     /// - Parameter delegate: RTPSListenerDelegate
     public func setRTPSListener(delegate: RTPSListenerDelegate?) {
         listenerDelegate = delegate
     }
     
-    /// Set RTPS participant listener
+    /// Set RTPS participant listener delegate
     /// Intercepts participant messages - discovery and remove participant;
     ///  discovery, remove and QoS change of readers and writers
     /// - Parameter delegate: RTPSParticipantListenerDelegate
@@ -180,10 +182,11 @@ open class FastRTPSSwift {
     /// - Parameters:
     ///   - topic: DDSReaderTopic topic description
     ///   - ddsType: DDSType topic DDS data type
-    ///   - completion: (sequence: UInt64, data: Data) -> Void
-    ///      where data is topic ..................
-    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, partition: String? = nil, completion: @escaping (UInt64, Data)->Void) throws {
-        let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(completion: completion)).toOpaque()
+    ///   - didReceive: The block to execute when topic data arrives. This block has no return value and sequence and data parameters
+    ///      where sequence is topic sequence number
+    ///      data is topic raw binary data
+    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, partition: String? = nil, didReceive: @escaping (UInt64, Data)->Void) throws {
+        let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(didReceive: didReceive)).toOpaque()
         var profile = topic.readerProfile
         profile.keyed = ddsType is DDSKeyed.Type
         if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
@@ -198,12 +201,13 @@ open class FastRTPSSwift {
     /// Register a RTPS reader for topic with Result data callback
     /// - Parameters:
     ///   - topic: DDSReader topic description
-    ///   - completion: callback with Result<D, Error>, where D is deserialized data
-    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, partition: String? = nil, completion: @escaping (Result<D, Error>)->Void) throws {
+    ///   - didReceive: The block to execute when topic data arrives. This block has no return value and Result<D, Error> parameter
+    ///      with deserialized data when success deserialization or error otherwize
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, partition: String? = nil, didReceive: @escaping (Result<D, Error>)->Void) throws {
         try registerReaderRaw(topic: topic, ddsType: D.self, partition: partition) { (_, data) in
             let decoder = CDRDecoder()
             let result = Result.init { try decoder.decode(D.self, from: data) }
-            completion(result)
+            didReceive(result)
         }
     }
     
@@ -242,7 +246,7 @@ open class FastRTPSSwift {
     /// Send data change for topic
     /// - Parameters:
     /// - Parameter topic: DDSWriter topic descriptor
-    ///   - ddsData: any DDSType object
+    ///   - ddsData: data to be send
     public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
         let encoder = CDREncoder()
         let data = try encoder.encode(ddsData)
@@ -288,5 +292,4 @@ open class FastRTPSSwift {
     public func setlogLevel(_ level: FastRTPSLogLevel) {
         FastRTPSWrapper.logLevel(level: level)
     }
-    
 }
