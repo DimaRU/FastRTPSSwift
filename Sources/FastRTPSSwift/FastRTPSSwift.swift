@@ -10,19 +10,39 @@ import CDRCodable
 @_exported import FastRTPSWrapper
 #endif
 
+/// RTPS listener delegate requrements
 public protocol RTPSListenerDelegate {
+    /// Intercepts readers and writers events, e.g. matching or liveliness change
+    /// - Parameters:
+    ///   - reason: event reason
+    ///   - topic: topic name
     func RTPSNotification(reason: RTPSNotification, topic: String)
 }
 
+/// RTPS Participant listener delegate requrements
 public protocol RTPSParticipantListenerDelegate {
+    /// Intercepts paricipant discovery events
+    /// - Parameters:
+    ///   - reason: event reaason, see RTPSParticipantNotification
+    ///   - participant: participant name
+    ///   - unicastLocators: participant unicast locators list
+    ///   - properties: participant properties strings
     func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: String, properties: [String:String])
+    /// Intercepts readers and writers discovery events
+    /// - Parameters:
+    ///   - reason: event reason, see RTPSReaderWriterNotification enum
+    ///   - topic: topic name
+    ///   - type: topic data type name
+    ///   - remoteLocators: remote locators list
     func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String)
 }
 
+/// FastRTPSSwift errors enum
 public enum FastRTPSSwiftError: Error {
     case fastRTPSError
 }
 
+/// Fast-DDS bridge class
 open class FastRTPSSwift {
     private var wrapper: FastRTPSWrapper
     fileprivate var listenerDelegate: RTPSListenerDelegate?
@@ -182,9 +202,9 @@ open class FastRTPSSwift {
     /// - Parameters:
     ///   - topic: DDSReaderTopic topic description
     ///   - ddsType: DDSType topic DDS data type
-    ///   - didReceive: The block to execute when topic data arrives. This block has no return value and sequence and data parameters
-    ///      where sequence is topic sequence number
-    ///      data is topic raw binary data
+    ///   - didReceive: The block to execute when topic data arrives. This block has no return value and sequence and data parameters:
+    ///      - sequence: topic sequence number
+    ///      - data: topic raw binary data
     public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, partition: String? = nil, didReceive: @escaping (UInt64, Data)->Void) throws {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(didReceive: didReceive)).toOpaque()
         var profile = topic.readerProfile
