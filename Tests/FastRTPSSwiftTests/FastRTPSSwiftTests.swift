@@ -9,33 +9,33 @@ import XCTest
 
 class FastRTPSSwiftTests: XCTestCase {
 
-    var fastRTPSBridge: FastRTPSSwift?
+    var fastRTPSSwift: FastRTPSSwift?
     
     override func setUpWithError() throws {
-        fastRTPSBridge = FastRTPSSwift()
-        fastRTPSBridge?.setlogLevel(.warning)
+        fastRTPSSwift = FastRTPSSwift()
+        fastRTPSSwift?.setlogLevel(.warning)
     }
 
     override func tearDownWithError() throws {
-        fastRTPSBridge = nil
+        fastRTPSSwift = nil
     }
 
     func testCreateReader() throws {
-        try fastRTPSBridge?.createParticipant(name: "TestParticipant")
-        fastRTPSBridge?.setRTPSParticipantListener(delegate: self)
-        try fastRTPSBridge?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self, partition: "*") { (sequence, data) in
+        try fastRTPSSwift?.createParticipant(name: "TestParticipant")
+        fastRTPSSwift?.setRTPSParticipantListener(delegate: self)
+        try fastRTPSSwift?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self, partition: "*") { (sequence, data) in
             print("Depth sequence, data count:", sequence, data.count)
         }
         print("Reader created")
         Thread.sleep(forTimeInterval: 2)
-        try fastRTPSBridge?.removeReader(topic: ReaderTopic.rovDepth)
-        fastRTPSBridge?.removeParticipant()
+        try fastRTPSSwift?.removeReader(topic: ReaderTopic.rovDepth)
+        fastRTPSSwift?.removeParticipant()
     }
     
     func testCreateMultipleReaders() throws {
-        try fastRTPSBridge?.createParticipant(name: "TestParticipant")
-        fastRTPSBridge?.setRTPSParticipantListener(delegate: self)
-        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovDepth, partition: "*") { (result: Result<RovDepth, Error>) in
+        try fastRTPSSwift?.createParticipant(name: "TestParticipant")
+        fastRTPSSwift?.setRTPSParticipantListener(delegate: self)
+        try fastRTPSSwift?.registerReader(topic: ReaderTopic.rovDepth, partition: "*") { (result: Result<RovDepth, Error>) in
             switch result {
             case .success(let depth):
                 print("Depth:", depth)
@@ -44,7 +44,7 @@ class FastRTPSSwiftTests: XCTestCase {
             }
         }
         
-        try fastRTPSBridge?.registerReader(topic: ReaderTopic.rovPressureInternal, partition: "*") { (result: Result<RovBarometer, Error>) in
+        try fastRTPSSwift?.registerReader(topic: ReaderTopic.rovPressureInternal, partition: "*") { (result: Result<RovBarometer, Error>) in
             switch result {
             case .success(let baro):
                 print("Barometer:", baro)
@@ -55,9 +55,9 @@ class FastRTPSSwiftTests: XCTestCase {
         
         print("Readers created")
         Thread.sleep(forTimeInterval: 2)
-        fastRTPSBridge?.resignAll()
+        fastRTPSSwift?.resignAll()
         print("Readers removed")
-        fastRTPSBridge?.removeParticipant()
+        fastRTPSSwift?.removeParticipant()
     }
     
     static var allTests = [
