@@ -202,11 +202,11 @@ open class FastRTPSSwift {
     /// - Parameters:
     ///   - topic: DDSReaderTopic topic description
     ///   - ddsType: DDSType topic DDS data type
-    ///   - didReceive: The block to execute when topic data arrives. This block has no return value and sequence and data parameters:
+    ///   - block: The block to execute when topic data arrives. This block has no return value and sequence and data parameters:
     ///      - sequence: topic sequence number
     ///      - data: topic raw binary data
-    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, partition: String? = nil, didReceive: @escaping (UInt64, Data)->Void) throws {
-        let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(didReceive: didReceive)).toOpaque()
+    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, partition: String? = nil, block: @escaping (UInt64, Data)->Void) throws {
+        let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(block: block)).toOpaque()
         var profile = topic.readerProfile
         profile.keyed = ddsType is DDSKeyed.Type
         if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
@@ -221,13 +221,13 @@ open class FastRTPSSwift {
     /// Register a RTPS reader for topic with Result data callback
     /// - Parameters:
     ///   - topic: DDSReader topic description
-    ///   - didReceive: The block to execute when topic data arrives. This block has no return value and Result<D, Error> parameter
+    ///   - block: The block to execute when topic data arrives. This block has no return value and Result<D, Error> parameter
     ///      with deserialized data when success deserialization or error otherwize
-    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, partition: String? = nil, didReceive: @escaping (Result<D, Error>)->Void) throws {
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, partition: String? = nil, block: @escaping (Result<D, Error>)->Void) throws {
         try registerReaderRaw(topic: topic, ddsType: D.self, partition: partition) { (_, data) in
             let decoder = CDRDecoder()
             let result = Result.init { try decoder.decode(D.self, from: data) }
-            didReceive(result)
+            block(result)
         }
     }
     

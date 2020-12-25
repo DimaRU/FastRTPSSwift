@@ -7,15 +7,15 @@ import Foundation
 import CDRCodable
 
 public class PayloadDecoderProxy {
-    typealias DidReceive = (UInt64, Data) -> Void
-    var didReceive: DidReceive
+    typealias Block = (UInt64, Data) -> Void
+    var block: Block
     
-    init(didReceive: @escaping DidReceive) {
-        self.didReceive = didReceive
+    init(block: @escaping Block) {
+        self.block = block
     }
     
     public func decode(sequence: UInt64, payloadSize: Int, payload: UnsafeMutableRawPointer) {
         let data = Data(bytesNoCopy: payload, count: payloadSize, deallocator: .none)
-        didReceive(sequence, data)
+        block(sequence, data)
     }
 }
