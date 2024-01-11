@@ -13,19 +13,17 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-const int LocatorStringSize = 1000;
-
 void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info)
 {
     (void)participant;
     auto topicName = info.info.topicName();
     auto typeName = info.info.typeName();
-    char locatorString[LocatorStringSize];
+    std::ostringstream stream;
 
     switch(info.status) {
         case ReaderDiscoveryInfo::DISCOVERED_READER:
-            dumpLocators(info.info.remote_locators().unicast, locatorString);
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredReader, topicName, typeName, locatorString);
+            dumpLocators(info.info.remote_locators().unicast, stream);
+            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredReader, topicName, typeName, stream.str().c_str());
             break;
         case ReaderDiscoveryInfo::CHANGED_QOS_READER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosReader, topicName, typeName, nullptr);
@@ -41,12 +39,12 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
     (void)participant;
     auto topicName = info.info.topicName();
     auto typeName = info.info.typeName();
-    char locatorString[LocatorStringSize];
+    std::ostringstream stream;
 
     switch(info.status) {
         case WriterDiscoveryInfo::DISCOVERED_WRITER:
-            dumpLocators(info.info.remote_locators().unicast, locatorString);
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredWriter, topicName, typeName, locatorString);
+            dumpLocators(info.info.remote_locators().unicast, stream);
+            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredWriter, topicName, typeName, stream.str().c_str());
             break;
         case WriterDiscoveryInfo::CHANGED_QOS_WRITER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosWriter, topicName, typeName, nullptr);
@@ -61,8 +59,9 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
 void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *participant, ParticipantDiscoveryInfo&& info)
 {
     (void)participant;
+
+    std::ostringstream stream;
     const char** propDict;
-    char locatorString[LocatorStringSize];
     auto properties = info.info.m_properties;
     auto count = properties.size();
     int i = 0;
@@ -76,10 +75,12 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
                 propDict[i++] = strdup(prop->second().c_str());
             }
             propDict[i] = nullptr;
-//          dumpLocators(info.info.metatraffic_locators.unicast);
-            dumpLocators(info.info.default_locators.unicast, locatorString);
-            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDiscoveredParticipant, info.info.m_participantName, locatorString, propDict);
-            releaseList(propDict);
+            dumpLocators(info.info.default_locators.unicast, stream);
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDiscoveredParticipant, info.info.m_participantName, stream.str().c_str(), propDict);
+            do {
+                free((void *)propDict[i--]);
+            } while (i != 0);
+            delete [] propDict;
             break;
         case ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
             container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDroppedParticipant, info.info.m_participantName, nullptr, nullptr);
@@ -93,29 +94,12 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
     }
 }
 
-void BridgedParticipantListener::dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators, char locatorsString[])
+void BridgedParticipantListener::dumpLocators(ResourceLimitedVector<eprosima::fastrtps::rtps::Locator_t> locators, std::ostringstream& stream)
 {
-    locatorsString[0] = '\0';
-    int count = 0;
-    
     for (int i = 0; i < locators.size(); i++) {
-        auto str = IPLocator::ip_to_string(locators[i]) + ":" + std::to_string(locators[i].port);
-        if (count + str.size() >= LocatorStringSize) {
-            break;
+        if (i != 0) {
+            stream << ",";
         }
-        memcpy(locatorsString+count, str.c_str(), str.size());
-        count += str.size();
-        locatorsString[count++] = ',';
+        stream << locators[i];
     }
-    if (count != 0) {
-        locatorsString[--count] = '\0';
-    }
-}
-
-void BridgedParticipantListener::releaseList(const char** list) {
-    char** ptr = (char** )list;
-    while(*ptr != nullptr) {
-        free(*ptr++);
-    }
-    delete [] list;
 }

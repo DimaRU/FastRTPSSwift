@@ -7,61 +7,9 @@
 #ifndef FastRTPSWrapper_h
 #define FastRTPSWrapper_h
 
-#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-
-#if __has_attribute(enum_extensibility)
-# define CLOSED_ENUM_ATTR __attribute__((enum_extensibility(closed)))
-# define OPEN_ENUM_ATTR __attribute__((enum_extensibility(open)))
-#else
-# define CLOSED_ENUM_ATTR
-# define OPEN_ENUM_ATTR
-#endif
-
-#ifndef NS_ENUM
-#define NS_ENUM(_type, _name) enum OPEN_ENUM_ATTR _name : _type _name; enum OPEN_ENUM_ATTR _name : _type
-#endif
-#ifndef NS_CLOSED_ENUM
-#define NS_CLOSED_ENUM(_type, _name) enum CLOSED_ENUM_ATTR _name : _type _name; enum CLOSED_ENUM_ATTR _name : _type
-#endif
-
-
-#if __has_attribute(swift_name)
-# define CF_SWIFT_NAME(_name) __attribute__((swift_name(#_name)))
-#else
-# define CF_SWIFT_NAME(_name)
-#endif
-
-typedef NS_CLOSED_ENUM(uint32_t, RTPSNotification) {
-  RTPSNotificationReaderMatchedMatching = 0,
-  RTPSNotificationReaderRemovedMatching,
-  RTPSNotificationReaderLivelinessLost,
-  RTPSNotificationWriterMatchedMatching,
-  RTPSNotificationWriterRemovedMatching,
-  RTPSNotificationWriterLivelinessLost,
-};
-
-typedef NS_CLOSED_ENUM(uint32_t, RTPSReaderWriterNotification) {
-  RTPSReaderWriterNotificationDiscoveredReader = 0,
-  RTPSReaderWriterNotificationChangedQosReader,
-  RTPSReaderWriterNotificationRemovedReader,
-  RTPSReaderWriterNotificationDiscoveredWriter,
-  RTPSReaderWriterNotificationChangedQosWriter,
-  RTPSReaderWriterNotificationRemovedWriter,
-};
-typedef NS_CLOSED_ENUM(uint32_t, RTPSParticipantNotification) {
-  RTPSParticipantNotificationDiscoveredParticipant = 0,
-  RTPSParticipantNotificationChangedQosParticipant,
-  RTPSParticipantNotificationRemovedParticipant,
-  RTPSParticipantNotificationDroppedParticipant,
-};
-
-typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
-    FastRTPSLogLevelError=0,
-    FastRTPSLogLevelWarning,
-    FastRTPSLogLevelInfo
-};
+#include "FastRTPSDefs.h"
 
 typedef void (*DecoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
 typedef void (*ReleaseCallback)(void * _Nonnull payloadDecoder);
@@ -103,30 +51,32 @@ typedef struct {
 
 const void * _Nonnull makeBridgedParticipant(void) CF_SWIFT_NAME(FastRTPSWrapper.init());
 
+const char * _Nonnull fastDDSVersion(void) CF_SWIFT_NAME(FastRTPSWrapper.fastDDSVersion());
+
 void setupRTPSBridgeContainer(const void * participant,
                               struct BridgeContainer container) CF_SWIFT_NAME(FastRTPSWrapper.setupBridgeContainer(self:container:));
 #ifdef FASTRTPS_WHITELIST
 bool createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
+                                   const struct RTPSParticipantProfile * _Nullable participantProfile,
                                    const char* _Nullable localAddress,
-                                   const char* _Nullable filterAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:localAddress:filterAddress:));
+                                   const char* _Nullable remoteWhitelistAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:participantProfile:localAddress:remoteWhitelistAddress:));
 #endif
 bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,
-                           const char* _Nullable localAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipant(self:domain:name:localAddress:));
+                           const struct RTPSParticipantProfile * _Nullable participantProfile,
+                           const char* _Nullable localAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipant(self:domain:name:participantProfile:localAddress:));
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel) CF_SWIFT_NAME(FastRTPSWrapper.logLevel(level:));
-void setRTPSPartition(const void * participant, const char * partition) CF_SWIFT_NAME(FastRTPSWrapper.setPartition(self:partition:));
 
 bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable,
-                        const void * payloadDecoder) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:keyed:transientLocal:reliable:payloadDecoder:));
+                        const struct RTPSReaderProfile readerProfile,
+                        const void * payloadDecoder,
+                        const char * _Nullable partition) CF_SWIFT_NAME(FastRTPSWrapper.registerReader(self:topicName:typeName:readerProfile:payloadDecoder:partition:));
 
 bool removeRTPSReader(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeReader(self:topicName:));
@@ -134,9 +84,8 @@ bool removeRTPSReader(const void * participant,
 bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:keyed:transientLocal:reliable:));
+                        const struct RTPSWriterProfile writerProfile,
+                        const char * _Nullable partition) CF_SWIFT_NAME(FastRTPSWrapper.registerWriter(self:topicName:typeName:writerProfile:partition:));
 
 bool removeRTPSWriter(const void * participant,
                       const char * topicName) CF_SWIFT_NAME(FastRTPSWrapper.removeWriter(self:topicName:));

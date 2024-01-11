@@ -1,7 +1,7 @@
 import XCTest
 
-import FastRTPSBridgeTests
+import FastRTPSSwiftTests
 
 var tests = [XCTestCaseEntry]()
-tests += FastRTPSBridgeTests.allTests()
+tests += FastRTPSSwiftTests.allTests()
 XCTMain(tests)

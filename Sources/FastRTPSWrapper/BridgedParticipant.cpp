@@ -28,8 +28,7 @@ using namespace eprosima::fastrtps::rtps;
 
 BridgedParticipant::BridgedParticipant():
 mp_participant(nullptr),
-mp_listener(nullptr),
-partitionName("*")
+mp_listener(nullptr)
 {
 }
 
@@ -77,38 +76,55 @@ void BridgedParticipant::resignAll() {
 
 bool BridgedParticipant::createParticipant(const char* name,
                                            const uint32_t domain,
+                                           const RTPSParticipantProfile* participantProfile,
                                            const char *interfaceIPv4,
-                                           const char* networkAddress)
+                                           const char* remoteWhitelistAddress)
 {
-    RTPSParticipantAttributes pattr;
-    pattr.builtin.use_WriterLivelinessProtocol = true;
-    pattr.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
-    pattr.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(3,0);
-    pattr.builtin.discovery_config.leaseDuration = Duration_t(10,0);
-    pattr.builtin.discovery_config.initial_announcements.count = 5;
-    pattr.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
-    pattr.builtin.readerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    pattr.builtin.writerHistoryMemoryPolicy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-    pattr.setName(name);
-    
-    auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
-    customTransport->sendBufferSize = 65536;
-    customTransport->receiveBufferSize = 65536;
-    if (interfaceIPv4 != nullptr) {
-        customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
+    RTPSParticipantAttributes participantAttributes;
+    participantAttributes.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
+    participantAttributes.setName(name);
+    if (participantProfile != nullptr) {
+        participantAttributes.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(participantProfile->leaseDuration_announcementperiod);
+        participantAttributes.builtin.discovery_config.leaseDuration = Duration_t(participantProfile->leaseDuration);
+        switch (participantProfile->participantFilter) {
+            case Disabled:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = NO_FILTER;
+                break;
+            case DifferentHost:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_DIFFERENT_HOST;
+                break;
+            case DifferentProcess:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_DIFFERENT_PROCESS;
+                break;
+            case SameProcess:
+                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
+                break;
+        }
     }
+    
+#ifdef FASTRTPS_WHITELIST
+    if (interfaceIPv4 != nullptr || remoteWhitelistAddress != nullptr) {
+#else
+    if (interfaceIPv4 != nullptr) {
+#endif
+        auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
+        customTransport->sendBufferSize = 65536;
+        customTransport->receiveBufferSize = 65536;
+        if (interfaceIPv4 != nullptr) {
+            customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
+        }
 
 #ifdef FASTRTPS_WHITELIST
-    if (networkAddress != nullptr) {
-        customTransport->remoteWhiteList.emplace_back(networkAddress);
-    }
+        if (remoteWhitelistAddress != nullptr) {
+            customTransport->remoteWhiteList.emplace_back(remoteWhitelistAddress);
+        }
 #endif
     
-    pattr.userTransports.push_back(customTransport);
-    pattr.useBuiltinTransports = false;
-
+        participantAttributes.userTransports.push_back(customTransport);
+        participantAttributes.useBuiltinTransports = false;
+    }
     mp_listener = new BridgedParticipantListener(container);
-    mp_participant = RTPSDomain::createParticipant(domain, pattr, mp_listener);
+    mp_participant = RTPSDomain::createParticipant(domain, participantAttributes, mp_listener);
     if (mp_participant == nullptr)
         return false;
 
@@ -117,13 +133,12 @@ bool BridgedParticipant::createParticipant(const char* name,
 
 bool BridgedParticipant::addReader(const char* name,
                                    const char* dataType,
-                                   const bool keyed,
-                                   const bool transientLocal,
-                                   const bool reliable,
-                                   const void * payloadDecoder)
+                                   const RTPSReaderProfile readerProfile,
+                                   const void * payloadDecoder,
+                                   const char * partition)
 {
     auto topicName = std::string(name);
-    auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
+    auto tKind = readerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
     if (readerList.find(topicName) != readerList.end()) {
         // aready registered
         container.releaseCallback((void * _Nonnull)payloadDecoder);
@@ -131,16 +146,43 @@ bool BridgedParticipant::addReader(const char* name,
     }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
-    if (transientLocal) {
-        readerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
+    ReaderQos readerQos;
+    if (partition != nullptr) {
+        readerQos.m_partition.push_back(partition);
     }
-    if (reliable) {
-        readerAttributes.endpoint.reliabilityKind = RELIABLE;
+    switch (readerProfile.reliability) {
+        case ReliabilityReliable:
+            readerAttributes.endpoint.reliabilityKind = RELIABLE;
+            readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
+            break;
+        case ReliabilityBestEffort:
+            readerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
+            readerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
+            break;
     }
+    switch (readerProfile.durability) {
+        case DurabilityVolatile:
+            readerAttributes.endpoint.durabilityKind = VOLATILE;
+            readerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;
+            break;
+        case DurabilityTransientLocal:
+            readerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
+            readerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+            break;
+        case DurabilityTransient:
+            readerAttributes.endpoint.durabilityKind = TRANSIENT;
+            readerQos.m_durability.kind = TRANSIENT_DURABILITY_QOS;
+            break;
+        case DurabilityPersistent:
+            readerAttributes.endpoint.durabilityKind = PERSISTENT;
+            readerQos.m_durability.kind = PERSISTENT_DURABILITY_QOS;
+            break;
+    }
+
     auto listener = new BridgedReaderListener(name, payloadDecoder, container);
 
     HistoryAttributes historyAttributes;
-    historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;
     historyAttributes.payloadMaxSize = 1000;
     historyAttributes.initialReservedCaches = 5;
     historyAttributes.maximumReservedCaches = 0;
@@ -160,14 +202,6 @@ bool BridgedParticipant::addReader(const char* name,
     readerList[topicName] = readerInfo;
 
     TopicAttributes topicAttributes(name, dataType, tKind);
-    ReaderQos readerQos;
-    readerQos.m_partition.push_back(partitionName.c_str());
-    if (transientLocal == true) {
-        readerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
-    }
-    if (reliable == true) {
-        readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
-    }
     auto rezult = mp_participant->registerReader(reader, topicAttributes, readerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
@@ -198,30 +232,55 @@ bool BridgedParticipant::removeReader(const char* name)
 
 bool BridgedParticipant::addWriter(const char* name,
                                    const char* dataType,
-                                   const bool keyed,
-                                   const bool transientLocal,
-                                   const bool reliable)
+                                   const RTPSWriterProfile writerProfile,
+                                   const char * partition)
 {
     auto topicName = std::string(name);
-    auto tKind = keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
+    auto tKind = writerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
     if (writerList.find(topicName) != writerList.end()) {
         // aready registered
         return false;
     }
 
     WriterAttributes writerAttributes;
-    writerAttributes.times.heartbeatPeriod = Duration_t(0, 100000000);       // 100 ms
-    writerAttributes.times.nackResponseDelay = Duration_t(0.0);
-
     writerAttributes.endpoint.topicKind = tKind;
-    if (reliable) {
-        writerAttributes.endpoint.reliabilityKind = RELIABLE;
+    WriterQos writerQos;
+    if (partition != nullptr) {
+        writerQos.m_partition.push_back(partition);
     }
-    writerAttributes.endpoint.durabilityKind = transientLocal ? TRANSIENT_LOCAL : VOLATILE;
+    writerQos.m_disablePositiveACKs.enabled = writerProfile.disablePositiveACKs;
+    switch (writerProfile.reliability) {
+        case ReliabilityReliable:
+            writerAttributes.endpoint.reliabilityKind = RELIABLE;
+            writerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
+            break;
+        case ReliabilityBestEffort:
+            writerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
+            writerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
+            break;
+    }
+    switch (writerProfile.durability) {
+        case DurabilityVolatile:
+            writerAttributes.endpoint.durabilityKind = VOLATILE;
+            writerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;
+            break;
+        case DurabilityTransientLocal:
+            writerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
+            writerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+            break;
+        case DurabilityTransient:
+            writerAttributes.endpoint.durabilityKind = TRANSIENT;
+            writerQos.m_durability.kind = TRANSIENT_DURABILITY_QOS;
+            break;
+        case DurabilityPersistent:
+            writerAttributes.endpoint.durabilityKind = PERSISTENT;
+            writerQos.m_durability.kind = PERSISTENT_DURABILITY_QOS;
+            break;
+    }
 
     auto listener = new BridgedWriterListener(name, container);
     HistoryAttributes historyAttributes;
-    historyAttributes.memoryPolicy = DYNAMIC_RESERVE_MEMORY_MODE;
+    historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;
     historyAttributes.payloadMaxSize = 1000;
     historyAttributes.initialReservedCaches = 5;
     historyAttributes.maximumReservedCaches = 0;
@@ -240,14 +299,6 @@ bool BridgedParticipant::addWriter(const char* name,
     writerList[topicName] = writerInfo;
 
     TopicAttributes topicAttributes(name, dataType, tKind);
-    WriterQos writerQos;
-    writerQos.m_partition.push_back(partitionName.c_str());
-    writerQos.m_disablePositiveACKs.enabled = true;
-    writerQos.m_durability.kind = transientLocal ? TRANSIENT_LOCAL_DURABILITY_QOS: VOLATILE_DURABILITY_QOS;
-    if (reliable == true) {
-        writerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
-    }
-
     auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);
@@ -295,7 +346,7 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
         history->remove_all_changes();
     }
     CacheChange_t * change;
-    if (key) {
+    if (key && keyLength > 0) {
         InstanceHandle_t instanceHandle;
         if (keyLength > 16) {
             md5.init();

@@ -1,5 +1,5 @@
 /////
-////  FastRTPSBridge.cpp
+////  FastRTPSWrapper.cpp
 ///   Copyright © 2020 Dmitriy Borovikov. All rights reserved.
 //
 
@@ -14,6 +14,11 @@ using namespace eprosima;
 using namespace fastrtps;
 using namespace rtps;
 using namespace std;
+
+const char * _Nonnull fastDDSVersion(void)
+{
+    return FASTRTPS_VERSION_STR;
+}
 
 const void * _Nonnull makeBridgedParticipant(void)
 {
@@ -32,21 +37,23 @@ void setupRTPSBridgeContainer(const void * participant,
 bool createRTPSParticipantFiltered(const void * participant,
                                    const uint32_t domain,
                                    const char* name,
+                                   const struct RTPSParticipantProfile * _Nullable participantProfile,
                                    const char* _Nullable localAddress,
                                    const char* _Nullable filterAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->createParticipant(name, domain, localAddress, filterAddress);
+    return p->createParticipant(name, domain, participantProfile, localAddress, filterAddress);
 }
 #endif
 
 bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,
+                           const struct RTPSParticipantProfile * _Nullable participantProfile,
                            const char* _Nullable localAddress)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->createParticipant(name, domain, localAddress, nullptr);
+    return p->createParticipant(name, domain, participantProfile, localAddress, nullptr);
 }
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
@@ -67,22 +74,15 @@ void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
     Log::ReportFilenames(true);
 }
 
-void setRTPSPartition(const void * participant, const char * partition)
-{
-    auto p = (BridgedParticipant *)participant;
-    p->setPartition(partition);
-}
-
 bool registerRTPSReader(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable,
-                        const void * payloadDecoder)
+                        const RTPSReaderProfile readerProfile,
+                        const void * payloadDecoder,
+                        const char * partition)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addReader(topicName, typeName, keyed, transientLocal, reliable, payloadDecoder);
+    return p->addReader(topicName, typeName, readerProfile, payloadDecoder, partition);
 }
 
 bool removeRTPSReader(const void * participant,
@@ -95,12 +95,11 @@ bool removeRTPSReader(const void * participant,
 bool registerRTPSWriter(const void * participant,
                         const char * topicName,
                         const char * typeName,
-                        bool keyed,
-                        bool transientLocal,
-                        bool reliable)
+                        const RTPSWriterProfile writerProfile,
+                        const char * partition)
 {
     auto p = (BridgedParticipant *)participant;
-    return p->addWriter(topicName, typeName, keyed, transientLocal, reliable);
+    return p->addWriter(topicName, typeName, writerProfile, partition);
 }
 
 bool removeRTPSWriter(const void * participant,
