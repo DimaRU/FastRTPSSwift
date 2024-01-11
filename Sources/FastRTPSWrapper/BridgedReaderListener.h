@@ -22,7 +22,7 @@ public:
     void onReaderMatched(eprosima::fastrtps::rtps::RTPSReader*,
                          eprosima::fastrtps::rtps::MatchingInfo& info) override;
     void on_liveliness_changed(eprosima::fastrtps::rtps::RTPSReader *reader,
-                               const eprosima::fastrtps::LivelinessChangedStatus &status) override;
+                               const eprosima::fastdds::dds::LivelinessChangedStatus &status) override;
     
     const void * payloadDecoder;
     uint32_t n_matched;

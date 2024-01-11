@@ -12,10 +12,10 @@ on:
 jobs:
     build:
         name: Build
-        runs-on: macOS-latest
+        runs-on: macOS-12
         steps:
         - name: Select Xcode
-          run: xcversion select 12.2
+          run: xcversion select 13.3.1
 
         - name: Check XCode Version
           run: xcodebuild -version
