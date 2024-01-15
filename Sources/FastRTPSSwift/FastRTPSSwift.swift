@@ -159,7 +159,7 @@ open class FastRTPSSwift {
     ///   - name: participant name
     ///   - domainID: DomainId to be used by the participant (0 by default)
     ///   - participantProfile: Defines configuration for created participant. See RTPSParticipantProfile struct
-    ///   - localAddress: bind only to localAddress
+    ///   - localAddress: bind only to localAddress, nil by default
     public func createParticipant(name: String,
                                   domainID: UInt32 = 0,
                                   participantProfile: RTPSParticipantProfile? = nil,

@@ -5,17 +5,17 @@
 
 import Foundation
 
-/// Basic desctiption for DDS data types
+/// DDS data types requirements
 public protocol DDSType: Codable {
     /// Defines DDS type name, 'DDS::String' for example
     static var ddsTypeName: String { get }
 }
 
-/// Describe keyed DDS data type
+/// Keyed DDS data type requirements
 public protocol DDSKeyed: DDSType {
     /// Data for topic key generation
     var key: Data { get }
 }
 
-/// Describe unkeyed DDS data type
+/// Unkeyed DDS data type requirements
 public protocol DDSUnkeyed: DDSType {}

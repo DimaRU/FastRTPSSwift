@@ -6,16 +6,16 @@
 
 import Foundation
 
-/// Basic DDS topic requement. Must define topic name string as Raw value
+/// Common DDS reader/writer topic requirements. Must define topic name Raw value as string
 public protocol DDSTopic: RawRepresentable where RawValue == String {}
 
-/// Reader topic requements
+/// Reader topic requirements
 public protocol DDSReaderTopic: DDSTopic {
     /// Return profile which defines Reader parameters: durability and reliability QoS
     var readerProfile: RTPSReaderProfile { get }
 }
 
-/// Writer topic requements
+/// Writer topic requirements
 public protocol DDSWriterTopic: DDSTopic {
     /// Return profile which defines Writer parameters: durability, reliability and disablePositiveACKs QoS
     var writerProfile: RTPSWriterProfile { get }
