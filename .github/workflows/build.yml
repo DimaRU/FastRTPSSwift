@@ -10,18 +10,39 @@ on:
       - master
 
 jobs:
-    build:
-        name: Build
-        runs-on: macOS-12
-        steps:
-        - name: Select Xcode
-          run: xcversion select 13.3.1
+  build_check:
+    runs-on: macOS-13
+    strategy:
+      max-parallel: 2
+      fail-fast: false
+      matrix:
+        destination:
+        - "generic/platform=iOS Simulator"
+        - "generic/platform=macOS,variant=Mac Catalyst"
+        - "generic/platform=iOS"
+    steps:
+    - name: Select Xcode
+      run: |
+        xcodes select 15.2
+    - name: Check XCode Version
+      run: xcodebuild -version
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Build
+      run: |
+        set -o pipefail && xcodebuild build -scheme FastRTPSSwift -destination "${{ matrix.destination }}" | xcpretty
 
-        - name: Check XCode Version
-          run: xcodebuild -version
 
-        - name: Checkout
-          uses: actions/checkout@v4
-
-        - name: macOS Native
-          run: swift test
+  test:
+    name: Test
+    runs-on: macOS-13
+    steps:
+    - name: Select Xcode
+      run: |
+        xcodes select 15.2
+    - name: Check XCode Version
+      run: xcodebuild -version
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: macOS Native build & test
+      run: swift test
