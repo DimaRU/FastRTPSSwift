@@ -9,6 +9,7 @@
 #include <fastrtps/rtps/common/Locator.h>
 #include <fastrtps/utils/IPLocator.h>
 #include <memory.h>
+#include "FastRTPSDefs.h"
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
@@ -31,6 +32,11 @@ void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant,
         case ReaderDiscoveryInfo::REMOVED_READER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationRemovedReader, topicName, typeName, nullptr);
             break;
+#if FASTDDS_VERSION >= 21000
+        case ReaderDiscoveryInfo::IGNORED_READER:
+            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationIgnoredReader, topicName, typeName, nullptr);
+            break;
+#endif
     }
 }
 
@@ -52,6 +58,11 @@ void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant,
         case WriterDiscoveryInfo::REMOVED_WRITER:
             container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationRemovedWriter, topicName, typeName, nullptr);
             break;
+#if FASTDDS_VERSION >= 21000
+        case WriterDiscoveryInfo::IGNORED_WRITER:
+            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationIgnoredWriter, topicName, typeName, nullptr);
+            break;
+#endif
     }
     
 }
@@ -91,6 +102,11 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
         case ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT:
             container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationChangedQosParticipant, info.info.m_participantName, nullptr, nullptr);
             break;
+#if FASTDDS_VERSION >= 21000
+        case ParticipantDiscoveryInfo::IGNORED_PARTICIPANT:
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationIgnoredParticipant, info.info.m_participantName, nullptr, nullptr);
+            break;
+#endif
     }
 }
 

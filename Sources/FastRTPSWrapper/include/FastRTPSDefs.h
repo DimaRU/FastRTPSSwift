@@ -47,12 +47,15 @@ typedef NS_CLOSED_ENUM(uint32_t, RTPSReaderWriterNotification) {
     RTPSReaderWriterNotificationDiscoveredWriter,
     RTPSReaderWriterNotificationChangedQosWriter,
     RTPSReaderWriterNotificationRemovedWriter,
+    RTPSReaderWriterNotificationIgnoredReader,
+    RTPSReaderWriterNotificationIgnoredWriter,
 };
 typedef NS_CLOSED_ENUM(uint32_t, RTPSParticipantNotification) {
     RTPSParticipantNotificationDiscoveredParticipant = 0,
     RTPSParticipantNotificationChangedQosParticipant,
     RTPSParticipantNotificationRemovedParticipant,
     RTPSParticipantNotificationDroppedParticipant,
+    RTPSParticipantNotificationIgnoredParticipant,
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {

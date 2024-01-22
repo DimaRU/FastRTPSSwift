@@ -28,6 +28,8 @@ extension RTPSReaderWriterNotification: CustomStringConvertible {
         case .discoveredWriter : return "discoveredWriter"
         case .changedQosWriter : return "changedQosWriter"
         case .removedWriter    : return "removedWriter"
+        case .ignoredReader    : return "ignoredReader"
+        case .ignoredWriter    : return "ignoredWriter"
         }
     }
 }
@@ -39,6 +41,7 @@ extension RTPSParticipantNotification: CustomStringConvertible {
         case .changedQosParticipant : return "changedQosParticipant"
         case .removedParticipant    : return "removedParticipant"
         case .droppedParticipant    : return "droppedParticipant"
+        case .ignoredParticipant    : return "ignoredParticipant"
         }
     }
 }
