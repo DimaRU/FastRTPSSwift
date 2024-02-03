@@ -16,25 +16,34 @@ public protocol RTPSListenerDelegate {
     /// - Parameters:
     ///   - reason: event reason
     ///   - topic: topic name
-    func RTPSNotification(reason: RTPSNotification, topic: String)
+    func RTPSNotification(reason: RTPSStatus, topic: String)
 }
 
 /// RTPS Participant listener delegate requrements
 public protocol RTPSParticipantListenerDelegate {
     /// Intercepts paricipant discovery events
     /// - Parameters:
-    ///   - reason: event reaason, see RTPSParticipantNotification
+    ///   - reason: event reaason, see RTPSParticipantStatus
     ///   - participant: participant name
     ///   - unicastLocators: participant unicast locators list
     ///   - properties: participant properties strings
-    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: String, properties: [String:String])
-    /// Intercepts readers and writers discovery events
+    func participantNotification(reason: RTPSParticipantStatus, participant: String, unicastLocators: String, properties: [String:String])
+    /// Intercepts reader discovery events
     /// - Parameters:
-    ///   - reason: event reason, see RTPSReaderWriterNotification enum
+    ///   - reason: event reason, see RTPSReaderStatus enum
     ///   - topic: topic name
     ///   - type: topic data type name
     ///   - remoteLocators: remote locators list
-    func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String)
+    ///   - readerProfile: reader qos data
+    func readerNotificaton(reason: RTPSReaderStatus, topic: String, type: String, remoteLocators: String, readerProfile: RTPSReaderProfile)
+    /// Intercepts writer discovery events
+    /// - Parameters:
+    ///   - reason: event reason, see RTPSWriterStatus enum
+    ///   - topic: topic name
+    ///   - type: topic data type name
+    ///   - remoteLocators: remote locators list
+    ///   - writerProfile: writer qos data
+    func writerNotificaton(reason: RTPSWriterStatus, topic: String, type: String, remoteLocators: String, writerProfile: RTPSWriterProfile)
 }
 
 /// FastRTPSSwift errors enum
@@ -93,18 +102,37 @@ open class FastRTPSSwift {
                                                  participant: String(cString: participantName),
                                                  unicastLocators: locators,
                                                  properties: propertiesDict)
-            }, discoveryReaderWriterCallback: {
-                (listenerObject, reason, topicName, typeName, remoteLocators) in
+            }, discoveryReaderCallback: {
+                (listenerObject, reason, readerInfo) in
                 let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.participantListenerDelegate else { return }
                 
-                let topic = String(cString: topicName)
-                let type = String(cString: typeName)
+                let topic = String(cString: readerInfo.pointee.topic)
+                let type = String(cString: readerInfo.pointee.ddstype)
                 var locators = ""
-                if let remoteLocators = remoteLocators {
+                if let remoteLocators = readerInfo.pointee.locators {
                     locators = String(cString: remoteLocators)
                 }
-                delegate.readerWriterNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators)
+                let readerProfile = RTPSReaderProfile(keyed: readerInfo.pointee.readerProfile.keyed,
+                                                      reliability: readerInfo.pointee.readerProfile.reliability,
+                                                      durability: readerInfo.pointee.readerProfile.durability)
+                delegate.readerNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators, readerProfile: readerProfile)
+            }, discoveryWriterCallback: {
+                (listenerObject, reason, writerInfo) in
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+                guard let delegate = mySelf.participantListenerDelegate else { return }
+                
+                let topic = String(cString: writerInfo.pointee.topic)
+                let type = String(cString: writerInfo.pointee.ddstype)
+                var locators = ""
+                if let remoteLocators = writerInfo.pointee.locators {
+                    locators = String(cString: remoteLocators)
+                }
+                let writerProfile = RTPSWriterProfile(keyed: writerInfo.pointee.writerProfile.keyed,
+                                                      reliability: writerInfo.pointee.writerProfile.reliability,
+                                                      durability: writerInfo.pointee.writerProfile.durability,
+                                                      disablePositiveACKs: writerInfo.pointee.writerProfile.disablePositiveACKs)
+                delegate.writerNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators, writerProfile: writerProfile)
             }, listnerObject: Unmanaged.passUnretained(self).toOpaque())
         
         wrapper.setupBridgeContainer(container: container)

@@ -14,20 +14,22 @@
 typedef void (*DecoderCallback)(void * _Nonnull payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * _Nonnull payload);
 typedef void (*ReleaseCallback)(void * _Nonnull payloadDecoder);
 typedef void (*ReaderWriterListenerCallback)(const void * _Nonnull listnerObject,
-                                             RTPSNotification reason,
+                                             RTPSStatus reason,
                                              const char* _Nonnull topicName);
 
 typedef void (*DiscoveryParticipantCallback)(const void * _Nonnull listnerObject,
-                                             RTPSParticipantNotification reason,
+                                             RTPSParticipantStatus reason,
                                              const char * _Nonnull participantName,
                                              const char* const _Nullable unicastLocators,
                                              const char* const _Nullable properties[_Nullable]);
 
-typedef void (*DiscoveryReaderWriterCallback)(const void * _Nonnull listnerObject,
-                                              RTPSReaderWriterNotification reason,
-                                              const char* _Nonnull topicName,
-                                              const char* _Nonnull typeName,
-                                              const char* const _Nullable remoteLocators);
+typedef void (*DiscoveryReaderCallback)(const void * _Nonnull listnerObject,
+                                              RTPSReaderStatus reason,
+                                              const struct ReaderInfo* _Nonnull readerInfo);
+
+typedef void (*DiscoveryWriterCallback)(const void * _Nonnull listnerObject,
+                                              RTPSWriterStatus reason,
+                                              const struct WriterInfo* _Nonnull writerInfo);
 
 #pragma clang assume_nonnull begin
 
@@ -37,7 +39,8 @@ struct BridgeContainer
     ReleaseCallback releaseCallback;
     ReaderWriterListenerCallback readerWriterListenerCallback;
     DiscoveryParticipantCallback discoveryParticipantCallback;
-    DiscoveryReaderWriterCallback discoveryReaderWriterCallback;
+    DiscoveryReaderCallback discoveryReaderCallback;
+    DiscoveryWriterCallback discoveryWriterCallback;
     const void *listnerObject;
 };
 

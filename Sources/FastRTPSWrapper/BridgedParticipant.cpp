@@ -84,7 +84,7 @@ bool BridgedParticipant::createParticipant(const char* name,
     participantAttributes.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
     participantAttributes.setName(name);
     if (participantProfile != nullptr) {
-        participantAttributes.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(participantProfile->leaseDuration_announcementperiod);
+        participantAttributes.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(participantProfile->leaseDurationAnnouncementperiod);
         participantAttributes.builtin.discovery_config.leaseDuration = Duration_t(participantProfile->leaseDuration);
         switch (participantProfile->participantFilter) {
             case Disabled:

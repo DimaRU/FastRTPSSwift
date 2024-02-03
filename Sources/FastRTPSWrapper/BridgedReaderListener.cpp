@@ -39,7 +39,7 @@ void BridgedReaderListener::onNewCacheChangeAdded(RTPSReader* reader, const Cach
 
 void BridgedReaderListener::on_liveliness_changed(RTPSReader *reader, const LivelinessChangedStatus &status)
 {
-    container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationReaderLivelinessLost, topicName.c_str());
+    container.readerWriterListenerCallback(container.listnerObject, RTPSStatusReaderLivelinessLost, topicName.c_str());
 }
 
 void BridgedReaderListener::onReaderMatched(RTPSReader* reader, MatchingInfo& info)
@@ -48,11 +48,11 @@ void BridgedReaderListener::onReaderMatched(RTPSReader* reader, MatchingInfo& in
     {
         case MATCHED_MATCHING:
             n_matched++;
-            container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationReaderMatchedMatching, topicName.c_str());
+            container.readerWriterListenerCallback(container.listnerObject, RTPSStatusReaderMatchedMatching, topicName.c_str());
             break;
         case REMOVED_MATCHING:
             n_matched--;
-            container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationReaderRemovedMatching, topicName.c_str());
+            container.readerWriterListenerCallback(container.listnerObject, RTPSStatusReaderRemovedMatching, topicName.c_str());
             break;
     }
 }

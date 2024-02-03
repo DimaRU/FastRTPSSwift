@@ -31,31 +31,35 @@
 # define CF_SWIFT_NAME(_name)
 #endif
 
-typedef NS_CLOSED_ENUM(uint32_t, RTPSNotification) {
-    RTPSNotificationReaderMatchedMatching = 0,
-    RTPSNotificationReaderRemovedMatching,
-    RTPSNotificationReaderLivelinessLost,
-    RTPSNotificationWriterMatchedMatching,
-    RTPSNotificationWriterRemovedMatching,
-    RTPSNotificationWriterLivelinessLost,
+typedef NS_CLOSED_ENUM(uint32_t, RTPSStatus) {
+    RTPSStatusReaderMatchedMatching = 0,
+    RTPSStatusReaderRemovedMatching,
+    RTPSStatusReaderLivelinessLost,
+    RTPSStatusWriterMatchedMatching,
+    RTPSStatusWriterRemovedMatching,
+    RTPSStatusWriterLivelinessLost,
 };
 
-typedef NS_CLOSED_ENUM(uint32_t, RTPSReaderWriterNotification) {
-    RTPSReaderWriterNotificationDiscoveredReader = 0,
-    RTPSReaderWriterNotificationChangedQosReader,
-    RTPSReaderWriterNotificationRemovedReader,
-    RTPSReaderWriterNotificationDiscoveredWriter,
-    RTPSReaderWriterNotificationChangedQosWriter,
-    RTPSReaderWriterNotificationRemovedWriter,
-    RTPSReaderWriterNotificationIgnoredReader,
-    RTPSReaderWriterNotificationIgnoredWriter,
+typedef NS_CLOSED_ENUM(uint32_t, RTPSReaderStatus) {
+    RTPSReaderStatusDiscoveredReader = 0,
+    RTPSReaderStatusChangedQosReader,
+    RTPSReaderStatusRemovedReader,
+    RTPSReaderStatusIgnoredReader,
 };
-typedef NS_CLOSED_ENUM(uint32_t, RTPSParticipantNotification) {
-    RTPSParticipantNotificationDiscoveredParticipant = 0,
-    RTPSParticipantNotificationChangedQosParticipant,
-    RTPSParticipantNotificationRemovedParticipant,
-    RTPSParticipantNotificationDroppedParticipant,
-    RTPSParticipantNotificationIgnoredParticipant,
+
+typedef NS_CLOSED_ENUM(uint32_t, RTPSWriterStatus) {
+    RTPSWriterStatusDiscoveredWriter = 0,
+    RTPSWriterStatusChangedQosWriter,
+    RTPSWriterStatusRemovedWriter,
+    RTPSWriterStatusIgnoredWriter,
+};
+
+typedef NS_CLOSED_ENUM(uint32_t, RTPSParticipantStatus) {
+    RTPSParticipantStatusDiscoveredParticipant = 0,
+    RTPSParticipantStatusChangedQosParticipant,
+    RTPSParticipantStatusRemovedParticipant,
+    RTPSParticipantStatusDroppedParticipant,
+    RTPSParticipantStatusIgnoredParticipant,
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
@@ -72,8 +76,8 @@ typedef NS_CLOSED_ENUM(uint32_t, Durability) {
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, Reliability) {
-    ReliabilityReliable = 0,
-    ReliabilityBestEffort,
+    ReliabilityBestEffort = 1,
+    ReliabilityReliable = 2,
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, ParticipantFilter) {
@@ -98,9 +102,23 @@ struct RTPSWriterProfile {
 };
 
 struct RTPSParticipantProfile {
-    long double leaseDuration_announcementperiod;
+    long double leaseDurationAnnouncementperiod;
     long double leaseDuration;
     ParticipantFilter participantFilter;
+};
+
+struct ReaderInfo {
+    const char *topic;
+    const char *ddstype;
+    const char *locators;
+    struct RTPSReaderProfile readerProfile;
+};
+
+struct WriterInfo {
+    const char *topic;
+    const char *ddstype;
+    const char *locators;
+    struct RTPSWriterProfile writerProfile;
 };
 
 #endif /* FastRTPSDefs_h */

@@ -9,7 +9,7 @@
 #include <fastrtps/rtps/common/Locator.h>
 #include <fastrtps/utils/IPLocator.h>
 #include <memory.h>
-#include "FastRTPSDefs.h"
+#include "FastDDSVersion.h"
 
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
@@ -17,24 +17,33 @@ using namespace eprosima::fastrtps::rtps;
 void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant, ReaderDiscoveryInfo &&info)
 {
     (void)participant;
-    auto topicName = info.info.topicName();
-    auto typeName = info.info.typeName();
     std::ostringstream stream;
+    struct ReaderInfo readerInfo;
+    std::string str;
+    
+    readerInfo.locators = nullptr;
+    readerInfo.topic = info.info.topicName().c_str();
+    readerInfo.ddstype = info.info.typeName().c_str();
+    readerInfo.readerProfile.reliability = static_cast<Reliability>(info.info.m_qos.m_reliability.kind);
+    readerInfo.readerProfile.durability = static_cast<Durability>(info.info.m_qos.m_durability.kind);
+    readerInfo.readerProfile.keyed = info.info.topicKind() == eprosima::fastrtps::rtps::WITH_KEY;
 
     switch(info.status) {
         case ReaderDiscoveryInfo::DISCOVERED_READER:
             dumpLocators(info.info.remote_locators().unicast, stream);
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredReader, topicName, typeName, stream.str().c_str());
+            str = stream.str();
+            readerInfo.locators = str.c_str();
+            container.discoveryReaderCallback(container.listnerObject, RTPSReaderStatusDiscoveredReader, &readerInfo);
             break;
         case ReaderDiscoveryInfo::CHANGED_QOS_READER:
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosReader, topicName, typeName, nullptr);
+            container.discoveryReaderCallback(container.listnerObject, RTPSReaderStatusChangedQosReader, &readerInfo);
             break;
         case ReaderDiscoveryInfo::REMOVED_READER:
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationRemovedReader, topicName, typeName, nullptr);
+            container.discoveryReaderCallback(container.listnerObject, RTPSReaderStatusRemovedReader, &readerInfo);
             break;
 #if FASTDDS_VERSION >= 21000
         case ReaderDiscoveryInfo::IGNORED_READER:
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationIgnoredReader, topicName, typeName, nullptr);
+            container.discoveryReaderCallback(container.listnerObject, RTPSReaderStatusIgnoredReader, &readerInfo);
             break;
 #endif
     }
@@ -43,24 +52,34 @@ void BridgedParticipantListener::onReaderDiscovery(RTPSParticipant *participant,
 void BridgedParticipantListener::onWriterDiscovery(RTPSParticipant *participant, WriterDiscoveryInfo &&info)
 {
     (void)participant;
-    auto topicName = info.info.topicName();
-    auto typeName = info.info.typeName();
     std::ostringstream stream;
+    struct WriterInfo writerInfo;
+    std::string str;
+
+    writerInfo.locators = nullptr;
+    writerInfo.topic = info.info.topicName().c_str();
+    writerInfo.ddstype = info.info.typeName().c_str();
+    writerInfo.writerProfile.reliability = static_cast<Reliability>(info.info.m_qos.m_reliability.kind);
+    writerInfo.writerProfile.durability = static_cast<Durability>(info.info.m_qos.m_durability.kind);
+    writerInfo.writerProfile.keyed = info.info.topicKind() == eprosima::fastrtps::rtps::WITH_KEY;
+    writerInfo.writerProfile.disablePositiveACKs = info.info.m_qos.m_disablePositiveACKs.enabled;
 
     switch(info.status) {
         case WriterDiscoveryInfo::DISCOVERED_WRITER:
             dumpLocators(info.info.remote_locators().unicast, stream);
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationDiscoveredWriter, topicName, typeName, stream.str().c_str());
+            str = stream.str();
+            writerInfo.locators = str.c_str();
+            container.discoveryWriterCallback(container.listnerObject, RTPSWriterStatusDiscoveredWriter, &writerInfo);
             break;
         case WriterDiscoveryInfo::CHANGED_QOS_WRITER:
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationChangedQosWriter, topicName, typeName, nullptr);
+            container.discoveryWriterCallback(container.listnerObject, RTPSWriterStatusChangedQosWriter, &writerInfo);
             break;
         case WriterDiscoveryInfo::REMOVED_WRITER:
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationRemovedWriter, topicName, typeName, nullptr);
+            container.discoveryWriterCallback(container.listnerObject, RTPSWriterStatusRemovedWriter, &writerInfo);
             break;
 #if FASTDDS_VERSION >= 21000
         case WriterDiscoveryInfo::IGNORED_WRITER:
-            container.discoveryReaderWriterCallback(container.listnerObject, RTPSReaderWriterNotificationIgnoredWriter, topicName, typeName, nullptr);
+            container.discoveryWriterCallback(container.listnerObject, RTPSWriterStatusIgnoredWriter, &writerInfo);
             break;
 #endif
     }
@@ -87,24 +106,24 @@ void BridgedParticipantListener::onParticipantDiscovery(RTPSParticipant *partici
             }
             propDict[i] = nullptr;
             dumpLocators(info.info.default_locators.unicast, stream);
-            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDiscoveredParticipant, info.info.m_participantName, stream.str().c_str(), propDict);
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantStatusDiscoveredParticipant, info.info.m_participantName, stream.str().c_str(), propDict);
             do {
                 free((void *)propDict[i--]);
             } while (i != 0);
             delete [] propDict;
             break;
         case ParticipantDiscoveryInfo::DROPPED_PARTICIPANT:
-            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationDroppedParticipant, info.info.m_participantName, nullptr, nullptr);
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantStatusDroppedParticipant, info.info.m_participantName, nullptr, nullptr);
             break;
         case ParticipantDiscoveryInfo::REMOVED_PARTICIPANT:
-            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationRemovedParticipant, info.info.m_participantName, nullptr, nullptr);
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantStatusRemovedParticipant, info.info.m_participantName, nullptr, nullptr);
             break;
         case ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT:
-            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationChangedQosParticipant, info.info.m_participantName, nullptr, nullptr);
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantStatusChangedQosParticipant, info.info.m_participantName, nullptr, nullptr);
             break;
 #if FASTDDS_VERSION >= 21000
         case ParticipantDiscoveryInfo::IGNORED_PARTICIPANT:
-            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantNotificationIgnoredParticipant, info.info.m_participantName, nullptr, nullptr);
+            container.discoveryParticipantCallback(container.listnerObject, RTPSParticipantStatusIgnoredParticipant, info.info.m_participantName, nullptr, nullptr);
             break;
 #endif
     }

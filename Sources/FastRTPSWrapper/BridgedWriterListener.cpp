@@ -22,7 +22,7 @@ BridgedWriterListener::~BridgedWriterListener()
 
 void BridgedWriterListener::on_liveliness_lost(RTPSWriter* writer, const LivelinessLostStatus& status)
 {
-    container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationWriterLivelinessLost, topicName.c_str());
+    container.readerWriterListenerCallback(container.listnerObject, RTPSStatusWriterLivelinessLost, topicName.c_str());
 }
 
 void BridgedWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& info)
@@ -31,11 +31,11 @@ void BridgedWriterListener::onWriterMatched(RTPSWriter* writer, MatchingInfo& in
     {
         case MATCHED_MATCHING:
             n_matched++;
-            container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationWriterMatchedMatching, topicName.c_str());
+            container.readerWriterListenerCallback(container.listnerObject, RTPSStatusWriterMatchedMatching, topicName.c_str());
             break;
         case REMOVED_MATCHING:
             n_matched--;
-            container.readerWriterListenerCallback(container.listnerObject, RTPSNotificationWriterRemovedMatching, topicName.c_str());
+            container.readerWriterListenerCallback(container.listnerObject, RTPSStatusWriterRemovedMatching, topicName.c_str());
             break;
     }
 }

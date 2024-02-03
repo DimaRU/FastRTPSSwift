@@ -59,22 +59,21 @@ class FastRTPSSwiftTests: XCTestCase {
         print("Readers removed")
         fastRTPSSwift?.removeParticipant()
     }
-    
-    static var allTests = [
-        ("testCreateReader", testCreateReader),
-        ("testCreateMultipleReaders", testCreateMultipleReaders),
-    ]
 }
 
 extension FastRTPSSwiftTests: RTPSParticipantListenerDelegate {
-    func participantNotification(reason: RTPSParticipantNotification, participant: String, unicastLocators: String, properties: [String:String]) {
+    
+    func participantNotification(reason: RTPSParticipantStatus, participant: String, unicastLocators: String, properties: [String:String]) {
         print(reason,  participant, unicastLocators, properties)
     }
     
-    func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String) {
-        print(reason, topic, type, remoteLocators)
+    func readerNotificaton(reason: RTPSReaderStatus, topic: String, type: String, remoteLocators: String, readerProfile: RTPSReaderProfile) {
+        print(reason, topic, type, remoteLocators, readerProfile)
     }
     
+    func writerNotificaton(reason: RTPSWriterStatus, topic: String, type: String, remoteLocators: String, writerProfile: RTPSWriterProfile) {
+        print(reason, topic, type, remoteLocators, writerProfile)
+    }
 }
 
 
