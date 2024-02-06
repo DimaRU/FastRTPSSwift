@@ -164,16 +164,16 @@ open class FastRTPSSwift {
         let result: Bool
         if var participantProfile = participantProfile {
             result = wrapper.createParticipantFiltered(domain: domainID,
-                                                       name: name.cString(using: .utf8)!,
+                                                       name: name,
                                                        participantProfile: &participantProfile,
-                                                       localAddress: localAddress?.cString(using: .utf8),
-                                                       remoteWhitelistAddress: remoteWhitelistAddress?.cString(using: .utf8))
+                                                       localAddress: localAddress,
+                                                       remoteWhitelistAddress: remoteWhitelistAddress)
         } else {
             result = wrapper.createParticipantFiltered(domain: domainID,
-                                                       name: name.cString(using: .utf8)!,
+                                                       name: name,
                                                        participantProfile: nil,
-                                                       localAddress: localAddress?.cString(using: .utf8),
-                                                       remoteWhitelistAddress: remoteWhitelistAddress?.cString(using: .utf8))
+                                                       localAddress: localAddress,
+                                                       remoteWhitelistAddress: remoteWhitelistAddress)
         }
         guard result else {
             throw FastRTPSSwiftError.fastRTPSError
@@ -196,14 +196,14 @@ open class FastRTPSSwift {
         let result: Bool
         if var participantProfile = participantProfile {
             result = wrapper.createParticipant(domain: domainID,
-                                               name: name.cString(using: .utf8)!,
+                                               name: name,
                                                participantProfile: &participantProfile,
-                                               localAddress: localAddress?.cString(using: .utf8))
+                                               localAddress: localAddress)
         } else {
             result = wrapper.createParticipant(domain: domainID,
-                                               name: name.cString(using: .utf8)!,
+                                               name: name,
                                                participantProfile: nil,
-                                               localAddress: localAddress?.cString(using: .utf8))
+                                               localAddress: localAddress)
         }
         guard result else {
             throw FastRTPSSwiftError.fastRTPSError
@@ -237,11 +237,11 @@ open class FastRTPSSwift {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(block: block)).toOpaque()
         var profile = topic.readerProfile
         profile.keyed = ddsType is DDSKeyed.Type
-        if !wrapper.registerReader(topicName: topic.rawValue.cString(using: .utf8)!,
-                                   typeName: D.ddsTypeName.cString(using: .utf8)!,
+        if !wrapper.registerReader(topicName: topic.rawValue,
+                                   typeName: D.ddsTypeName,
                                    readerProfile: profile,
                                    payloadDecoder: payloadDecoderProxy,
-                                   partition: partition?.cString(using: .utf8)!) {
+                                   partition: partition) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -262,7 +262,7 @@ open class FastRTPSSwift {
     /// Remove a RTPS reader for topic
     /// - Parameter topic: DDSReader topic descriptor
     public func removeReader<T: DDSReaderTopic>(topic: T) throws {
-        if !wrapper.removeReader(topicName: topic.rawValue.cString(using: .utf8)!) {
+        if !wrapper.removeReader(topicName: topic.rawValue) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -275,10 +275,10 @@ open class FastRTPSSwift {
     public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type, partition: String? = nil) throws  {
         var profile = topic.writerProfile
         profile.keyed = ddsType is DDSKeyed.Type
-        if !wrapper.registerWriter(topicName: topic.rawValue.cString(using: .utf8)!,
-                                   typeName: D.ddsTypeName.cString(using: .utf8)!,
+        if !wrapper.registerWriter(topicName: topic.rawValue,
+                                   typeName: D.ddsTypeName,
                                    writerProfile: profile,
-                                   partition: partition?.cString(using: .utf8)!) {
+                                   partition: partition) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -286,7 +286,7 @@ open class FastRTPSSwift {
     /// Remove RTPS writer for topic
     /// - Parameter topic: DDSWriterTopic topic descriptor
     public func removeWriter<T: DDSWriterTopic>(topic: T) throws {
-        if !wrapper.removeWriter(topicName: topic.rawValue.cString(using: .utf8)!) {
+        if !wrapper.removeWriter(topicName: topic.rawValue) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -302,7 +302,7 @@ open class FastRTPSSwift {
             if ddsData is DDSKeyed {
                 let key = (ddsData as! DDSKeyed).key
                 try key.withUnsafeBytes { keyPtr in
-                    if !wrapper.sendDataWithKey(topicName: topic.rawValue.cString(using: .utf8)!,
+                    if !wrapper.sendDataWithKey(topicName: topic.rawValue,
                                                 data: dataPtr.baseAddress!,
                                                 length: UInt32(data.count),
                                                 key: keyPtr.baseAddress!,
@@ -311,7 +311,7 @@ open class FastRTPSSwift {
                     }
                 }
             } else {
-                if !wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
+                if !wrapper.sendData(topicName: topic.rawValue,
                                      data: dataPtr.baseAddress!,
                                      length: UInt32(data.count)) {
                     throw FastRTPSSwiftError.fastRTPSError
