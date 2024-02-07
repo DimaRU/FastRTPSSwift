@@ -16,11 +16,10 @@ struct RovHeader: Codable {
     let frameId: String
 }
 
-struct RovDepth: DDSKeyed {
+struct RovDepth: DDSKeyed, Codable {
     let pressure: FluidPressure
     let id: String      // @key
     let depth: Float    // Unit: meters
     
     var key: Data { id.data(using: .utf8)! }
-    static var ddsTypeName: String { "orov::msg::sensor::Depth" }
 }

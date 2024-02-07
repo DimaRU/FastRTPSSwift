@@ -233,13 +233,11 @@ open class FastRTPSSwift {
     ///   - block: The block to execute when topic data arrives. This block has no return value and sequence and data parameters:
     ///      - sequence: topic sequence number
     ///      - data: topic raw binary data
-    public func registerReaderRaw<D: DDSType, T: DDSReaderTopic>(topic: T, ddsType: D.Type, partition: String? = nil, block: @escaping (UInt64, Data)->Void) throws {
+    public func registerReaderRaw<T: DDSReaderTopic>(topic: T, partition: String? = nil, block: @escaping (UInt64, Data)->Void) throws {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(block: block)).toOpaque()
-        var profile = topic.readerProfile
-        profile.keyed = ddsType is DDSKeyed.Type
-        if !wrapper.registerReader(topicName: topic.rawValue,
-                                   typeName: D.ddsTypeName,
-                                   readerProfile: profile,
+        if !wrapper.registerReader(topicName: topic.name,
+                                   typeName: topic.typeName,
+                                   readerProfile: topic.readerProfile,
                                    payloadDecoder: payloadDecoderProxy,
                                    partition: partition) {
             throw FastRTPSSwiftError.fastRTPSError
@@ -251,8 +249,8 @@ open class FastRTPSSwift {
     ///   - topic: DDSReader topic description
     ///   - block: The block to execute when topic data arrives. This block has no return value and Result<D, Error> parameter
     ///      with deserialized data when success deserialization or error otherwize
-    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, partition: String? = nil, block: @escaping (Result<D, Error>)->Void) throws {
-        try registerReaderRaw(topic: topic, ddsType: D.self, partition: partition) { (_, data) in
+    public func registerReader<D: Decodable, T: DDSReaderTopic>(topic: T, partition: String? = nil, block: @escaping (Result<D, Error>)->Void) throws {
+        try registerReaderRaw(topic: topic, partition: partition) { (_, data) in
             let decoder = CDRDecoder()
             let result = Result.init { try decoder.decode(D.self, from: data) }
             block(result)
@@ -262,7 +260,7 @@ open class FastRTPSSwift {
     /// Remove a RTPS reader for topic
     /// - Parameter topic: DDSReader topic descriptor
     public func removeReader<T: DDSReaderTopic>(topic: T) throws {
-        if !wrapper.removeReader(topicName: topic.rawValue) {
+        if !wrapper.removeReader(topicName: topic.name) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -272,12 +270,10 @@ open class FastRTPSSwift {
     /// - Parameters:
     /// - Parameter topic: DDSWriterTopic topic descriptor
     ///   - ddsType: data type descriptor
-    public func registerWriter<D: DDSType, T: DDSWriterTopic>(topic: T, ddsType: D.Type, partition: String? = nil) throws  {
-        var profile = topic.writerProfile
-        profile.keyed = ddsType is DDSKeyed.Type
-        if !wrapper.registerWriter(topicName: topic.rawValue,
-                                   typeName: D.ddsTypeName,
-                                   writerProfile: profile,
+    public func registerWriter<T: DDSWriterTopic>(topic: T, partition: String? = nil) throws  {
+        if !wrapper.registerWriter(topicName: topic.name,
+                                   typeName: topic.typeName,
+                                   writerProfile: topic.writerProfile,
                                    partition: partition) {
             throw FastRTPSSwiftError.fastRTPSError
         }
@@ -286,40 +282,43 @@ open class FastRTPSSwift {
     /// Remove RTPS writer for topic
     /// - Parameter topic: DDSWriterTopic topic descriptor
     public func removeWriter<T: DDSWriterTopic>(topic: T) throws {
-        if !wrapper.removeWriter(topicName: topic.rawValue) {
+        if !wrapper.removeWriter(topicName: topic.name) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
     
-    /// Send data change for topic
+    /// Send unkeyed data change for topic
     /// - Parameters:
     /// - Parameter topic: DDSWriter topic descriptor
     ///   - ddsData: data to be send
-    public func send<D: DDSType, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
+    public func send<D: Encodable, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
         let encoder = CDREncoder()
         let data = try encoder.encode(ddsData)
         try data.withUnsafeBytes { dataPtr in
-            if ddsData is DDSKeyed {
-                let key = (ddsData as! DDSKeyed).key
-                try key.withUnsafeBytes { keyPtr in
-                    if !wrapper.sendDataWithKey(topicName: topic.rawValue,
-                                                data: dataPtr.baseAddress!,
-                                                length: UInt32(data.count),
-                                                key: keyPtr.baseAddress!,
-                                                keyLength: UInt32(key.count)) {
-                        throw FastRTPSSwiftError.fastRTPSError
-                    }
-                }
-            } else {
-                if !wrapper.sendData(topicName: topic.rawValue,
-                                     data: dataPtr.baseAddress!,
-                                     length: UInt32(data.count)) {
-                    throw FastRTPSSwiftError.fastRTPSError
-                }
+            if !wrapper.sendData(topicName: topic.name,
+                                 data: dataPtr.baseAddress!,
+                                 length: UInt32(data.count)) {
+                throw FastRTPSSwiftError.fastRTPSError
             }
         }
     }
-    
+
+    /// Send keyed data change for topic
+    /// - Parameters:
+    /// - Parameter topic: DDSWriter topic descriptor
+    ///   - ddsData: data to be send
+    public func send<D: DDSKeyed & Encodable, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
+        let encoder = CDREncoder()
+        let data = try encoder.encode(ddsData)
+        if !wrapper.sendDataWithKey(topicName: topic.name,
+                                    data: data.withUnsafeBytes { $0.baseAddress! },
+                                    length: UInt32(data.count),
+                                    key: ddsData.key.withUnsafeBytes { $0.baseAddress! },
+                                    keyLength: UInt32(ddsData.key.count)) {
+            throw FastRTPSSwiftError.fastRTPSError
+        }
+    }
+
     /// Remove all readers and writers from participant
     public func resignAll() {
         wrapper.resignAll()

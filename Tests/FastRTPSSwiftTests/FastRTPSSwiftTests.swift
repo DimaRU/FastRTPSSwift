@@ -23,7 +23,7 @@ class FastRTPSSwiftTests: XCTestCase {
     func testCreateReader() throws {
         try fastRTPSSwift?.createParticipant(name: "TestParticipant")
         fastRTPSSwift?.setRTPSParticipantListener(delegate: self)
-        try fastRTPSSwift?.registerReaderRaw(topic: ReaderTopic.rovDepth, ddsType: RovDepth.self, partition: "*") { (sequence, data) in
+        try fastRTPSSwift?.registerReaderRaw(topic: ReaderTopic.rovDepth, partition: "*") { (sequence, data) in
             print("Depth sequence, data count:", sequence, data.count)
         }
         print("Reader created")
