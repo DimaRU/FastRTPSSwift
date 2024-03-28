@@ -1,9 +1,10 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.8
 
 import PackageDescription
 
 let package = Package(
     name: "FastRTPSSwift",
+    platforms: [.macOS(.v13)],
     products: [
         .library(
             name: "FastRTPSSwift",
@@ -26,7 +27,6 @@ let package = Package(
             name: "FastRTPSSwiftTests",
             dependencies: ["FastRTPSSwift"]),
     ],
-    swiftLanguageVersions: [.v5],
     cxxLanguageStandard: .cxx14
 )
 
