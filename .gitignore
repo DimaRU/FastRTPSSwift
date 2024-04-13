@@ -1,7 +1,3 @@
-Framework/
-memory/
-Fast-DDS/
-
 # Mac OS X
 .DS_Store
 
@@ -12,14 +8,6 @@ Fast-DDS/
 DerivedData
 
 ## Various settings
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
 xcuserdata
 
 ## Other
@@ -28,18 +16,14 @@ xcuserdata
 *.xcuserstate
 *.xcscmblueprint
 
-## Obj-C/Swift specific
-*.hmap
-*.ipa
 
 ## Playgrounds
 timeline.xctimeline
 playground.xcworkspace
 
 # Swift Package Manager
-.build
-.swiftpm
 Package.resolved
-
-# Carthage
-Carthage/Build
+.build
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.swiftpm/xcode/xcshareddata/
