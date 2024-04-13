@@ -33,19 +33,6 @@ void setupRTPSBridgeContainer(const void * participant,
     p->setContainer(container);
 }
 
-#ifdef FASTRTPS_WHITELIST
-bool createRTPSParticipantFiltered(const void * participant,
-                                   const uint32_t domain,
-                                   const char* name,
-                                   const struct RTPSParticipantProfile * _Nullable participantProfile,
-                                   const char* _Nullable localAddress,
-                                   const char* _Nullable filterAddress)
-{
-    auto p = (BridgedParticipant *)participant;
-    return p->createParticipant(name, domain, participantProfile, localAddress, filterAddress);
-}
-#endif
-
 bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,

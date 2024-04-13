@@ -147,41 +147,6 @@ open class FastRTPSSwift {
         return String(cString: version)
     }
     
-    #if FASTRTPS_WHITELIST
-    /// Create a RTPS participant
-    /// - Parameters:
-    ///   - name: participant name
-    ///   - domainID: DomainId to be used by the participant (0 by default)
-    ///   - participantProfile: Defines configuration for created participant. See RTPSParticipantProfile struct
-    ///   - localAddress: bind only to localAddress
-    ///   - filerAddress: remote locators filter, eg "10.1.1.0/24"
-    public func createParticipant(name: String,
-                                  domainID: UInt32 = 0,
-                                  participantProfile: RTPSParticipantProfile? = nil,
-                                  localAddress: String? = nil,
-                                  remoteWhitelistAddress: String? = nil) throws
-    {
-        let result: Bool
-        if var participantProfile = participantProfile {
-            result = wrapper.createParticipantFiltered(domain: domainID,
-                                                       name: name,
-                                                       participantProfile: &participantProfile,
-                                                       localAddress: localAddress,
-                                                       remoteWhitelistAddress: remoteWhitelistAddress)
-        } else {
-            result = wrapper.createParticipantFiltered(domain: domainID,
-                                                       name: name,
-                                                       participantProfile: nil,
-                                                       localAddress: localAddress,
-                                                       remoteWhitelistAddress: remoteWhitelistAddress)
-        }
-        guard result else {
-            throw FastRTPSSwiftError.fastRTPSError
-        }
-    }
-    
-    #else
-    
     /// Create a RTPS participant
     /// - Parameters:
     ///   - name: participant name
@@ -209,7 +174,6 @@ open class FastRTPSSwift {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
-    #endif
     
     /// Set RTPS messages listener delegate
     /// Intercepts readers and writers messages - matching and liveliness state changes

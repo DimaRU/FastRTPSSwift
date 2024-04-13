@@ -102,11 +102,7 @@ bool BridgedParticipant::createParticipant(const char* name,
         }
     }
     
-#ifdef FASTRTPS_WHITELIST
-    if (interfaceIPv4 != nullptr || remoteWhitelistAddress != nullptr) {
-#else
     if (interfaceIPv4 != nullptr) {
-#endif
         auto customTransport = std::make_shared<UDPv4TransportDescriptor>();
         customTransport->sendBufferSize = 65536;
         customTransport->receiveBufferSize = 65536;
@@ -114,12 +110,6 @@ bool BridgedParticipant::createParticipant(const char* name,
             customTransport->interfaceWhiteList.emplace_back(interfaceIPv4);
         }
 
-#ifdef FASTRTPS_WHITELIST
-        if (remoteWhitelistAddress != nullptr) {
-            customTransport->remoteWhiteList.emplace_back(remoteWhitelistAddress);
-        }
-#endif
-    
         participantAttributes.userTransports.push_back(customTransport);
         participantAttributes.useBuiltinTransports = false;
     }

@@ -58,14 +58,7 @@ const char * _Nonnull fastDDSVersion(void) CF_SWIFT_NAME(FastRTPSWrapper.fastDDS
 
 void setupRTPSBridgeContainer(const void * participant,
                               struct BridgeContainer container) CF_SWIFT_NAME(FastRTPSWrapper.setupBridgeContainer(self:container:));
-#ifdef FASTRTPS_WHITELIST
-bool createRTPSParticipantFiltered(const void * participant,
-                                   const uint32_t domain,
-                                   const char* name,
-                                   const struct RTPSParticipantProfile * _Nullable participantProfile,
-                                   const char* _Nullable localAddress,
-                                   const char* _Nullable remoteWhitelistAddress) CF_SWIFT_NAME(FastRTPSWrapper.createParticipantFiltered(self:domain:name:participantProfile:localAddress:remoteWhitelistAddress:));
-#endif
+
 bool createRTPSParticipant(const void * participant,
                            const uint32_t domain,
                            const char* name,
