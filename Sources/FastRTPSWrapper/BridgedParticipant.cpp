@@ -3,6 +3,7 @@
 ///   Copyright © 2019 Dmitriy Borovikov. All rights reserved.
 //
 
+#include "FastRTPSDefs.h"
 #include "BridgedParticipant.h"
 #include "BridgedReaderListener.h"
 #include "BridgedWriterListener.h"
@@ -37,14 +38,20 @@ void BridgedParticipant::setContainer(BridgeContainer container)
     BridgedParticipant::container = container;
 }
 
-BridgedParticipant::~BridgedParticipant()
-{
-    logInfo(ROV_PARTICIPANT, "Delete participant")
+void BridgedParticipant::removeRTPSParticipant() {
     if (mp_participant == nullptr) return;
+    logInfo(ROV_PARTICIPANT, "Delete participant")
     mp_participant->stopRTPSParticipantAnnouncement();
     resignAll();
     RTPSDomain::removeRTPSParticipant(mp_participant);
     delete mp_listener;
+    mp_participant = nullptr;
+    mp_listener = nullptr;
+}
+
+BridgedParticipant::~BridgedParticipant()
+{
+    removeRTPSParticipant();
 }
 
 void BridgedParticipant::stopAll()
@@ -56,20 +63,20 @@ void BridgedParticipant::resignAll() {
     for(auto it = readerList.begin(); it != readerList.end(); it++)
     {
         logInfo(ROV_PARTICIPANT, "Remove reader: " << it->first)
-        auto readerInfo = it->second;
-        auto payloadDecoder = (void * _Nonnull)readerInfo->listener->payloadDecoder;
-        RTPSDomain::removeRTPSReader(readerInfo->reader);
-        container.releaseCallback(payloadDecoder);
-        delete readerInfo;
+        auto reader = it->second;
+        BridgedReaderListener * listener = static_cast<BridgedReaderListener *>(reader->getListener());
+        RTPSDomain::removeRTPSReader(reader);
+        delete listener;
     }
     readerList.clear();
 
     for(auto it = writerList.begin(); it != writerList.end(); it++)
     {
         logInfo(ROV_PARTICIPANT, "Remove writer: " << it->first)
-        auto writerInfo = it->second;
-        RTPSDomain::removeRTPSWriter(writerInfo->writer);
-        delete writerInfo;
+        auto writer = it->second;
+        BridgedWriterListener * listener = static_cast<BridgedWriterListener *>(writer->getListener());
+        RTPSDomain::removeRTPSWriter(writer);
+        delete listener;
     }
     writerList.clear();
 }
@@ -77,8 +84,7 @@ void BridgedParticipant::resignAll() {
 bool BridgedParticipant::createParticipant(const char* name,
                                            const uint32_t domain,
                                            const RTPSParticipantProfile* participantProfile,
-                                           const char *interfaceIPv4,
-                                           const char* remoteWhitelistAddress)
+                                           const char *interfaceIPv4)
 {
     RTPSParticipantAttributes participantAttributes;
     participantAttributes.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
@@ -169,7 +175,6 @@ bool BridgedParticipant::addReader(const char* name,
             break;
     }
 
-    auto listener = new BridgedReaderListener(name, payloadDecoder, container);
 
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;
@@ -177,26 +182,21 @@ bool BridgedParticipant::addReader(const char* name,
     historyAttributes.initialReservedCaches = 5;
     historyAttributes.maximumReservedCaches = 0;
     auto history = new ReaderHistory(historyAttributes);
+    auto listener = new BridgedReaderListener(name, payloadDecoder, container, history);
     auto reader = RTPSDomain::createRTPSReader(mp_participant, readerAttributes, history, listener);
     if (reader == nullptr) {
         delete listener;
-        delete history;
-        container.releaseCallback((void * _Nonnull)payloadDecoder);
         return false;
     }
 
-    auto readerInfo = new ReaderInfo;
-    readerInfo->reader = reader;
-    readerInfo->history = history;
-    readerInfo->listener = listener;
-    readerList[topicName] = readerInfo;
+    readerList[topicName] = reader;
 
     TopicAttributes topicAttributes(name, dataType, tKind);
     auto rezult = mp_participant->registerReader(reader, topicAttributes, readerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
         readerList.erase(topicName);
-        delete readerInfo;
+        delete listener;
         return false;
     }
     logInfo(ROV_PARTICIPANT, "Registered reader: " << name << " - " << dataType)
@@ -210,13 +210,12 @@ bool BridgedParticipant::removeReader(const char* name)
     if (readerList.find(topicName) == readerList.end()) {
         return false;
     }
-    auto readerInfo = readerList[topicName];
-    auto payloadDecoder = (void * _Nonnull)readerInfo->listener->payloadDecoder;
-    if (!RTPSDomain::removeRTPSReader(readerInfo->reader))
+    auto reader = readerList[topicName];
+    BridgedReaderListener * listener = static_cast<BridgedReaderListener *>(reader->getListener());
+    if (!RTPSDomain::removeRTPSReader(reader))
         return false;
     readerList.erase(topicName);
-    delete readerInfo;
-    container.releaseCallback(payloadDecoder);
+    delete listener;
     return true;
 }
 
@@ -268,32 +267,27 @@ bool BridgedParticipant::addWriter(const char* name,
             break;
     }
 
-    auto listener = new BridgedWriterListener(name, container);
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;
     historyAttributes.payloadMaxSize = 1000;
     historyAttributes.initialReservedCaches = 5;
     historyAttributes.maximumReservedCaches = 0;
     auto history = new WriterHistory(historyAttributes);
+    auto listener = new BridgedWriterListener(name, container, history);
     auto writer = RTPSDomain::createRTPSWriter(mp_participant, writerAttributes, history, listener);
     if (writer == nullptr) {
         delete listener;
-        delete history;
         return false;
     }
 
-    auto writerInfo = new WriterInfo();
-    writerInfo->writer = writer;
-    writerInfo->history = history;
-    writerInfo->listener = listener;
-    writerList[topicName] = writerInfo;
+    writerList[topicName] = writer;
 
     TopicAttributes topicAttributes(name, dataType, tKind);
     auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);
         writerList.erase(topicName);
-        delete writerInfo;
+        delete listener;
         return false;
     }
     logInfo(ROV_PARTICIPANT, "Registered writer: " << name << " - " << dataType)
@@ -307,11 +301,12 @@ bool BridgedParticipant::removeWriter(const char* name)
     if (writerList.find(topicName) == writerList.end()) {
         return false;
     }
-    auto writerInfo = writerList[topicName];
-    if (!RTPSDomain::removeRTPSWriter(writerInfo->writer))
+    auto writer = writerList[topicName];
+    BridgedWriterListener* listener = static_cast<BridgedWriterListener*>(writer->getListener());
+    if (!RTPSDomain::removeRTPSWriter(writer))
         return false;
     writerList.erase(topicName);
-    delete writerInfo;
+    delete listener;
     return true;
 }
 
@@ -324,17 +319,17 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
     if (writerList.find(topicName) == writerList.end()) {
         return false;
     }
-    auto writerInfo = writerList[topicName];
-    if (writerInfo->listener->n_matched == 0) {
-        return false;
-    }
-    auto writer = writerInfo->writer;
-    auto history = writerInfo->history;
-    
-    if (history->getHistorySize() > 0) {
-        // drop history
-        history->remove_all_changes();
-    }
+    auto writer = writerList[topicName];
+    auto history = static_cast<BridgedWriterListener *>(writer->getListener())->history;
+//    if (writer->listener->n_matched == 0) {
+//        return false;
+//    }
+//    
+//    if (history->getHistorySize() > 0) {
+//        // drop history
+//        history->remove_all_changes();
+//    }
+
     CacheChange_t * change;
     if (key && keyLength > 0) {
         InstanceHandle_t instanceHandle;

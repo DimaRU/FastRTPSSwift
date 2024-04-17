@@ -1,4 +1,4 @@
-// swift-tools-version:5.8
+// swift-tools-version:5.9
 
 import PackageDescription
 
@@ -19,15 +19,20 @@ let package = Package(
             name: "FastRTPSWrapper",
             dependencies: [
                 .product(name: "FastDDS", package: "FastDDSPrebuild")
-            ]),
+            ]
+        ),
         .target(
             name: "FastRTPSSwift",
-            dependencies: ["CDRCodable", "FastRTPSWrapper"]),
+            dependencies: ["CDRCodable", "FastRTPSWrapper"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
         .testTarget(
             name: "FastRTPSSwiftTests",
-            dependencies: ["FastRTPSSwift"]),
+            dependencies: ["FastRTPSSwift"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
     ],
-    cxxLanguageStandard: .cxx14
+    cxxLanguageStandard: .cxx20
 )
 
 #if os(Linux)

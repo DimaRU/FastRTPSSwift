@@ -9,15 +9,17 @@
 using namespace eprosima::fastrtps;
 using namespace eprosima::fastrtps::rtps;
 
-BridgedWriterListener::BridgedWriterListener(const char* topicName, BridgeContainer container)
+BridgedWriterListener::BridgedWriterListener(const char* topicName, BridgeContainer container, WriterHistory* history)
 {
     BridgedWriterListener::n_matched = 0;
     BridgedWriterListener::topicName = std::string(topicName);
     BridgedWriterListener::container = container;
+    BridgedWriterListener::history = history;
 }
 
 BridgedWriterListener::~BridgedWriterListener()
 {
+    delete history;
 }
 
 void BridgedWriterListener::on_liveliness_lost(RTPSWriter* writer, const LivelinessLostStatus& status)

@@ -53,12 +53,12 @@ public enum FastRTPSSwiftError: Error {
 
 /// Fast-DDS bridge class
 open class FastRTPSSwift {
-    private var wrapper: FastRTPSWrapper
+    private var wrapper: BridgedParticipant
     fileprivate var listenerDelegate: RTPSListenerDelegate?
     fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
     
     public init() {
-        wrapper = FastRTPSWrapper()
+        wrapper = BridgedParticipant()
         setupBridgeContainer()
     }
     
@@ -135,7 +135,7 @@ open class FastRTPSSwift {
                 delegate.writerNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators, writerProfile: writerProfile)
             }, listnerObject: Unmanaged.passUnretained(self).toOpaque())
         
-        wrapper.setupBridgeContainer(container: container)
+        wrapper.setContainer(container)
     }
     
     // MARK: Public interface
@@ -143,7 +143,7 @@ open class FastRTPSSwift {
     /// Get Fast-DDS linked version string
     /// - Returns: version string
     public static func fastDDSVersion() -> String {
-        let version = FastRTPSWrapper.fastDDSVersion()
+        let version = fastDDSVersionString()
         return String(cString: version)
     }
     
@@ -160,15 +160,9 @@ open class FastRTPSSwift {
     {
         let result: Bool
         if var participantProfile = participantProfile {
-            result = wrapper.createParticipant(domain: domainID,
-                                               name: name,
-                                               participantProfile: &participantProfile,
-                                               localAddress: localAddress)
+            result = wrapper.createParticipant(name, domainID, &participantProfile, localAddress)
         } else {
-            result = wrapper.createParticipant(domain: domainID,
-                                               name: name,
-                                               participantProfile: nil,
-                                               localAddress: localAddress)
+            result = wrapper.createParticipant(name, domainID, nil, localAddress)
         }
         guard result else {
             throw FastRTPSSwiftError.fastRTPSError
@@ -199,11 +193,11 @@ open class FastRTPSSwift {
     ///      - data: topic raw binary data
     public func registerReaderRaw<T: DDSReaderTopic>(topic: T, partition: String? = nil, block: @escaping (UInt64, Data)->Void) throws {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(block: block)).toOpaque()
-        if !wrapper.registerReader(topicName: topic.name,
-                                   typeName: topic.typeName,
-                                   readerProfile: topic.readerProfile,
-                                   payloadDecoder: payloadDecoderProxy,
-                                   partition: partition) {
+        if !wrapper.addReader(topic.name,
+                              topic.typeName,
+                              topic.readerProfile,
+                              payloadDecoderProxy,
+                              partition) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -224,7 +218,7 @@ open class FastRTPSSwift {
     /// Remove a RTPS reader for topic
     /// - Parameter topic: DDSReader topic descriptor
     public func removeReader<T: DDSReaderTopic>(topic: T) throws {
-        if !wrapper.removeReader(topicName: topic.name) {
+        if !wrapper.removeReader(topic.name) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -235,10 +229,7 @@ open class FastRTPSSwift {
     /// - Parameter topic: DDSWriterTopic topic descriptor
     ///   - ddsType: data type descriptor
     public func registerWriter<T: DDSWriterTopic>(topic: T, partition: String? = nil) throws  {
-        if !wrapper.registerWriter(topicName: topic.name,
-                                   typeName: topic.typeName,
-                                   writerProfile: topic.writerProfile,
-                                   partition: partition) {
+        if !wrapper.addWriter(topic.name, topic.typeName, topic.writerProfile, partition) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -246,7 +237,7 @@ open class FastRTPSSwift {
     /// Remove RTPS writer for topic
     /// - Parameter topic: DDSWriterTopic topic descriptor
     public func removeWriter<T: DDSWriterTopic>(topic: T) throws {
-        if !wrapper.removeWriter(topicName: topic.name) {
+        if !wrapper.removeWriter(topic.name) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -258,12 +249,8 @@ open class FastRTPSSwift {
     public func send<D: Encodable, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
         let encoder = CDREncoder()
         let data = try encoder.encode(ddsData)
-        try data.withUnsafeBytes { dataPtr in
-            if !wrapper.sendData(topicName: topic.name,
-                                 data: dataPtr.baseAddress!,
-                                 length: UInt32(data.count)) {
-                throw FastRTPSSwiftError.fastRTPSError
-            }
+        if !wrapper.send(topic.name, data.withUnsafeBytes { $0.baseAddress! }, UInt32(data.count), nil, 0) {
+            throw FastRTPSSwiftError.fastRTPSError
         }
     }
 
@@ -274,11 +261,11 @@ open class FastRTPSSwift {
     public func send<D: DDSKeyed & Encodable, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
         let encoder = CDREncoder()
         let data = try encoder.encode(ddsData)
-        if !wrapper.sendDataWithKey(topicName: topic.name,
-                                    data: data.withUnsafeBytes { $0.baseAddress! },
-                                    length: UInt32(data.count),
-                                    key: ddsData.key.withUnsafeBytes { $0.baseAddress! },
-                                    keyLength: UInt32(ddsData.key.count)) {
+        if !wrapper.send(topic.name,
+                         data.withUnsafeBytes { $0.baseAddress! },
+                         UInt32(data.count),
+                         ddsData.key.withUnsafeBytes { $0.baseAddress! },
+                         UInt32(ddsData.key.count)) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -295,12 +282,12 @@ open class FastRTPSSwift {
     
     /// Remove all readers/writers and then remove participant
     public func removeParticipant() {
-        wrapper.removeParticipant()
+        wrapper.removeRTPSParticipant()
     }
     
     /// Set FastRTPS log messages level
     /// - Parameter level: error, warning, info
     public func setlogLevel(_ level: FastRTPSLogLevel) {
-        FastRTPSWrapper.logLevel(level: level)
+        setRTPSLoglevel(level)
     }
 }

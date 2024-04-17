@@ -5,27 +5,32 @@
 
 #pragma once
 
-#include <stdio.h>
+#include "FastRTPSDefs.h"
 #include "fastrtps/rtps/rtps_fwd.h"
-#include "fastrtps/rtps/reader/ReaderListener.h"
-#include "FastRTPSWrapper.h"
+#include <fastrtps/rtps/reader/RTPSReader.h>
+#include <fastrtps/rtps/reader/ReaderListener.h>
+#include <fastrtps/rtps/history/ReaderHistory.h>
 
-class BridgedReaderListener:public eprosima::fastrtps::rtps::ReaderListener
+using namespace eprosima::fastrtps::rtps;
+
+class BridgedReaderListener :public ReaderListener
 {
+    void onNewCacheChangeAdded(RTPSReader* reader,
+                               const CacheChange_t* const change) override;
+    void onReaderMatched(RTPSReader*,
+                         MatchingInfo& info) override;
+    void on_liveliness_changed(RTPSReader *reader,
+                               const eprosima::fastdds::dds::LivelinessChangedStatus &status) override;
 public:
     BridgedReaderListener(const char* topicName,
                           const void * payloadDecoder,
-                          BridgeContainer container);
+                          BridgeContainer container,
+                          ReaderHistory* history);
     ~BridgedReaderListener();
-    void onNewCacheChangeAdded(eprosima::fastrtps::rtps::RTPSReader* reader,
-                               const eprosima::fastrtps::rtps::CacheChange_t* const change) override;
-    void onReaderMatched(eprosima::fastrtps::rtps::RTPSReader*,
-                         eprosima::fastrtps::rtps::MatchingInfo& info) override;
-    void on_liveliness_changed(eprosima::fastrtps::rtps::RTPSReader *reader,
-                               const eprosima::fastdds::dds::LivelinessChangedStatus &status) override;
     
     const void * payloadDecoder;
     uint32_t n_matched;
     std::string topicName;
     BridgeContainer container;
+    ReaderHistory* history;
 };

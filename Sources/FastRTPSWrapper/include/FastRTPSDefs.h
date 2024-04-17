@@ -3,8 +3,7 @@
 ///   Copyright © 2020 Dmitriy Borovikov. All rights reserved.
 //
 
-#ifndef FastRTPSDefs_h
-#define FastRTPSDefs_h
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -87,6 +86,7 @@ typedef NS_CLOSED_ENUM(uint32_t, ParticipantFilter) {
     SameProcess,
 };
 
+#pragma clang assume_nonnull begin
 
 struct RTPSReaderProfile {
     bool keyed;
@@ -110,15 +110,48 @@ struct RTPSParticipantProfile {
 struct ReaderInfo {
     const char *topic;
     const char *ddstype;
-    const char *locators;
+    const char * _Nullable locators;
     struct RTPSReaderProfile readerProfile;
 };
 
 struct WriterInfo {
     const char *topic;
     const char *ddstype;
-    const char *locators;
+    const char * _Nullable locators;
     struct RTPSWriterProfile writerProfile;
 };
 
-#endif /* FastRTPSDefs_h */
+
+typedef void (*DecoderCallback)(void * payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * payload);
+typedef void (*ReleaseCallback)(void * payloadDecoder);
+typedef void (*ReaderWriterListenerCallback)(const void * listnerObject,
+                                             RTPSStatus reason,
+                                             const char* topicName);
+
+typedef void (*DiscoveryParticipantCallback)(const void * listnerObject,
+                                             RTPSParticipantStatus reason,
+                                             const char * participantName,
+                                             const char* const _Nullable unicastLocators,
+                                             const char* const _Nullable properties[_Nullable]);
+
+typedef void (*DiscoveryReaderCallback)(const void * listnerObject,
+                                              RTPSReaderStatus reason,
+                                              const struct ReaderInfo* readerInfo);
+
+typedef void (*DiscoveryWriterCallback)(const void * listnerObject,
+                                              RTPSWriterStatus reason,
+                                              const struct WriterInfo* writerInfo);
+
+
+
+struct BridgeContainer
+{
+    DecoderCallback decoderCallback;
+    ReleaseCallback releaseCallback;
+    ReaderWriterListenerCallback readerWriterListenerCallback;
+    DiscoveryParticipantCallback discoveryParticipantCallback;
+    DiscoveryReaderCallback discoveryReaderCallback;
+    DiscoveryWriterCallback discoveryWriterCallback;
+    const void *listnerObject;
+};
+#pragma clang assume_nonnull end
