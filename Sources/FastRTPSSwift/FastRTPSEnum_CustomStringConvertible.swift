@@ -22,10 +22,10 @@ extension RTPSStatus: CustomStringConvertible {
 extension RTPSReaderStatus: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .discoveredReader : return "discoveredReader"
-        case .changedQosReader : return "changedQosReader"
-        case .removedReader    : return "removedReader"
-        case .ignoredReader    : return "ignoredReader"
+        case .discovered : return "discoveredReader"
+        case .changedQos : return "changedQosReader"
+        case .removed    : return "removedReader"
+        case .ignored    : return "ignoredReader"
         }
     }
 }
@@ -33,10 +33,10 @@ extension RTPSReaderStatus: CustomStringConvertible {
 extension RTPSWriterStatus: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .discoveredWriter : return "discoveredWriter"
-        case .changedQosWriter : return "changedQosWriter"
-        case .removedWriter    : return "removedWriter"
-        case .ignoredWriter    : return "ignoredWriter"
+        case .discovered : return "discoveredWriter"
+        case .changedQos : return "changedQosWriter"
+        case .removed    : return "removedWriter"
+        case .ignored    : return "ignoredWriter"
         }
     }
 }
@@ -44,11 +44,11 @@ extension RTPSWriterStatus: CustomStringConvertible {
 extension RTPSParticipantStatus: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .discoveredParticipant : return "discoveredParticipant"
-        case .changedQosParticipant : return "changedQosParticipant"
-        case .removedParticipant    : return "removedParticipant"
-        case .droppedParticipant    : return "droppedParticipant"
-        case .ignoredParticipant    : return "ignoredParticipant"
+        case .discovered : return "discoveredParticipant"
+        case .changedQos : return "changedQosParticipant"
+        case .removed    : return "removedParticipant"
+        case .dropped    : return "droppedParticipant"
+        case .ignored    : return "ignoredParticipant"
         }
     }
 }

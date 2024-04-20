@@ -5,15 +5,15 @@
 
 #pragma once
 
-#include <string>
-#include <stdint.h>
-#include <stdbool.h>
 #include "FastRTPSDefs.h"
 
 #include "../BridgedParticipant.h"
 #include "../BridgedParticipantListener.h"
 #include "../BridgedReaderListener.h"
 #include "../BridgedWriterListener.h"
+#include "../BridgedReaderProxyData.h"
+#include "../BridgedWriterProxyData.h"
+#include "../BridgedParticipantProxyData.h"
 
 const char * _Nonnull fastDDSVersionString(void);
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel);

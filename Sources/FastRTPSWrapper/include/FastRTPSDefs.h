@@ -7,6 +7,11 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <fastrtps/rtps/reader/ReaderListener.h>
+#include <fastrtps/rtps/participant/RTPSParticipantListener.h>
+#include "../BridgedReaderProxyData.h"
+#include "../BridgedWriterProxyData.h"
+#include "../BridgedParticipantProxyData.h"
 
 #if __has_attribute(enum_extensibility)
 # define CLOSED_ENUM_ATTR __attribute__((enum_extensibility(closed)))
@@ -37,28 +42,6 @@ typedef NS_CLOSED_ENUM(uint32_t, RTPSStatus) {
     RTPSStatusWriterMatchedMatching,
     RTPSStatusWriterRemovedMatching,
     RTPSStatusWriterLivelinessLost,
-};
-
-typedef NS_CLOSED_ENUM(uint32_t, RTPSReaderStatus) {
-    RTPSReaderStatusDiscoveredReader = 0,
-    RTPSReaderStatusChangedQosReader,
-    RTPSReaderStatusRemovedReader,
-    RTPSReaderStatusIgnoredReader,
-};
-
-typedef NS_CLOSED_ENUM(uint32_t, RTPSWriterStatus) {
-    RTPSWriterStatusDiscoveredWriter = 0,
-    RTPSWriterStatusChangedQosWriter,
-    RTPSWriterStatusRemovedWriter,
-    RTPSWriterStatusIgnoredWriter,
-};
-
-typedef NS_CLOSED_ENUM(uint32_t, RTPSParticipantStatus) {
-    RTPSParticipantStatusDiscoveredParticipant = 0,
-    RTPSParticipantStatusChangedQosParticipant,
-    RTPSParticipantStatusRemovedParticipant,
-    RTPSParticipantStatusDroppedParticipant,
-    RTPSParticipantStatusIgnoredParticipant,
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
@@ -107,40 +90,23 @@ struct RTPSParticipantProfile {
     ParticipantFilter participantFilter;
 };
 
-struct ReaderInfo {
-    const char *topic;
-    const char *ddstype;
-    const char * _Nullable locators;
-    struct RTPSReaderProfile readerProfile;
-};
-
-struct WriterInfo {
-    const char *topic;
-    const char *ddstype;
-    const char * _Nullable locators;
-    struct RTPSWriterProfile writerProfile;
-};
-
-
 typedef void (*DecoderCallback)(void * payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * payload);
 typedef void (*ReleaseCallback)(void * payloadDecoder);
 typedef void (*ReaderWriterListenerCallback)(const void * listnerObject,
-                                             RTPSStatus reason,
+                                             uint32_t reason,
                                              const char* topicName);
 
 typedef void (*DiscoveryParticipantCallback)(const void * listnerObject,
-                                             RTPSParticipantStatus reason,
-                                             const char * participantName,
-                                             const char* const _Nullable unicastLocators,
-                                             const char* const _Nullable properties[_Nullable]);
+                                             uint32_t reason,
+                                             BridgedParticipantProxyData& info);
 
 typedef void (*DiscoveryReaderCallback)(const void * listnerObject,
-                                              RTPSReaderStatus reason,
-                                              const struct ReaderInfo* readerInfo);
+                                        uint32_t reason,
+                                        BridgedReaderProxyData& info);
 
 typedef void (*DiscoveryWriterCallback)(const void * listnerObject,
-                                              RTPSWriterStatus reason,
-                                              const struct WriterInfo* writerInfo);
+                                        uint32_t reason,
+                                        BridgedWriterProxyData& info);
 
 
 

@@ -22,7 +22,7 @@ class FastRTPSSwiftTests: XCTestCase {
 
     func testCreateReader() throws {
         try fastRTPSSwift?.createParticipant(name: "TestParticipant")
-        fastRTPSSwift?.setRTPSParticipantListener(delegate: self)
+//        fastRTPSSwift?.setRTPSParticipantListener(delegate: self)
         try fastRTPSSwift?.registerReaderRaw(topic: ReaderTopic.rovDepth, partition: "*") { (sequence, data) in
             print("Depth sequence, data count:", sequence, data.count)
         }
@@ -34,7 +34,7 @@ class FastRTPSSwiftTests: XCTestCase {
     
     func testCreateMultipleReaders() throws {
         try fastRTPSSwift?.createParticipant(name: "TestParticipant")
-        fastRTPSSwift?.setRTPSParticipantListener(delegate: self)
+//        fastRTPSSwift?.setRTPSParticipantListener(delegate: self)
         try fastRTPSSwift?.registerReader(topic: ReaderTopic.rovDepth, partition: "*") { (result: Result<RovDepth, Error>) in
             switch result {
             case .success(let depth):
@@ -61,19 +61,19 @@ class FastRTPSSwiftTests: XCTestCase {
     }
 }
 
-extension FastRTPSSwiftTests: RTPSParticipantListenerDelegate {
-    
-    func participantNotification(reason: RTPSParticipantStatus, participant: String, unicastLocators: String, properties: [String:String]) {
-        print(reason,  participant, unicastLocators, properties)
-    }
-    
-    func readerNotificaton(reason: RTPSReaderStatus, topic: String, type: String, remoteLocators: String, readerProfile: RTPSReaderProfile) {
-        print(reason, topic, type, remoteLocators, readerProfile)
-    }
-    
-    func writerNotificaton(reason: RTPSWriterStatus, topic: String, type: String, remoteLocators: String, writerProfile: RTPSWriterProfile) {
-        print(reason, topic, type, remoteLocators, writerProfile)
-    }
-}
-
+//extension FastRTPSSwiftTests: RTPSParticipantListenerDelegate {
+//    
+//    func participantNotification(reason: RTPSParticipantStatus, participant: String, unicastLocators: String, properties: [String:String]) {
+//        print(reason,  participant, unicastLocators, properties)
+//    }
+//    
+//    func readerNotificaton(reason: RTPSReaderStatus, topic: String, type: String, remoteLocators: String, readerProfile: RTPSReaderProfile) {
+//        print(reason, topic, type, remoteLocators, readerProfile)
+//    }
+//    
+//    func writerNotificaton(reason: RTPSWriterStatus, topic: String, type: String, remoteLocators: String, writerProfile: RTPSWriterProfile) {
+//        print(reason, topic, type, remoteLocators, writerProfile)
+//    }
+//}
+//
 

@@ -24,26 +24,18 @@ public protocol RTPSParticipantListenerDelegate {
     /// Intercepts paricipant discovery events
     /// - Parameters:
     ///   - reason: event reaason, see RTPSParticipantStatus
-    ///   - participant: participant name
-    ///   - unicastLocators: participant unicast locators list
-    ///   - properties: participant properties strings
-    func participantNotification(reason: RTPSParticipantStatus, participant: String, unicastLocators: String, properties: [String:String])
+    ///   - participantDiscoveryInfo: discovered participant data
+    func participantNotification(reason: RTPSParticipantStatus, participantDiscoveryInfo: ParticipantDiscoveryInfo)
     /// Intercepts reader discovery events
     /// - Parameters:
     ///   - reason: event reason, see RTPSReaderStatus enum
-    ///   - topic: topic name
-    ///   - type: topic data type name
-    ///   - remoteLocators: remote locators list
-    ///   - readerProfile: reader qos data
-    func readerNotificaton(reason: RTPSReaderStatus, topic: String, type: String, remoteLocators: String, readerProfile: RTPSReaderProfile)
+    ///   - readerDiscoveryInfo: discovered reader data
+    func readerNotificaton(reason: RTPSReaderStatus, readerDiscoveryInfo: ReaderDiscoveryInfo)
     /// Intercepts writer discovery events
     /// - Parameters:
     ///   - reason: event reason, see RTPSWriterStatus enum
-    ///   - topic: topic name
-    ///   - type: topic data type name
-    ///   - remoteLocators: remote locators list
-    ///   - writerProfile: writer qos data
-    func writerNotificaton(reason: RTPSWriterStatus, topic: String, type: String, remoteLocators: String, writerProfile: RTPSWriterProfile)
+    ///   - writerDiscoveryInfo: discovered writer data
+    func writerNotificaton(reason: RTPSWriterStatus, writerDiscoveryInfo: WriterDiscoveryInfo)
 }
 
 /// FastRTPSSwift errors enum
@@ -79,60 +71,25 @@ open class FastRTPSSwift {
                 let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.listenerDelegate else { return }
                 let topic = String(cString: topicName)
-                delegate.RTPSNotification(reason: reason, topic: topic)
+                delegate.RTPSNotification(reason: RTPSStatus(rawValue: reason)!, topic: topic)
             }, discoveryParticipantCallback: {
-                (listenerObject, reason, participantName, unicastLocators, properties) in
+                (listenerObject, reason, participantInfo) in
                 let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.participantListenerDelegate else { return }
-                var locators = ""
-                var propertiesDict: [String:String] = [:]
-                if let unicastLocators = unicastLocators {
-                    locators = String(cString: unicastLocators)
-                }
-                if let properties = properties {
-                    var i = 0
-                    while properties[i] != nil {
-                        let key = String(cString: properties[i]!)
-                        let value = String(cString: properties[i+1]!)
-                        propertiesDict[key] = value
-                        i += 2
-                    }
-                }
-                delegate.participantNotification(reason: reason,
-                                                 participant: String(cString: participantName),
-                                                 unicastLocators: locators,
-                                                 properties: propertiesDict)
+                let participantDiscoveryInfo = ParticipantDiscoveryInfo(info: participantInfo)
+                delegate.participantNotification(reason: RTPSParticipantStatus(rawValue: reason)!, participantDiscoveryInfo: participantDiscoveryInfo)
             }, discoveryReaderCallback: {
-                (listenerObject, reason, readerInfo) in
+                (listenerObject, reason, info) in
                 let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.participantListenerDelegate else { return }
-                
-                let topic = String(cString: readerInfo.pointee.topic)
-                let type = String(cString: readerInfo.pointee.ddstype)
-                var locators = ""
-                if let remoteLocators = readerInfo.pointee.locators {
-                    locators = String(cString: remoteLocators)
-                }
-                let readerProfile = RTPSReaderProfile(keyed: readerInfo.pointee.readerProfile.keyed,
-                                                      reliability: readerInfo.pointee.readerProfile.reliability,
-                                                      durability: readerInfo.pointee.readerProfile.durability)
-                delegate.readerNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators, readerProfile: readerProfile)
+                let readerDiscoveryInfo = ReaderDiscoveryInfo(info: info)
+                delegate.readerNotificaton(reason: RTPSReaderStatus(rawValue: reason)!, readerDiscoveryInfo: readerDiscoveryInfo)
             }, discoveryWriterCallback: {
                 (listenerObject, reason, writerInfo) in
                 let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
                 guard let delegate = mySelf.participantListenerDelegate else { return }
-                
-                let topic = String(cString: writerInfo.pointee.topic)
-                let type = String(cString: writerInfo.pointee.ddstype)
-                var locators = ""
-                if let remoteLocators = writerInfo.pointee.locators {
-                    locators = String(cString: remoteLocators)
-                }
-                let writerProfile = RTPSWriterProfile(keyed: writerInfo.pointee.writerProfile.keyed,
-                                                      reliability: writerInfo.pointee.writerProfile.reliability,
-                                                      durability: writerInfo.pointee.writerProfile.durability,
-                                                      disablePositiveACKs: writerInfo.pointee.writerProfile.disablePositiveACKs)
-                delegate.writerNotificaton(reason: reason, topic: topic, type: type, remoteLocators: locators, writerProfile: writerProfile)
+                let writerDiscoveryInfo = WriterDiscoveryInfo(info: writerInfo)
+                delegate.writerNotificaton(reason: RTPSWriterStatus(rawValue: reason)!, writerDiscoveryInfo: writerDiscoveryInfo)
             }, listnerObject: Unmanaged.passUnretained(self).toOpaque())
         
         wrapper.setContainer(container)
