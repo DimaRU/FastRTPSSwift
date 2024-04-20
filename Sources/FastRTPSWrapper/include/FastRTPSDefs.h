@@ -29,12 +29,6 @@
 #endif
 
 
-#if __has_attribute(swift_name)
-# define CF_SWIFT_NAME(_name) __attribute__((swift_name(#_name)))
-#else
-# define CF_SWIFT_NAME(_name)
-#endif
-
 typedef NS_CLOSED_ENUM(uint32_t, RTPSStatus) {
     RTPSStatusReaderMatchedMatching = 0,
     RTPSStatusReaderRemovedMatching,
