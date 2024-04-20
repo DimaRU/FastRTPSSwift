@@ -6,20 +6,27 @@
 
 import Foundation
 
-extension RTPSStatus: CustomStringConvertible {
+extension RTPSReaderStatus: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .readerMatchedMatching : return "readerMatchedMatching"
-        case .readerRemovedMatching : return "readerRemovedMatching"
-        case .readerLivelinessLost  : return "readerLivelinessLost"
-        case .writerMatchedMatching : return "writerMatchedMatching"
-        case .writerRemovedMatching : return "writerRemovedMatching"
-        case .writerLivelinessLost  : return "writerLivelinessLost"
+        case .matchedMatching : return "readerMatchedMatching"
+        case .removedMatching : return "readerRemovedMatching"
+        case .livelinessLost  : return "readerLivelinessLost"
         }
     }
 }
 
-extension RTPSReaderStatus: CustomStringConvertible {
+extension RTPSWriterStatus: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .matchedMatching : return "writerMatchedMatching"
+        case .removedMatching : return "writerRemovedMatching"
+        case .livelinessLost  : return "writerLivelinessLost"
+        }
+    }
+}
+
+extension RTPSReaderDiscoveryStatus: CustomStringConvertible {
     public var description: String {
         switch self {
         case .discovered : return "discoveredReader"
@@ -30,7 +37,7 @@ extension RTPSReaderStatus: CustomStringConvertible {
     }
 }
 
-extension RTPSWriterStatus: CustomStringConvertible {
+extension RTPSWriterDiscoveryStatus: CustomStringConvertible {
     public var description: String {
         switch self {
         case .discovered : return "discoveredWriter"
@@ -41,7 +48,7 @@ extension RTPSWriterStatus: CustomStringConvertible {
     }
 }
 
-extension RTPSParticipantStatus: CustomStringConvertible {
+extension RTPSParticipantDiscoveryStatus: CustomStringConvertible {
     public var description: String {
         switch self {
         case .discovered : return "discoveredParticipant"

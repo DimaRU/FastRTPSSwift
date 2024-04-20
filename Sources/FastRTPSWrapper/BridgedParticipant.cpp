@@ -92,20 +92,7 @@ bool BridgedParticipant::createParticipant(const char* name,
     if (participantProfile != nullptr) {
         participantAttributes.builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(participantProfile->leaseDurationAnnouncementperiod);
         participantAttributes.builtin.discovery_config.leaseDuration = Duration_t(participantProfile->leaseDuration);
-        switch (participantProfile->participantFilter) {
-            case Disabled:
-                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = NO_FILTER;
-                break;
-            case DifferentHost:
-                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_DIFFERENT_HOST;
-                break;
-            case DifferentProcess:
-                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_DIFFERENT_PROCESS;
-                break;
-            case SameProcess:
-                participantAttributes.builtin.discovery_config.ignoreParticipantFlags = FILTER_SAME_PROCESS;
-                break;
-        }
+        participantAttributes.builtin.discovery_config.ignoreParticipantFlags = static_cast<ParticipantFilteringFlags_t>(participantProfile->participantFilter);
     }
     
     if (interfaceIPv4 != nullptr) {

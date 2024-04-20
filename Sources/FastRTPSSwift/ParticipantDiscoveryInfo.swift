@@ -13,13 +13,17 @@ public struct ParticipantDiscoveryInfo {
     init(info: UnsafeMutablePointer<BridgedParticipantProxyData>) {
         self.info = info
     }
+    
+    public var name: String {
+        String(cString: info.pointee.participantName())
+    }
 
     public var unicastLocators: String {
-        return String(info.pointee.getUnicastLocators())
+        String(info.pointee.getUnicastLocators())
     }
 
     public var multicastLocators: String {
-        return String(info.pointee.getMutlicastLocators())
+        String(info.pointee.getMutlicastLocators())
     }
 
     public var properties: [String:String] {

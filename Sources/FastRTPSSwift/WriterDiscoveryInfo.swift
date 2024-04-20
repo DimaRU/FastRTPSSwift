@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import FastRTPSWrapper
 import CxxStdlib
 
 public struct WriterDiscoveryInfo {
@@ -21,10 +22,29 @@ public struct WriterDiscoveryInfo {
         String(cString: info.pointee.typeName())
     }
 
-    public var disablePositiveAcks: Bool {
+    public var durability: Durability {
+        Durability(rawValue: info.pointee.durability())!
+    }
+    
+    public var reliability: Reliability {
+        Reliability(rawValue: info.pointee.reliability())!
+    }
+    
+    public var keyed: Bool {
+        info.pointee.keyed()
+    }
+    
+    public var disablePositiveACKs: Bool {
         info.pointee.disable_positive_acks()
     }
 
+    public var profile: RTPSReaderProfile {
+        RTPSReaderProfile(
+            keyed: keyed,
+            reliability: reliability,
+            durability: durability)
+    }
+    
     public var unicastLocators: String {
         return String(info.pointee.getUnicastLocators())
     }

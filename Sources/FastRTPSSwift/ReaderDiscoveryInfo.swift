@@ -5,6 +5,7 @@
 
 import Foundation
 import FastRTPSWrapper
+import CxxStdlib
 
 public struct ReaderDiscoveryInfo {
     var info: UnsafeMutablePointer<BridgedReaderProxyData>
@@ -21,8 +22,28 @@ public struct ReaderDiscoveryInfo {
         String(cString: info.pointee.typeName())
     }
 
-    public var disablePositiveAcks: Bool {
+    public var durability: Durability {
+        Durability(rawValue: info.pointee.durability())!
+    }
+    
+    public var reliability: Reliability {
+        Reliability(rawValue: info.pointee.reliability())!
+    }
+    
+    public var keyed: Bool {
+        info.pointee.keyed()
+    }
+    
+    public var disablePositiveACKs: Bool {
         info.pointee.disable_positive_acks()
+    }
+    
+    public var profile: RTPSWriterProfile {
+        RTPSWriterProfile(
+            keyed: keyed,
+            reliability: reliability,
+            durability: durability,
+            disablePositiveACKs: disablePositiveACKs)
     }
 
     public var unicastLocators: String {

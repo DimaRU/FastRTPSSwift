@@ -5,18 +5,21 @@
 
 import Foundation
 import CDRCodable
-
-#if SWIFT_PACKAGE
-@_exported import FastRTPSWrapper
-#endif
+import FastRTPSWrapper
 
 /// RTPS listener delegate requrements
 public protocol RTPSListenerDelegate {
-    /// Intercepts readers and writers events, e.g. matching or liveliness change
+    /// Intercepts readers events, e.g. matching or liveliness change
     /// - Parameters:
     ///   - reason: event reason
     ///   - topic: topic name
-    func RTPSNotification(reason: RTPSStatus, topic: String)
+    func RTPSReaderNotification(reason: RTPSReaderStatus, topic: String)
+
+    /// Intercepts writers events, e.g. matching or liveliness change
+    /// - Parameters:
+    ///   - reason: event reason
+    ///   - topic: topic name
+    func RTPSWriterNotification(reason: RTPSWriterStatus, topic: String)
 }
 
 /// RTPS Participant listener delegate requrements
@@ -24,19 +27,20 @@ public protocol RTPSParticipantListenerDelegate {
     /// Intercepts paricipant discovery events
     /// - Parameters:
     ///   - reason: event reaason, see RTPSParticipantStatus
-    ///   - participantDiscoveryInfo: discovered participant data
-    func participantNotification(reason: RTPSParticipantStatus, participantDiscoveryInfo: ParticipantDiscoveryInfo)
+    ///   - discoveryInfo: discovered participant data
+    func participantNotification(reason: RTPSParticipantDiscoveryStatus, discoveryInfo: ParticipantDiscoveryInfo)
     /// Intercepts reader discovery events
     /// - Parameters:
     ///   - reason: event reason, see RTPSReaderStatus enum
-    ///   - readerDiscoveryInfo: discovered reader data
-    func readerNotificaton(reason: RTPSReaderStatus, readerDiscoveryInfo: ReaderDiscoveryInfo)
+    ///   - discoveryInfo: discovered reader data
+    func readerNotificaton(reason: RTPSReaderDiscoveryStatus, discoveryInfo: ReaderDiscoveryInfo)
     /// Intercepts writer discovery events
     /// - Parameters:
     ///   - reason: event reason, see RTPSWriterStatus enum
-    ///   - writerDiscoveryInfo: discovered writer data
-    func writerNotificaton(reason: RTPSWriterStatus, writerDiscoveryInfo: WriterDiscoveryInfo)
+    ///   - discoveryInfo: discovered writer data
+    func writerNotificaton(reason: RTPSWriterDiscoveryStatus, discoveryInfo: WriterDiscoveryInfo)
 }
+
 
 /// FastRTPSSwift errors enum
 public enum FastRTPSSwiftError: Error {
@@ -56,41 +60,68 @@ open class FastRTPSSwift {
     
     private func setupBridgeContainer()
     {
+        let decoderCallback: @convention(c) (UnsafeRawPointer, UInt64, Int32, UnsafeMutablePointer<UInt8>) -> Void = {
+            payloadDecoder, sequence, payloadSize, payload in
+            let payloadDecoder = Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).takeUnretainedValue()
+            payloadDecoder.decode(sequence: sequence,
+                                  payloadSize: Int(payloadSize),
+                                  payload: payload)
+        }
+        
+        let releaseCallback: @convention(c) (UnsafeRawPointer) -> Void = {
+            payloadDecoder in
+            Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
+        }
+        
+        let readerListenerCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafePointer<Int8>) -> Void = {
+            listenerObject, reason, topicName in
+            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.listenerDelegate else { return }
+            let topic = String(cString: topicName)
+            delegate.RTPSReaderNotification(reason: RTPSReaderStatus(rawValue: reason)!, topic: topic)
+        }
+
+        let writerListenerCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafePointer<Int8>) -> Void = {
+            listenerObject, reason, topicName in
+            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.listenerDelegate else { return }
+            let topic = String(cString: topicName)
+            delegate.RTPSWriterNotification(reason: RTPSWriterStatus(rawValue: reason)!, topic: topic)
+        }
+
+        let discoveryParticipantCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafeMutablePointer<BridgedParticipantProxyData>) -> Void = {
+            listenerObject, reason, participantInfo in
+            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.participantListenerDelegate else { return }
+            let participantDiscoveryInfo = ParticipantDiscoveryInfo(info: participantInfo)
+            delegate.participantNotification(reason: RTPSParticipantDiscoveryStatus(rawValue: reason)!, discoveryInfo: participantDiscoveryInfo)
+        }
+        
+        let discoveryReaderCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafeMutablePointer<BridgedReaderProxyData>) -> Void = {
+            listenerObject, reason, info in
+            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.participantListenerDelegate else { return }
+            let readerDiscoveryInfo = ReaderDiscoveryInfo(info: info)
+            delegate.readerNotificaton(reason: RTPSReaderDiscoveryStatus(rawValue: reason)!, discoveryInfo: readerDiscoveryInfo)
+        }
+        
+        let discoveryWriterCallback: @convention(c) (UnsafeRawPointer, UInt32,  UnsafeMutablePointer<BridgedWriterProxyData>) -> Void = {
+            listenerObject, reason, writerInfo in
+            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+            guard let delegate = mySelf.participantListenerDelegate else { return }
+            let writerDiscoveryInfo = WriterDiscoveryInfo(info: writerInfo)
+            delegate.writerNotificaton(reason: RTPSWriterDiscoveryStatus(rawValue: reason)!, discoveryInfo: writerDiscoveryInfo)
+        }
+        
         let container = BridgeContainer(
-            decoderCallback: {
-                (payloadDecoder, sequence, payloadSize, payload) in
-                let payloadDecoder = Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).takeUnretainedValue()
-                payloadDecoder.decode(sequence: sequence,
-                                      payloadSize: Int(payloadSize),
-                                      payload: payload)
-            }, releaseCallback: {
-                (payloadDecoder) in
-                Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
-            }, readerWriterListenerCallback: {
-                (listenerObject, reason, topicName) in
-                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-                guard let delegate = mySelf.listenerDelegate else { return }
-                let topic = String(cString: topicName)
-                delegate.RTPSNotification(reason: RTPSStatus(rawValue: reason)!, topic: topic)
-            }, discoveryParticipantCallback: {
-                (listenerObject, reason, participantInfo) in
-                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-                guard let delegate = mySelf.participantListenerDelegate else { return }
-                let participantDiscoveryInfo = ParticipantDiscoveryInfo(info: participantInfo)
-                delegate.participantNotification(reason: RTPSParticipantStatus(rawValue: reason)!, participantDiscoveryInfo: participantDiscoveryInfo)
-            }, discoveryReaderCallback: {
-                (listenerObject, reason, info) in
-                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-                guard let delegate = mySelf.participantListenerDelegate else { return }
-                let readerDiscoveryInfo = ReaderDiscoveryInfo(info: info)
-                delegate.readerNotificaton(reason: RTPSReaderStatus(rawValue: reason)!, readerDiscoveryInfo: readerDiscoveryInfo)
-            }, discoveryWriterCallback: {
-                (listenerObject, reason, writerInfo) in
-                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-                guard let delegate = mySelf.participantListenerDelegate else { return }
-                let writerDiscoveryInfo = WriterDiscoveryInfo(info: writerInfo)
-                delegate.writerNotificaton(reason: RTPSWriterStatus(rawValue: reason)!, writerDiscoveryInfo: writerDiscoveryInfo)
-            }, listnerObject: Unmanaged.passUnretained(self).toOpaque())
+            decoderCallback: decoderCallback,
+            releaseCallback: releaseCallback,
+            readerListenerCallback: readerListenerCallback,
+            writerListenerCallback: writerListenerCallback,
+            discoveryParticipantCallback: discoveryParticipantCallback,
+            discoveryReaderCallback: discoveryReaderCallback,
+            discoveryWriterCallback: discoveryWriterCallback,
+            listnerObject: Unmanaged.passUnretained(self).toOpaque())
         
         wrapper.setContainer(container)
     }
@@ -116,8 +147,12 @@ open class FastRTPSSwift {
                                   localAddress: String? = nil) throws
     {
         let result: Bool
-        if var participantProfile = participantProfile {
-            result = wrapper.createParticipant(name, domainID, &participantProfile, localAddress)
+        if let participantProfile = participantProfile {
+            var wrapperProfile = FastRTPSWrapper.RTPSParticipantProfile.init(
+                leaseDurationAnnouncementperiod: participantProfile.leaseDurationAnnouncementperiod,
+                leaseDuration: participantProfile.leaseDuration,
+                participantFilter: participantProfile.participantFilter.rawValue)
+            result = wrapper.createParticipant(name, domainID, &wrapperProfile, localAddress)
         } else {
             result = wrapper.createParticipant(name, domainID, nil, localAddress)
         }
@@ -150,9 +185,14 @@ open class FastRTPSSwift {
     ///      - data: topic raw binary data
     public func registerReaderRaw<T: DDSReaderTopic>(topic: T, partition: String? = nil, block: @escaping (UInt64, Data)->Void) throws {
         let payloadDecoderProxy = Unmanaged.passRetained(PayloadDecoderProxy(block: block)).toOpaque()
+        let readerProfile = topic.readerProfile
+        let wrapperProfile = FastRTPSWrapper.RTPSReaderProfile(
+            keyed: readerProfile.keyed,
+            reliability: FastRTPSWrapper.Reliability(rawValue: readerProfile.reliability.rawValue)!,
+            durability: FastRTPSWrapper.Durability(rawValue: readerProfile.durability.rawValue)!)
         if !wrapper.addReader(topic.name,
                               topic.typeName,
-                              topic.readerProfile,
+                              wrapperProfile,
                               payloadDecoderProxy,
                               partition) {
             throw FastRTPSSwiftError.fastRTPSError
@@ -186,7 +226,16 @@ open class FastRTPSSwift {
     /// - Parameter topic: DDSWriterTopic topic descriptor
     ///   - ddsType: data type descriptor
     public func registerWriter<T: DDSWriterTopic>(topic: T, partition: String? = nil) throws  {
-        if !wrapper.addWriter(topic.name, topic.typeName, topic.writerProfile, partition) {
+        let writerProfile = topic.writerProfile
+        let wrapperProfile = FastRTPSWrapper.RTPSWriterProfile(
+            keyed: writerProfile.keyed,
+            reliability: FastRTPSWrapper.Reliability(rawValue: writerProfile.reliability.rawValue)!,
+            durability: FastRTPSWrapper.Durability(rawValue: writerProfile.durability.rawValue)!,
+            disablePositiveACKs: writerProfile.disablePositiveACKs)
+        if !wrapper.addWriter(topic.name,
+                              topic.typeName,
+                              wrapperProfile,
+                              partition) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -245,6 +294,6 @@ open class FastRTPSSwift {
     /// Set FastRTPS log messages level
     /// - Parameter level: error, warning, info
     public func setlogLevel(_ level: FastRTPSLogLevel) {
-        setRTPSLoglevel(level)
+        setRTPSLoglevel(FastRTPSWrapper.FastRTPSLogLevel(rawValue: level.rawValue)!)
     }
 }

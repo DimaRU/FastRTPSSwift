@@ -3,7 +3,6 @@
 ///   Copyright © 2020 Dmitriy Borovikov. All rights reserved.
 //
 
-
 import Foundation
 
 /// Common DDS reader/writer topic requirements. Must define topic name Raw value as string

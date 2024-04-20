@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <fastrtps/rtps/reader/ReaderListener.h>
 #include <fastrtps/rtps/participant/RTPSParticipantListener.h>
 #include "../BridgedReaderProxyData.h"
@@ -29,13 +27,16 @@
 #endif
 
 
-typedef NS_CLOSED_ENUM(uint32_t, RTPSStatus) {
-    RTPSStatusReaderMatchedMatching = 0,
-    RTPSStatusReaderRemovedMatching,
-    RTPSStatusReaderLivelinessLost,
-    RTPSStatusWriterMatchedMatching,
-    RTPSStatusWriterRemovedMatching,
-    RTPSStatusWriterLivelinessLost,
+typedef NS_CLOSED_ENUM(uint32_t, RTPSReaderStatus) {
+    RTPSReaderStatusMatchedMatching = 0,
+    RTPSReaderStatusRemovedMatching,
+    RTPSReaderStatusLivelinessLost,
+};
+
+typedef NS_CLOSED_ENUM(uint32_t, RTPSWriterStatus) {
+    RTPSWriterStatusMatchedMatching = 0,
+    RTPSWriterStatusRemovedMatching,
+    RTPSWriterStatusLivelinessLost,
 };
 
 typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
@@ -56,13 +57,6 @@ typedef NS_CLOSED_ENUM(uint32_t, Reliability) {
     ReliabilityReliable = 2,
 };
 
-typedef NS_CLOSED_ENUM(uint32_t, ParticipantFilter) {
-    Disabled = 0,
-    DifferentHost,
-    DifferentProcess,
-    SameProcess,
-};
-
 #pragma clang assume_nonnull begin
 
 struct RTPSReaderProfile {
@@ -79,16 +73,21 @@ struct RTPSWriterProfile {
 };
 
 struct RTPSParticipantProfile {
-    long double leaseDurationAnnouncementperiod;
-    long double leaseDuration;
-    ParticipantFilter participantFilter;
+    double leaseDurationAnnouncementperiod;
+    double leaseDuration;
+    uint32_t participantFilter;
 };
 
-typedef void (*DecoderCallback)(void * payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * payload);
-typedef void (*ReleaseCallback)(void * payloadDecoder);
-typedef void (*ReaderWriterListenerCallback)(const void * listnerObject,
-                                             uint32_t reason,
-                                             const char* topicName);
+typedef void (*DecoderCallback)(const void * payloadDecoder, uint64_t sequence, int payloadSize, uint8_t * payload);
+typedef void (*ReleaseCallback)(const void * payloadDecoder);
+
+typedef void (*ReaderListenerCallback)(const void * listnerObject,
+                                       uint32_t reason,
+                                       const char* topicName);
+
+typedef void (*WriterListenerCallback)(const void * listnerObject,
+                                       uint32_t reason,
+                                       const char* topicName);
 
 typedef void (*DiscoveryParticipantCallback)(const void * listnerObject,
                                              uint32_t reason,
@@ -108,7 +107,8 @@ struct BridgeContainer
 {
     DecoderCallback decoderCallback;
     ReleaseCallback releaseCallback;
-    ReaderWriterListenerCallback readerWriterListenerCallback;
+    ReaderListenerCallback readerListenerCallback;
+    WriterListenerCallback writerListenerCallback;
     DiscoveryParticipantCallback discoveryParticipantCallback;
     DiscoveryReaderCallback discoveryReaderCallback;
     DiscoveryWriterCallback discoveryWriterCallback;
