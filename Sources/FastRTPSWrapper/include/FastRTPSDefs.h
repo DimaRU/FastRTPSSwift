@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <fastrtps/rtps/reader/ReaderListener.h>
-#include <fastrtps/rtps/participant/RTPSParticipantListener.h>
 #include "../BridgedReaderProxyData.h"
 #include "../BridgedWriterProxyData.h"
 #include "../BridgedParticipantProxyData.h"

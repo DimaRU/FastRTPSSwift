@@ -4,7 +4,7 @@
 //
 
 
-#include "FastRTPSWrapper.h"
+#include "FastRTPSDefs.h"
 #include "BridgedParticipant.h"
 #include <fastrtps/log/Log.h>
 #include "CustomLogConsumer.h"
@@ -13,6 +13,8 @@ const char * _Nonnull fastDDSVersionString(void)
 {
     return FASTRTPS_VERSION_STR;
 }
+
+using namespace eprosima::fastdds::dds;
 
 void setRTPSLoglevel(enum FastRTPSLogLevel logLevel)
 {
