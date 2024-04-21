@@ -63,7 +63,7 @@ class FastRTPSSwiftTests: XCTestCase {
 
 extension FastRTPSSwiftTests: RTPSParticipantListenerDelegate {
     func participantNotification(reason: RTPSParticipantDiscoveryStatus, discoveryInfo: ParticipantDiscoveryInfo) {
-        print(reason, discoveryInfo.name, discoveryInfo.unicastLocators)
+        print(reason, discoveryInfo.name, discoveryInfo.unicastLocators, discoveryInfo.properties)
     }
     
     func readerNotificaton(reason: RTPSReaderDiscoveryStatus, discoveryInfo: ReaderDiscoveryInfo) {

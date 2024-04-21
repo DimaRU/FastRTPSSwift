@@ -27,5 +27,5 @@ public:
     void beginIteration() { iterator = info.m_properties.begin(); }
     void nextIteration() { iterator++; }
     const std::pair<const std::string, const std::string> pair() { return iterator->pair(); }
-    uint16_t propertieslength() { return info.m_properties.length; }
+    uint16_t propertiesCount() { return info.m_properties.size(); }
 };

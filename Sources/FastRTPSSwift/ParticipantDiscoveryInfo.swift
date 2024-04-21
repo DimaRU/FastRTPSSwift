@@ -29,7 +29,7 @@ public struct ParticipantDiscoveryInfo {
     public var properties: [String:String] {
         var dict: [String:String] = [:]
         info.pointee.beginIteration()
-        for _ in 0..<info.pointee.propertieslength() {
+        for _ in 0..<info.pointee.propertiesCount() {
             let pair = info.pointee.pair()
             dict[String(pair.first)] = String(pair.second)
             info.pointee.nextIteration()
