@@ -41,7 +41,6 @@ void BridgedParticipant::setContainer(BridgeContainer container)
 void BridgedParticipant::removeRTPSParticipant() {
     if (mp_participant == nullptr) return;
     logInfo(ROV_PARTICIPANT, "Delete participant")
-    mp_participant->stopRTPSParticipantAnnouncement();
     resignAll();
     RTPSDomain::removeRTPSParticipant(mp_participant);
     delete mp_listener;
