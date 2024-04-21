@@ -1,8 +1,6 @@
-//
-//  FastDDSVersion.h
-//
-//
-//  Created by Dmitriy Borovikov on 22.01.2024.
+/////
+////  FastDDSVersion.h
+///   Copyright © 2024 Dmitriy Borovikov. All rights reserved.
 //
 
 #pragma once
