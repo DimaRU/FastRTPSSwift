@@ -18,13 +18,17 @@ let package = Package(
         .target(
             name: "FastRTPSWrapper",
             dependencies: [
-                .product(name: "FastDDS", package: "FastDDSPrebuild")
+                .product(name: "FastDDS", package: "FastDDSPrebuild", condition: .when(platforms: [.macOS, .iOS, .tvOS, .visionOS]))
             ]
         ),
         .target(
             name: "FastRTPSSwift",
             dependencies: ["CDRCodable", "FastRTPSWrapper"],
-            swiftSettings: [.interoperabilityMode(.Cxx)]
+            swiftSettings: [.interoperabilityMode(.Cxx)],
+            linkerSettings: [
+                .linkedLibrary("fastrtps", .when(platforms: [.linux])),
+                .unsafeFlags(["-L/usr/local/lib"], .when(platforms: [.linux]))
+            ]
         ),
         .testTarget(
             name: "FastRTPSSwiftTests",
@@ -34,12 +38,3 @@ let package = Package(
     ],
     cxxLanguageStandard: .cxx20
 )
-
-#if os(Linux)
-package.dependencies.removeAll(where: { $0.name == "FastDDS"})
-package.targets.first(where: { $0.name == "FastRTPSWrapper"})!.dependencies = []
-package.targets.first(where: { $0.name == "FastRTPSSwift"})!.linkerSettings = [
-    .linkedLibrary("fastrtps", .when(platforms: [.linux])),
-    .unsafeFlags(["-L/usr/local/lib"], .when(platforms: [.linux]))
-]
-#endif
