@@ -132,34 +132,19 @@ bool BridgedParticipant::addReader(const char* name,
     if (partition != nullptr) {
         readerQos.m_partition.push_back(partition);
     }
+    std::cout << "ReliabilityBestEffort: " << ReliabilityKind_t::BEST_EFFORT << " - " << uint16_t(ReliabilityQosPolicyKind::RELIABLE_RELIABILITY_QOS) << std::endl;
+    std::cout << "DurabilityPersistent: " << PERSISTENT << " - " << uint16_t(PERSISTENT_DURABILITY_QOS) << std::endl;
+    readerQos.m_reliability.kind = readerProfile.reliability;
     switch (readerProfile.reliability) {
-        case ReliabilityReliable:
+        case RELIABLE_RELIABILITY_QOS:
             readerAttributes.endpoint.reliabilityKind = RELIABLE;
-            readerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
             break;
-        case ReliabilityBestEffort:
+        case BEST_EFFORT_RELIABILITY_QOS:
             readerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
-            readerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
             break;
     }
-    switch (readerProfile.durability) {
-        case DurabilityVolatile:
-            readerAttributes.endpoint.durabilityKind = VOLATILE;
-            readerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;
-            break;
-        case DurabilityTransientLocal:
-            readerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
-            readerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
-            break;
-        case DurabilityTransient:
-            readerAttributes.endpoint.durabilityKind = TRANSIENT;
-            readerQos.m_durability.kind = TRANSIENT_DURABILITY_QOS;
-            break;
-        case DurabilityPersistent:
-            readerAttributes.endpoint.durabilityKind = PERSISTENT;
-            readerQos.m_durability.kind = PERSISTENT_DURABILITY_QOS;
-            break;
-    }
+    readerQos.m_durability.kind = readerProfile.durability;
+    readerAttributes.endpoint.durabilityKind = readerQos.m_durability.durabilityKind();
 
 
     HistoryAttributes historyAttributes;
@@ -224,34 +209,17 @@ bool BridgedParticipant::addWriter(const char* name,
         writerQos.m_partition.push_back(partition);
     }
     writerQos.m_disablePositiveACKs.enabled = writerProfile.disablePositiveACKs;
+    writerQos.m_reliability.kind = writerProfile.reliability;
     switch (writerProfile.reliability) {
-        case ReliabilityReliable:
+        case RELIABLE_RELIABILITY_QOS:
             writerAttributes.endpoint.reliabilityKind = RELIABLE;
-            writerQos.m_reliability.kind = RELIABLE_RELIABILITY_QOS;
             break;
-        case ReliabilityBestEffort:
+        case BEST_EFFORT_RELIABILITY_QOS:
             writerAttributes.endpoint.reliabilityKind = BEST_EFFORT;
-            writerQos.m_reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
             break;
     }
-    switch (writerProfile.durability) {
-        case DurabilityVolatile:
-            writerAttributes.endpoint.durabilityKind = VOLATILE;
-            writerQos.m_durability.kind = VOLATILE_DURABILITY_QOS;
-            break;
-        case DurabilityTransientLocal:
-            writerAttributes.endpoint.durabilityKind = TRANSIENT_LOCAL;
-            writerQos.m_durability.kind = TRANSIENT_LOCAL_DURABILITY_QOS;
-            break;
-        case DurabilityTransient:
-            writerAttributes.endpoint.durabilityKind = TRANSIENT;
-            writerQos.m_durability.kind = TRANSIENT_DURABILITY_QOS;
-            break;
-        case DurabilityPersistent:
-            writerAttributes.endpoint.durabilityKind = PERSISTENT;
-            writerQos.m_durability.kind = PERSISTENT_DURABILITY_QOS;
-            break;
-    }
+    writerQos.m_durability.kind = writerProfile.durability;
+    writerAttributes.endpoint.durabilityKind = writerQos.m_durability.durabilityKind();
 
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;

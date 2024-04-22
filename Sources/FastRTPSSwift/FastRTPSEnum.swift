@@ -39,14 +39,14 @@ public enum RTPSWriterStatus: UInt32 {
     case livelinessLost
 }
 
-public enum Durability: UInt32 {
+public enum Durability: UInt8 {
         case volatile = 0
         case transientLocal
         case transient
         case persistent
 }
 
-public enum Reliability: UInt32 {
+public enum Reliability: UInt8 {
         case bestEffort = 1
         case reliable = 2
 }

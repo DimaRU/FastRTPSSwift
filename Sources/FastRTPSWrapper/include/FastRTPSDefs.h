@@ -43,30 +43,18 @@ typedef NS_CLOSED_ENUM(uint32_t, FastRTPSLogLevel) {
     FastRTPSLogLevelInfo
 };
 
-typedef NS_CLOSED_ENUM(uint32_t, Durability) {
-    DurabilityVolatile = 0,
-    DurabilityTransientLocal,
-    DurabilityTransient,
-    DurabilityPersistent,
-};
-
-typedef NS_CLOSED_ENUM(uint32_t, Reliability) {
-    ReliabilityBestEffort = 1,
-    ReliabilityReliable = 2,
-};
-
 #pragma clang assume_nonnull begin
 
 struct RTPSReaderProfile {
     bool keyed;
-    Reliability reliability;
-    Durability durability;
+    eprosima::fastdds::dds::ReliabilityQosPolicyKind reliability;
+    eprosima::fastdds::dds::DurabilityQosPolicyKind_t durability;
 };
 
 struct RTPSWriterProfile {
     bool keyed;
-    Reliability reliability;
-    Durability durability;
+    eprosima::fastdds::dds::ReliabilityQosPolicyKind reliability;
+    eprosima::fastdds::dds::DurabilityQosPolicyKind_t durability;
     bool disablePositiveACKs;
 };
 

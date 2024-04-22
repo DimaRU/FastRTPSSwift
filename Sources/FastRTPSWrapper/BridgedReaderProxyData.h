@@ -22,8 +22,8 @@ public:
 
     const char *topicName() { return info.topicName(); }
     const char *typeName() { return info.typeName(); }
-    uint32_t reliability() { return info.m_qos.m_reliability.kind; }
-    uint32_t durability() { return info.m_qos.m_durability.kind; }
+    uint8_t reliability() { return info.m_qos.m_reliability.kind; }
+    uint8_t durability() { return info.m_qos.m_durability.kind; }
     bool keyed() { return info.topicKind() == eprosima::fastrtps::rtps::WITH_KEY; }
     bool disable_positive_acks() { return info.disable_positive_acks(); }
     std::string getUnicastLocators();

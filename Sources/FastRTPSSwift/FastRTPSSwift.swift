@@ -60,67 +60,53 @@ open class FastRTPSSwift {
     
     private func setupBridgeContainer()
     {
-        let decoderCallback: @convention(c) (UnsafeRawPointer, UInt64, Int32, UnsafeMutablePointer<UInt8>) -> Void = {
-            payloadDecoder, sequence, payloadSize, payload in
-            let payloadDecoder = Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).takeUnretainedValue()
-            payloadDecoder.decode(sequence: sequence,
-                                  payloadSize: Int(payloadSize),
-                                  payload: payload)
-        }
-        
-        let releaseCallback: @convention(c) (UnsafeRawPointer) -> Void = {
-            payloadDecoder in
-            Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
-        }
-        
-        let readerListenerCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafePointer<Int8>) -> Void = {
-            listenerObject, reason, topicName in
-            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.listenerDelegate else { return }
-            let topic = String(cString: topicName)
-            delegate.RTPSReaderNotification(reason: RTPSReaderStatus(rawValue: reason)!, topic: topic)
-        }
-
-        let writerListenerCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafePointer<Int8>) -> Void = {
-            listenerObject, reason, topicName in
-            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.listenerDelegate else { return }
-            let topic = String(cString: topicName)
-            delegate.RTPSWriterNotification(reason: RTPSWriterStatus(rawValue: reason)!, topic: topic)
-        }
-
-        let discoveryParticipantCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafeMutablePointer<BridgedParticipantProxyData>) -> Void = {
-            listenerObject, reason, participantInfo in
-            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.participantListenerDelegate else { return }
-            let participantDiscoveryInfo = ParticipantDiscoveryInfo(info: participantInfo)
-            delegate.participantNotification(reason: RTPSParticipantDiscoveryStatus(rawValue: reason)!, discoveryInfo: participantDiscoveryInfo)
-        }
-        
-        let discoveryReaderCallback: @convention(c) (UnsafeRawPointer, UInt32, UnsafeMutablePointer<BridgedReaderProxyData>) -> Void = {
-            listenerObject, reason, info in
-            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.participantListenerDelegate else { return }
-            let readerDiscoveryInfo = ReaderDiscoveryInfo(info: info)
-            delegate.readerNotificaton(reason: RTPSReaderDiscoveryStatus(rawValue: reason)!, discoveryInfo: readerDiscoveryInfo)
-        }
-        
-        let discoveryWriterCallback: @convention(c) (UnsafeRawPointer, UInt32,  UnsafeMutablePointer<BridgedWriterProxyData>) -> Void = {
-            listenerObject, reason, writerInfo in
-            let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
-            guard let delegate = mySelf.participantListenerDelegate else { return }
-            let writerDiscoveryInfo = WriterDiscoveryInfo(info: writerInfo)
-            delegate.writerNotificaton(reason: RTPSWriterDiscoveryStatus(rawValue: reason)!, discoveryInfo: writerDiscoveryInfo)
-        }
-        
         let container = BridgeContainer(
-            decoderCallback: decoderCallback,
-            releaseCallback: releaseCallback,
-            readerListenerCallback: readerListenerCallback,
-            writerListenerCallback: writerListenerCallback,
-            discoveryParticipantCallback: discoveryParticipantCallback,
-            discoveryReaderCallback: discoveryReaderCallback,
-            discoveryWriterCallback: discoveryWriterCallback,
+            decoderCallback: {
+                payloadDecoder, sequence, payloadSize, payload in
+                let payloadDecoder = Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).takeUnretainedValue()
+                payloadDecoder.decode(sequence: sequence,
+                                      payloadSize: Int(payloadSize),
+                                      payload: payload)
+            },
+            releaseCallback: {
+                payloadDecoder in
+                Unmanaged<PayloadDecoderProxy>.fromOpaque(payloadDecoder).release()
+            },
+            readerListenerCallback: {
+                listenerObject, reason, topicName in
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+                mySelf.listenerDelegate?.RTPSReaderNotification(
+                    reason: RTPSReaderStatus(rawValue: reason)!,
+                    topic: String(cString: topicName))
+            },
+            writerListenerCallback: {
+                listenerObject, reason, topicName in
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+                mySelf.listenerDelegate?.RTPSWriterNotification(
+                    reason: RTPSWriterStatus(rawValue: reason)!,
+                    topic: String(cString: topicName))
+            },
+            discoveryParticipantCallback: {
+                listenerObject, reason, info in
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+                mySelf.participantListenerDelegate?.participantNotification(
+                    reason: RTPSParticipantDiscoveryStatus(rawValue: reason)!,
+                    discoveryInfo: ParticipantDiscoveryInfo(info: info))
+            },
+            discoveryReaderCallback: {
+                listenerObject, reason, info in
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+                mySelf.participantListenerDelegate?.readerNotificaton(
+                    reason: RTPSReaderDiscoveryStatus(rawValue: reason)!,
+                    discoveryInfo:  ReaderDiscoveryInfo(info: info))
+            },
+            discoveryWriterCallback: {
+                listenerObject, reason, info in
+                let mySelf = Unmanaged<FastRTPSSwift>.fromOpaque(listenerObject).takeUnretainedValue()
+                mySelf.participantListenerDelegate?.writerNotificaton(
+                    reason: RTPSWriterDiscoveryStatus(rawValue: reason)!,
+                    discoveryInfo: WriterDiscoveryInfo(info: info))
+            },
             listnerObject: Unmanaged.passUnretained(self).toOpaque())
         
         wrapper.setContainer(container)
@@ -188,8 +174,8 @@ open class FastRTPSSwift {
         let readerProfile = topic.readerProfile
         let wrapperProfile = FastRTPSWrapper.RTPSReaderProfile(
             keyed: readerProfile.keyed,
-            reliability: FastRTPSWrapper.Reliability(rawValue: readerProfile.reliability.rawValue)!,
-            durability: FastRTPSWrapper.Durability(rawValue: readerProfile.durability.rawValue)!)
+            reliability: FastRTPSWrapper.eprosima.fastdds.dds.ReliabilityQosPolicyKind(rawValue: readerProfile.reliability.rawValue),
+            durability: FastRTPSWrapper.eprosima.fastdds.dds.DurabilityQosPolicyKind_t(rawValue: readerProfile.durability.rawValue))
         if !wrapper.addReader(topic.name,
                               topic.typeName,
                               wrapperProfile,
@@ -229,8 +215,8 @@ open class FastRTPSSwift {
         let writerProfile = topic.writerProfile
         let wrapperProfile = FastRTPSWrapper.RTPSWriterProfile(
             keyed: writerProfile.keyed,
-            reliability: FastRTPSWrapper.Reliability(rawValue: writerProfile.reliability.rawValue)!,
-            durability: FastRTPSWrapper.Durability(rawValue: writerProfile.durability.rawValue)!,
+            reliability: FastRTPSWrapper.eprosima.fastdds.dds.ReliabilityQosPolicyKind(rawValue: writerProfile.reliability.rawValue),
+            durability: FastRTPSWrapper.eprosima.fastdds.dds.DurabilityQosPolicyKind_t(rawValue: writerProfile.durability.rawValue),
             disablePositiveACKs: writerProfile.disablePositiveACKs)
         if !wrapper.addWriter(topic.name,
                               topic.typeName,
