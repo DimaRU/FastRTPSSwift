@@ -146,7 +146,6 @@ bool BridgedParticipant::addReader(const char* name,
     readerQos.m_durability.kind = readerProfile.durability;
     readerAttributes.endpoint.durabilityKind = readerQos.m_durability.durabilityKind();
 
-
     HistoryAttributes historyAttributes;
     historyAttributes.memoryPolicy = DYNAMIC_REUSABLE_MEMORY_MODE;
     historyAttributes.payloadMaxSize = 1000;
@@ -160,16 +159,15 @@ bool BridgedParticipant::addReader(const char* name,
         return false;
     }
 
-    readerList[topicName] = reader;
-
     TopicAttributes topicAttributes(name, dataType, tKind);
     auto rezult = mp_participant->registerReader(reader, topicAttributes, readerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
-        readerList.erase(topicName);
         delete listener;
         return false;
     }
+    
+    readerList[topicName] = reader;
     logInfo(ROV_PARTICIPANT, "Registered reader: " << name << " - " << dataType)
     return true;
 }
@@ -234,16 +232,15 @@ bool BridgedParticipant::addWriter(const char* name,
         return false;
     }
 
-    writerList[topicName] = writer;
 
     TopicAttributes topicAttributes(name, dataType, tKind);
     auto rezult = mp_participant->registerWriter(writer, topicAttributes, writerQos);
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);
-        writerList.erase(topicName);
         delete listener;
         return false;
     }
+    writerList[topicName] = writer;
     logInfo(ROV_PARTICIPANT, "Registered writer: " << name << " - " << dataType)
     return true;
 }
