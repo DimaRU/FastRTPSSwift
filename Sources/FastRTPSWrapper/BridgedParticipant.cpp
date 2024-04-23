@@ -41,7 +41,6 @@ void BridgedParticipant::setContainer(BridgeContainer container)
 void BridgedParticipant::removeRTPSParticipant() {
     if (mp_participant == nullptr) return;
     logInfo(ROV_PARTICIPANT, "Delete participant")
-    resignAll();
     RTPSDomain::removeRTPSParticipant(mp_participant);
     delete mp_listener;
     mp_participant = nullptr;
@@ -58,32 +57,10 @@ void BridgedParticipant::stopAll()
     RTPSDomain::stopAll();
 }
 
-void BridgedParticipant::resignAll() {
-    for(auto it = readerList.begin(); it != readerList.end(); it++)
-    {
-        logInfo(ROV_PARTICIPANT, "Remove reader: " << it->first)
-        auto reader = it->second;
-        BridgedReaderListener * listener = static_cast<BridgedReaderListener *>(reader->getListener());
-        RTPSDomain::removeRTPSReader(reader);
-        delete listener;
-    }
-    readerList.clear();
-
-    for(auto it = writerList.begin(); it != writerList.end(); it++)
-    {
-        logInfo(ROV_PARTICIPANT, "Remove writer: " << it->first)
-        auto writer = it->second;
-        BridgedWriterListener * listener = static_cast<BridgedWriterListener *>(writer->getListener());
-        RTPSDomain::removeRTPSWriter(writer);
-        delete listener;
-    }
-    writerList.clear();
-}
-
 bool BridgedParticipant::createParticipant(const char* name,
                                            const uint32_t domain,
                                            const RTPSParticipantProfile* participantProfile,
-                                           const char *interfaceIPv4)
+                                           const char* interfaceIPv4)
 {
     RTPSParticipantAttributes participantAttributes;
     participantAttributes.builtin.discovery_config.discoveryProtocol = eprosima::fastrtps::rtps::DiscoveryProtocol::SIMPLE;
@@ -113,27 +90,19 @@ bool BridgedParticipant::createParticipant(const char* name,
     return true;
 }
 
-bool BridgedParticipant::addReader(const char* name,
-                                   const char* dataType,
-                                   const RTPSReaderProfile readerProfile,
-                                   const void * payloadDecoder,
-                                   const char * partition)
+RTPSReader* BridgedParticipant::addReader(const char* name,
+                                          const char* dataType,
+                                          const RTPSReaderProfile readerProfile,
+                                          const void* payloadDecoder,
+                                          const char* partition)
 {
-    auto topicName = std::string(name);
     auto tKind = readerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
-    if (readerList.find(topicName) != readerList.end()) {
-        // aready registered
-        container.releaseCallback((void * _Nonnull)payloadDecoder);
-        return false;
-    }
     ReaderAttributes readerAttributes;
     readerAttributes.endpoint.topicKind = tKind;
     ReaderQos readerQos;
     if (partition != nullptr) {
         readerQos.m_partition.push_back(partition);
     }
-    std::cout << "ReliabilityBestEffort: " << ReliabilityKind_t::BEST_EFFORT << " - " << uint16_t(ReliabilityQosPolicyKind::RELIABLE_RELIABILITY_QOS) << std::endl;
-    std::cout << "DurabilityPersistent: " << PERSISTENT << " - " << uint16_t(PERSISTENT_DURABILITY_QOS) << std::endl;
     readerQos.m_reliability.kind = readerProfile.reliability;
     switch (readerProfile.reliability) {
         case RELIABLE_RELIABILITY_QOS:
@@ -156,7 +125,7 @@ bool BridgedParticipant::addReader(const char* name,
     auto reader = RTPSDomain::createRTPSReader(mp_participant, readerAttributes, history, listener);
     if (reader == nullptr) {
         delete listener;
-        return false;
+        return nullptr;
     }
 
     TopicAttributes topicAttributes(name, dataType, tKind);
@@ -164,41 +133,30 @@ bool BridgedParticipant::addReader(const char* name,
     if (!rezult) {
         RTPSDomain::removeRTPSReader(reader);
         delete listener;
-        return false;
+        return nullptr;
     }
     
-    readerList[topicName] = reader;
     logInfo(ROV_PARTICIPANT, "Registered reader: " << name << " - " << dataType)
-    return true;
+    return reader;
 }
 
-bool BridgedParticipant::removeReader(const char* name)
+bool BridgedParticipant::removeReader(RTPSReader* reader)
 {
-    logInfo(ROV_PARTICIPANT, "Remove reader: " << name)
-    auto topicName = std::string(name);
-    if (readerList.find(topicName) == readerList.end()) {
-        return false;
-    }
-    auto reader = readerList[topicName];
     BridgedReaderListener * listener = static_cast<BridgedReaderListener *>(reader->getListener());
+    reader->setListener(nullptr);
+    delete listener;
     if (!RTPSDomain::removeRTPSReader(reader))
         return false;
-    readerList.erase(topicName);
-    delete listener;
+    logInfo(ROV_PARTICIPANT, "Reader removed")
     return true;
 }
 
-bool BridgedParticipant::addWriter(const char* name,
-                                   const char* dataType,
-                                   const RTPSWriterProfile writerProfile,
-                                   const char * partition)
+RTPSWriter* BridgedParticipant::addWriter(const char* name,
+                                          const char* dataType,
+                                          const RTPSWriterProfile writerProfile,
+                                          const char * partition)
 {
-    auto topicName = std::string(name);
     auto tKind = writerProfile.keyed ? eprosima::fastrtps::rtps::WITH_KEY : eprosima::fastrtps::rtps::NO_KEY;
-    if (writerList.find(topicName) != writerList.end()) {
-        // aready registered
-        return false;
-    }
 
     WriterAttributes writerAttributes;
     writerAttributes.endpoint.topicKind = tKind;
@@ -229,7 +187,7 @@ bool BridgedParticipant::addWriter(const char* name,
     auto writer = RTPSDomain::createRTPSWriter(mp_participant, writerAttributes, history, listener);
     if (writer == nullptr) {
         delete listener;
-        return false;
+        return nullptr;
     }
 
 
@@ -238,48 +196,29 @@ bool BridgedParticipant::addWriter(const char* name,
     if (!rezult) {
         RTPSDomain::removeRTPSWriter(writer);
         delete listener;
-        return false;
+        return nullptr;
     }
-    writerList[topicName] = writer;
     logInfo(ROV_PARTICIPANT, "Registered writer: " << name << " - " << dataType)
-    return true;
+    return writer;
 }
 
-bool BridgedParticipant::removeWriter(const char* name)
+bool BridgedParticipant::removeWriter(RTPSWriter* writer)
 {
-    logInfo(ROV_PARTICIPANT, "Remove writer: " << name)
-    auto topicName = std::string(name);
-    if (writerList.find(topicName) == writerList.end()) {
-        return false;
-    }
-    auto writer = writerList[topicName];
     BridgedWriterListener* listener = static_cast<BridgedWriterListener*>(writer->getListener());
+    writer->set_listener(nullptr);
+    delete listener;
     if (!RTPSDomain::removeRTPSWriter(writer))
         return false;
-    writerList.erase(topicName);
-    delete listener;
+    logInfo(ROV_PARTICIPANT, "Writer removed ")
     return true;
 }
 
-bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength)
+bool BridgedParticipant::send(RTPSWriter* writer, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength)
 {
     static const octet header[] = {0, 1, 0, 0};
     MD5 md5;
     
-    auto topicName = std::string(name);
-    if (writerList.find(topicName) == writerList.end()) {
-        return false;
-    }
-    auto writer = writerList[topicName];
     auto history = static_cast<BridgedWriterListener *>(writer->getListener())->history;
-//    if (writer->listener->n_matched == 0) {
-//        return false;
-//    }
-//    
-//    if (history->getHistorySize() > 0) {
-//        // drop history
-//        history->remove_all_changes();
-//    }
 
     CacheChange_t * change;
     if (key && keyLength > 0) {

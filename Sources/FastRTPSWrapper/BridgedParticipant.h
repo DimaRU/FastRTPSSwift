@@ -16,14 +16,14 @@ using namespace eprosima::fastrtps::rtps;
 
 class BridgedParticipantListener;
 
+#pragma clang assume_nonnull begin
+
 class BridgedParticipant
 {
 
     RTPSParticipant* mp_participant;
     BridgedParticipantListener* mp_listener;
     BridgeContainer container;
-    std::map<std::string, RTPSReader*> readerList;
-    std::map<std::string, RTPSWriter*> writerList;
 public:
     BridgedParticipant();
     virtual ~BridgedParticipant();
@@ -31,25 +31,26 @@ public:
 
     bool createParticipant(const char* name,
                            const uint32_t domain,
-                           const RTPSParticipantProfile* participantProfile,
-                           const char *interfaceIPv4);
+                           const RTPSParticipantProfile* _Nullable participantProfile,
+                           const char * _Nullable interfaceIPv4);
     
-    bool addReader(const char* name,
-                   const char* dataType,
-                   const RTPSReaderProfile readerProfile,
-                   const void * payloadDecoder,
-                   const char * partition);
+    RTPSReader* _Nullable addReader(const char* name,
+                                    const char* dataType,
+                                    const RTPSReaderProfile readerProfile,
+                                    const void * payloadDecoder,
+                                    const char * _Nullable partition);
     
-    bool removeReader(const char* name);
+    bool removeReader(RTPSReader* reader);
     
-    bool addWriter(const char* name,
-                   const char* dataType,
-                   const RTPSWriterProfile writerProfile,
-                   const char * partition);
+    RTPSWriter* _Nullable addWriter(const char* name,
+                                    const char* dataType,
+                                    const RTPSWriterProfile writerProfile,
+                                    const char * _Nullable partition);
     
-    bool removeWriter(const char* name);
-    bool send(const char* name, const uint8_t* data, uint32_t length, const void* key, uint32_t keyLength);
-    void resignAll();
+    bool removeWriter(RTPSWriter* writer);
+    bool send(RTPSWriter* writer, const uint8_t* data, uint32_t length, const void* _Nullable key, uint32_t keyLength);
     void stopAll();
     void removeRTPSParticipant();
 };
+
+#pragma clang assume_nonnull end

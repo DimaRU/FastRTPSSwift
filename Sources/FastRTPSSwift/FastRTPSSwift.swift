@@ -45,6 +45,7 @@ public protocol RTPSParticipantListenerDelegate {
 /// FastRTPSSwift errors enum
 public enum FastRTPSSwiftError: Error {
     case fastRTPSError
+    case unknownTopic
 }
 
 /// Fast-DDS bridge class
@@ -52,7 +53,9 @@ open class FastRTPSSwift {
     private var wrapper: BridgedParticipant
     fileprivate var listenerDelegate: RTPSListenerDelegate?
     fileprivate var participantListenerDelegate: RTPSParticipantListenerDelegate?
-    
+    private var readerList: [String: OpaquePointer] = [:]
+    private var writerList: [String: OpaquePointer] = [:]
+
     public init() {
         wrapper = BridgedParticipant()
         setupBridgeContainer()
@@ -134,7 +137,7 @@ open class FastRTPSSwift {
     {
         let result: Bool
         if let participantProfile = participantProfile {
-            var wrapperProfile = FastRTPSWrapper.RTPSParticipantProfile.init(
+            var wrapperProfile = FastRTPSWrapper.RTPSParticipantProfile(
                 leaseDurationAnnouncementperiod: participantProfile.leaseDurationAnnouncementperiod,
                 leaseDuration: participantProfile.leaseDuration,
                 participantFilter: participantProfile.participantFilter.rawValue)
@@ -176,13 +179,14 @@ open class FastRTPSSwift {
             keyed: readerProfile.keyed,
             reliability: FastRTPSWrapper.eprosima.fastdds.dds.ReliabilityQosPolicyKind(rawValue: readerProfile.reliability.rawValue),
             durability: FastRTPSWrapper.eprosima.fastdds.dds.DurabilityQosPolicyKind_t(rawValue: readerProfile.durability.rawValue))
-        if !wrapper.addReader(topic.name,
-                              topic.typeName,
-                              wrapperProfile,
-                              payloadDecoderProxy,
-                              partition) {
+        guard let reader = wrapper.addReader(topic.name,
+                                             topic.typeName,
+                                             wrapperProfile,
+                                             payloadDecoderProxy,
+                                             partition) else {
             throw FastRTPSSwiftError.fastRTPSError
         }
+        readerList[topic.name] = reader
     }
     
     /// Register a RTPS reader for topic with Result data callback
@@ -201,7 +205,10 @@ open class FastRTPSSwift {
     /// Remove a RTPS reader for topic
     /// - Parameter topic: DDSReader topic descriptor
     public func removeReader<T: DDSReaderTopic>(topic: T) throws {
-        if !wrapper.removeReader(topic.name) {
+        guard let reader = readerList[topic.name] else {
+            throw FastRTPSSwiftError.fastRTPSError
+        }
+        if !wrapper.removeReader(reader) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -218,18 +225,22 @@ open class FastRTPSSwift {
             reliability: FastRTPSWrapper.eprosima.fastdds.dds.ReliabilityQosPolicyKind(rawValue: writerProfile.reliability.rawValue),
             durability: FastRTPSWrapper.eprosima.fastdds.dds.DurabilityQosPolicyKind_t(rawValue: writerProfile.durability.rawValue),
             disablePositiveACKs: writerProfile.disablePositiveACKs)
-        if !wrapper.addWriter(topic.name,
+        guard let writer = wrapper.addWriter(topic.name,
                               topic.typeName,
                               wrapperProfile,
-                              partition) {
+                              partition) else {
             throw FastRTPSSwiftError.fastRTPSError
         }
+        writerList[topic.name] = writer
     }
     
     /// Remove RTPS writer for topic
     /// - Parameter topic: DDSWriterTopic topic descriptor
     public func removeWriter<T: DDSWriterTopic>(topic: T) throws {
-        if !wrapper.removeWriter(topic.name) {
+        guard let writer = writerList[topic.name] else {
+            throw FastRTPSSwiftError.unknownTopic
+        }
+        if !wrapper.removeWriter(writer) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -239,9 +250,12 @@ open class FastRTPSSwift {
     /// - Parameter topic: DDSWriter topic descriptor
     ///   - ddsData: data to be send
     public func send<D: Encodable, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
+        guard let writer = writerList[topic.name] else {
+            throw FastRTPSSwiftError.unknownTopic
+        }
         let encoder = CDREncoder()
         let data = try encoder.encode(ddsData)
-        if !wrapper.send(topic.name, data.withUnsafeBytes { $0.baseAddress! }, UInt32(data.count), nil, 0) {
+        if !wrapper.send(writer, data.withUnsafeBytes { $0.baseAddress! }, UInt32(data.count), nil, 0) {
             throw FastRTPSSwiftError.fastRTPSError
         }
     }
@@ -251,9 +265,12 @@ open class FastRTPSSwift {
     /// - Parameter topic: DDSWriter topic descriptor
     ///   - ddsData: data to be send
     public func send<D: DDSKeyed & Encodable, T: DDSWriterTopic>(topic: T, ddsData: D) throws {
+        guard let writer = writerList[topic.name] else {
+            throw FastRTPSSwiftError.unknownTopic
+        }
         let encoder = CDREncoder()
         let data = try encoder.encode(ddsData)
-        if !wrapper.send(topic.name,
+        if !wrapper.send(writer,
                          data.withUnsafeBytes { $0.baseAddress! },
                          UInt32(data.count),
                          ddsData.key.withUnsafeBytes { $0.baseAddress! },
@@ -264,7 +281,14 @@ open class FastRTPSSwift {
 
     /// Remove all readers and writers from participant
     public func resignAll() {
-        wrapper.resignAll()
+        for (_, reader) in readerList {
+            wrapper.removeReader(reader)
+        }
+        readerList = [:]
+        for (_, writer) in writerList {
+            wrapper.removeWriter(writer)
+        }
+        writerList = [:]
     }
     
     /// Method to shut down all RTPS participants, readers, writers, etc. It may be called at the end of the process to avoid memory leaks.
@@ -272,7 +296,7 @@ open class FastRTPSSwift {
         wrapper.stopAll()
     }
     
-    /// Remove all readers/writers and then remove participant
+    /// Remove participant
     public func removeParticipant() {
         wrapper.removeRTPSParticipant()
     }
