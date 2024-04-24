@@ -30,3 +30,10 @@ std::string BridgedReaderProxyData::getMutlicastLocators() {
     dumpLocators(info.remote_locators().multicast, stream);
     return stream.str();
 }
+
+std::string BridgedReaderProxyData::getGuid() {
+    std::ostringstream stream;
+
+    stream << info.guid();
+    return stream.str();
+}

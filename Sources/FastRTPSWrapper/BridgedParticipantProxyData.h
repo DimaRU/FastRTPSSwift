@@ -24,6 +24,7 @@ public:
     const char* participantName() { return info.m_participantName.c_str(); }
     std::string getUnicastLocators();
     std::string getMutlicastLocators();
+    std::string getGuid();
     void beginIteration() { iterator = info.m_properties.begin(); }
     void nextIteration() { iterator++; }
     const std::pair<const std::string, const std::string> pair() { return iterator->pair(); }

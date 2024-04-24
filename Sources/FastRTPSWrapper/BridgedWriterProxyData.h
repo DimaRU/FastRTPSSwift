@@ -28,4 +28,5 @@ public:
     bool disable_positive_acks() { return info.m_qos.m_disablePositiveACKs.enabled; }
     std::string getUnicastLocators();
     std::string getMutlicastLocators();
+    std::string getGuid();
 };

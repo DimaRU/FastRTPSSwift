@@ -54,11 +54,15 @@ public struct ReaderDiscoveryInfo {
 
     /// Return remote unicast locators list
     public var unicastLocators: String {
-        return String(info.pointee.getUnicastLocators())
+        String(info.pointee.getUnicastLocators())
     }
 
     /// Return remote multicast locators list
     public var multicastLocators: String {
-        return String(info.pointee.getMutlicastLocators())
+        String(info.pointee.getMutlicastLocators())
+    }
+    
+    public var guid: String {
+        String(info.pointee.getGuid())
     }
 }

@@ -36,4 +36,8 @@ public struct ParticipantDiscoveryInfo {
         }
         return dict
     }
+    
+    public var guid: String {
+        String(info.pointee.getGuid())
+    }
 }

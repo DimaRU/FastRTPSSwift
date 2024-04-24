@@ -22,3 +22,10 @@ std::string BridgedParticipantProxyData::getMutlicastLocators() {
     dumpLocators(info.default_locators.multicast, stream);
     return stream.str();
 }
+
+std::string BridgedParticipantProxyData::getGuid() {
+    std::ostringstream stream;
+
+    stream << info.m_guid;
+    return stream.str();
+}
